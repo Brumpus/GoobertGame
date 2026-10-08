@@ -4,7 +4,9 @@ let bodyColor = 0;
 let legType = 0;
 let legColor = 0;
 let eyeType = 0;
+let eyeExpression = 0;
 let mouthType = 0;
+let mouthExpression = 0;
 
 /* Controls for the test goobert */
 const randomizeFeatures = () => {
@@ -12,8 +14,8 @@ const randomizeFeatures = () => {
     bodyColor = Math.floor(Math.random() * 7);
     legType = Math.floor(Math.random() * 7);
     legColor = Math.floor(Math.random() * 7);
-    eyeType = Math.floor(Math.random() * 7);
-    mouthType = Math.floor(Math.random() * 7);
+    eyeType = Math.floor(Math.random() * 10);
+    mouthType = Math.floor(Math.random() * 11);
     setBodyType(bodyType);
     setBodyColor(bodyColor);
     setLegsType(legType);
@@ -44,13 +46,21 @@ const changeLegColor = function() {
 }
 
 const changeEyes = function() {
-    eyeType = (eyeType == 6) ? 0 : eyeType + 1;
+    eyeType = (eyeType == 9) ? 0 : eyeType + 1;
     setEyes(eyeType);
+}
+const changeEyesExpression = () => {
+    eyeExpression = (eyeExpression == 6) ? 0 : eyeExpression + 1;
+    setEyeExpression(eyeExpression);
 }
 
 const changeMouth = function() {
-    mouthType = (mouthType == 6) ? 0 : mouthType + 1;
+    mouthType = (mouthType == 10) ? 0 : mouthType + 1;
     setMouth(mouthType);
+}
+const changeMouthExpression = () => {
+    mouthExpression = (mouthExpression == 5) ? 0 : mouthExpression + 1;
+    setMouthExpression(mouthExpression);
 }
 
 /* The following functions set the features of the test goobert. */
@@ -83,9 +93,19 @@ const setEyes = (assetIndex) => {
     element.style.backgroundPositionY = (assetIndex*(-64)) + 'px';
     console.log("Eye type set.");
 }
+const setEyeExpression = (assetIndex) => {
+    const element = document.getElementById('goobert-eyes');
+    element.style.backgroundPositionX = (assetIndex*(-64)) + 'px';
+    console.log("Eye expression set.")
+}
 
 const setMouth = (assetIndex) => {
     const element = document.getElementById('goobert-mouth');
     element.style.backgroundPositionY = (assetIndex*(-64)) + 'px';
     console.log("Mouth type set.");
+}
+const setMouthExpression = (assetIndex) => {
+    const element = document.getElementById('goobert-mouth');
+    element.style.backgroundPositionX = (assetIndex*(-64)) + 'px';
+    console.log("Mouth expression set.")
 }

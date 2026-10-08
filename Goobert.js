@@ -1,16 +1,16 @@
 'use strict'
 
 let numOfGooberts = 0;
-const MAX_EYE_TYPES = 7;
+const MAX_EYE_TYPES = 10;
 const MAX_BODY_TYPES = 7;
 const MAX_LEG_TYPES = 7;
-const MAX_MOUTH_TYPES = 7;
+const MAX_MOUTH_TYPES = 11;
 const MAX_COLORS = 7;
 
 const BODY_SPRITE_SHEET = 'assets/goobert-parts/208-tamagotchi-bodies.png';
 const LEG_SPRITE_SHEET = 'assets/goobert-parts/208-tamagotchi-legs.png';
-const EYES_SPRITE_SHEET = 'assets/goobert-parts/208-tamagotchi-eyes-sample.png';
-const MOUTH_SPRITE_SHEET = 'assets/goobert-parts/208-tamagotchi-mouths2.png';
+const EYES_SPRITE_SHEET = 'assets/goobert-parts/208-tamagotchi-eyes.png';
+const MOUTH_SPRITE_SHEET = 'assets/goobert-parts/208-tamagotchi-mouths.png';
 
 
 
@@ -38,6 +38,8 @@ class goobert {
         this.legColor = Math.floor(Math.random() * MAX_COLORS),
         this.eyeType = Math.floor(Math.random() * MAX_EYE_TYPES),
         this.mouthType = Math.floor(Math.random() * MAX_MOUTH_TYPES);
+        this.eyeExpression = 0;
+        this.mouthExpression = 0;
 
         this.initializeSprite();
 
@@ -99,7 +101,9 @@ class goobert {
         this.setLegsType();
         this.setLegsColor();
         this.setEyes();
+        this.setEyeExpression();
         this.setMouth();
+        this.setMouthExpression();
         
     }
 
@@ -135,11 +139,21 @@ class goobert {
         element.style.backgroundPositionY = (this.eyeType*(-64)) + 'px';
         console.log(this.name + "'s eye type set.");
     }
+    setEyeExpression(){
+        const element = document.getElementById(this.eyeId);
+        element.style.backgroundPositionX = (this.eyeExpression*(-64)) + 'px';
+        console.log(this.name + "'s eye expression set.");
+    }
 
     setMouth(){
         const element = document.getElementById(this.mouthId);
         element.style.backgroundPositionY = (this.mouthType*(-64)) + 'px';
         console.log(this.name + "'s mouth type set.");
+    }
+    setMouthExpression(){
+        const element = document.getElementById(this.mouthId);
+        element.style.backgroundPositionX = (this.mouthExpression*(-64)) + 'px';
+        console.log(this.name + "'s mouth expression set.");
     }
 
 
@@ -161,14 +175,6 @@ class goobert {
     }
 }
 
-const david = new goobert('david', '25%', '75%');
-const emily = new goobert('emily', '40%', '75%');
-const grubert = new goobert('grubert', '55%', '75%');
-
-
-
-console.log(david);
-console.log(emily);
 
 
 

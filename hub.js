@@ -1,16 +1,6 @@
 "use strict";
 
-// Removes Gooberts automatically created by Goobert.js
-// Hub starts with one custom Goobert
-const oldGooberts = ["david0", "emily1", "grubert2"];
 
-oldGooberts.forEach(function(goobertId) {
-    document.getElementById(goobertId)?.remove();
-    document.getElementById(goobertId + "body")?.remove();
-    document.getElementById(goobertId + "legs")?.remove();
-    document.getElementById(goobertId + "eyes")?.remove();
-    document.getElementById(goobertId + "mouth")?.remove();
-});
 
 // CHANGING THE GOOBERTS EYES
 let eyesArea = document.getElementById("tree-eyes-area");

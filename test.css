@@ -29,13 +29,13 @@ of each other.*/
     z-index: 2;
 }
 #goobert-mouth {
-    background-image: url(assets/goobert-parts/208-tamagotchi-mouths2.png);
+    background-image: url(assets/goobert-parts/208-tamagotchi-mouths.png);
     background-position-x: 0px;
     background-position-y: 0px;
     z-index: 3;
 }
 #goobert-eyes {
-    background-image: url(assets/goobert-parts/208-tamagotchi-eyes-sample.png);
+    background-image: url(assets/goobert-parts/208-tamagotchi-eyes.png);
     background-position-x: 0px;
     background-position-y: 0px;
     z-index: 4;
