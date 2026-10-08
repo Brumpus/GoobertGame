@@ -177,7 +177,7 @@ function eatApple() {
     snake.head = newSquare;
     updateImage(newSquare);
 
-    david.eat();
+    // david.eat();
 }
 function findValidSpaces() {
     // As much as I hate nested loops, this is the best way I could think to do this.

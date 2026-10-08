@@ -118,7 +118,7 @@ function checkPipeIntersection() {
                 resetGame();
             } else {
                 // Intersecting with water
-                david.cleanliness += 0.04; // Wash goobert
+                // david.cleanliness += 0.04; // Wash goobert
             }
         }
     }
