@@ -1,0 +1,21 @@
+{
+    "name": "cs-208-tamagotchi",
+    "version": "0.1.0",
+    "description": "A tamagotchi-style video game web app designed for a CS-208 class.",
+    "contributors": [
+        "Quinton",
+        "Elena",
+        "Spencer",
+        "Katalina",
+        "Annette",
+        "Joseph"
+    ],
+    "scripts": {
+        "build": "./build.sh"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.28.3",
+        "@babel/core": "^7.28.4",
+        "@babel/preset-react": "^7.27.1"
+    }
+}
