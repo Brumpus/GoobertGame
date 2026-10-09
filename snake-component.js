@@ -1,29 +1,28 @@
 "use strict";
 
-import "games/snake-stylesheet.css";
-class Snake extends React.Component {
+class SnakeGame extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement("main", null, /*#__PURE__*/React.createElement("script", {
       src: "games/snake-game.js",
       defer: true
     }), /*#__PURE__*/React.createElement("div", {
       id: "main",
-      class: "container bg-primary"
+      className: "container bg-primary"
     }), /*#__PURE__*/React.createElement("div", {
       id: "keys",
-      class: "d-block d-md-none"
+      className: "d-block d-md-none"
     }, /*#__PURE__*/React.createElement("i", {
-      class: "bi bi-arrow-up text-white bg-warning p-1 rounded-pill key keyup",
-      onclick: "setSnakeVelocity('up')"
+      className: "bi bi-arrow-up text-white bg-warning p-1 rounded-pill key keyup",
+      onClick: setSnakeVelocity('up')
     }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("i", {
-      class: "bi bi-arrow-left text-white bg-warning p-1 rounded-pill key keyleft",
-      onclick: "setSnakeVelocity('left')"
+      className: "bi bi-arrow-left text-white bg-warning p-1 rounded-pill key keyleft",
+      onClick: setSnakeVelocity('left')
     }), /*#__PURE__*/React.createElement("i", {
-      class: "bi bi-arrow-down text-white bg-warning p-1 rounded-pill key keydown",
-      onclick: "setSnakeVelocity('down')"
+      className: "bi bi-arrow-down text-white bg-warning p-1 rounded-pill key keydown",
+      onClick: setSnakeVelocity('down')
     }), /*#__PURE__*/React.createElement("i", {
-      class: "bi bi-arrow-right text-white bg-warning p-1 rounded-pill key keyright",
-      onclick: "setSnakeVelocity('right')"
+      className: "bi bi-arrow-right text-white bg-warning p-1 rounded-pill key keyright",
+      onClick: setSnakeVelocity('right')
     })));
   }
 }

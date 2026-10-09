@@ -41,19 +41,19 @@ legAreaColor.onclick = function() {
 // GO TO BEDROOM
 let sleepDoor = document.getElementById("sleep-door");
 sleepDoor.onclick = function() {
-    window.location.href = "bedroom.html";
+    load("bedroom");
 };
 
 // GO TO GAME ROOM
 let gameDoor = document.getElementById("game-door");
 gameDoor.onclick = function() {
-    window.location.href = "game-room.html";
+    load("gameRoom");
 };
 
 // GO TO SHOP
 let shopDoor = document.getElementById("shop-door");
 shopDoor.onclick = function() {
-    window.location.href = "shop.html";
+    load("shop");
 };
 
 // LEAVE GAME

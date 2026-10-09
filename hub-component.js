@@ -1,6 +1,5 @@
 "use strict";
 
-import "hub-styles.css";
 class Hub extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement("main", {
@@ -43,19 +42,28 @@ class Hub extends React.Component {
     }, /*#__PURE__*/React.createElement("img", {
       src: "index-images/DreamDoor.webp",
       alt: "BEDROOM",
-      id: "sleep-door"
+      id: "sleep-door",
+      onClick: () => {
+        load("bedroom");
+      }
     })), /*#__PURE__*/React.createElement("div", {
       className: "game-door-container"
     }, /*#__PURE__*/React.createElement("img", {
       src: "hub-images/game-door.png",
       alt: "GAME",
-      id: "game-door"
+      id: "game-door",
+      onClick: () => {
+        load("gameroom");
+      }
     })), /*#__PURE__*/React.createElement("div", {
       className: "shop-door-container"
     }, /*#__PURE__*/React.createElement("img", {
       src: "hub-images/shop-door.png",
       alt: "SHOP",
-      id: "shop-door"
+      id: "shop-door",
+      onClick: () => {
+        load("shop");
+      }
     })), /*#__PURE__*/React.createElement("div", {
       className: "leave-door-container"
     }, /*#__PURE__*/React.createElement("img", {

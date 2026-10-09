@@ -1,5 +1,4 @@
 "use strict"
-import "hub-styles.css";
 
 class Hub extends React.Component {
     render() {
@@ -31,15 +30,15 @@ class Hub extends React.Component {
                 </div>
 
                 <div className="sleep-door-container">
-                    <img src="index-images/DreamDoor.webp" alt="BEDROOM" id="sleep-door" />
+                    <img src="index-images/DreamDoor.webp" alt="BEDROOM" id="sleep-door" onClick={() => {load("bedroom")}} />
                 </div>
 
                 <div className="game-door-container">
-                    <img src="hub-images/game-door.png" alt="GAME" id="game-door" />
+                    <img src="hub-images/game-door.png" alt="GAME" id="game-door" onClick={() => {load("gameroom")}} />
                 </div>
 
                 <div className="shop-door-container">
-                    <img src="hub-images/shop-door.png" alt="SHOP" id="shop-door" />
+                    <img src="hub-images/shop-door.png" alt="SHOP" id="shop-door" onClick={() => {load("shop")}} />
                 </div>
 
                 <div className="leave-door-container">
