@@ -15,6 +15,7 @@ import UIGoobertCard from "./components/ui-script";
 
 import SnakeGame from "./components/snake";
 import FlappyGoobert from "./components/flappy-goobert";
+import PipeGame from "./components/pipeGame";
 
 // How many of each type of asset exist
 const MAX_EYE_TYPES = 10;
@@ -36,7 +37,8 @@ export const rooms = {
 	dungeon: <Dungeon />,
 
 	snakeGame: <SnakeGame />,
-	flappyGoobert: <FlappyGoobert />
+	flappyGoobert: <FlappyGoobert />,
+	pipeGame: <PipeGame />
 
 }
 
