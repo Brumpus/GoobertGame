@@ -16,6 +16,7 @@ import UIGoobertCard from "./components/ui-script";
 
 import SnakeGame from "./components/snake";
 import FlappyGoobert from "./components/flappy-goobert";
+import PipeGame from "./components/pipeGame";
 import { BrowserRouter, useNavigate } from "react-router";
 import PageController from "./PageController";
 
@@ -34,6 +35,9 @@ export type Room = {
 export const rooms = {
 	menu: "",
 
+	snakeGame: <SnakeGame />,
+	flappyGoobert: <FlappyGoobert />,
+	pipeGame: <PipeGame />
 	hub: "/hub",
 	gameRoom: "/game-room",
 	shop: "/shop",

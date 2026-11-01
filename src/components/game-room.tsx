@@ -68,7 +68,7 @@ export default class GameRoom extends React.Component {
                             gameGoobert = gooberts[0] || null;
 
                             // Open Snake.
-                            load(rooms.snakeGame);
+                            load(rooms.pipeGame);
                         }}
                     >
                         <img
@@ -116,7 +116,15 @@ export default class GameRoom extends React.Component {
                         type="button"
                         className="machine-button"
                         onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => arcadeClickSound.play()}
+                        onClick={() => {
+                            arcadeClickSound.play();
+
+                            // Select the first Goobie for rewards.
+                            gameGoobert = gooberts[0] || null;
+
+                            // Open Flappy Goobert.
+                            load(rooms.pipeGame);
+                        }}
                     >
                         <img
                             src="images/game-room/pipelined-machine.png"
