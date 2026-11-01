@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
-import GoobertElement from "./Goobert";
 
 // How many of each type of asset exist
 const MAX_EYE_TYPES = 10;
@@ -21,7 +20,7 @@ interface GoobertContextType {
     updatePosition: (
         id: string,
         x: number,
-        y: number
+        y: number,
     ) => void;
 }
 

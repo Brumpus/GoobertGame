@@ -180,6 +180,7 @@ of each other.*/
     background-image: url(../images/ui/ui-x-button.png);
     background-position-x: 0px;
     image-rendering: crisp-edges;
+    cursor: pointer;
 }
 
 .icon { 
