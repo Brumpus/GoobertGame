@@ -1,28 +1,33 @@
-//import react somehow
-//make picture rotate on click
-//step 3 make game
 import React, { useState } from 'react';
+import "../games/pipe-game.css"
+import PipeObject from './PipeObject';
+import PipeRow from './PipeRow';
+import Pipe from './Pipe';
+
+const pipes = [
+  new Pipe("steve"),
+  new Pipe('david')
+];
 
 export default function PipeGame() {
-  const [rotation, setRotation] = useState<number>(0);
-
-  const handleRotate = () => {
-    setRotation((prevRotation) => (prevRotation + 90) % 360);
-  };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <img
-        className='img-fluid'
-        src='src\components\pipeGame.tsx'
-        alt="BRUH"
-        // style={{
-        //   transform: `rotate(${rotation}deg)`,
-        //   transition: 'transform 0.3s ease',
-        // }}
-      />
-      <div style={{ marginTop: '10px' }}>
-        <button onClick={handleRotate}>Rotate Image</button>
+    <div className='pipe-grid'>
+      <div className='row'>
+        <PipeRow pipes={[...pipes]} />
+        {/* <div className='pipe'>
+          <button onClick={handleRotate}>
+            <img
+              className="img-fluid"
+              src="images/games/testpipe.webp"
+              alt="BRUH"
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transition: 'transform 0.3s ease',
+              }}
+            />
+          </button>
+        </div> */}
       </div>
     </div>
   );
