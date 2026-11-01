@@ -17,6 +17,12 @@ const config = {
         path: path.resolve(__dirname, "dist"),
         clean: true
     },
+    devServer: {
+        static: "./dist",
+        historyApiFallback: {
+            index: "/index.html"
+        }
+    },
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"]
     },

@@ -34,6 +34,7 @@ export default function UIGoobertCard({goobert, onUiClose}: UIProps): React.JSX.
             <img id="card-frame-back" src="images/goobert-parts/Transparent-BG.png" />
             <GoobertElement
                 {...goobert}
+                isUi={true}
                 x={11} 
                 y={11} 
                 className="goobert-container icon"

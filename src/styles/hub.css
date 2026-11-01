@@ -57,14 +57,7 @@ img {
 
     display: grid;
     z-index: 2;
-
-    /* Remove image drag */
-    -khtml-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
-    user-drag: none;
-    user-select: none;
-    -webkit-user-drag: none;
+    cursor: pointer;
 }
 
 /* Layers Goobert's body parts */
@@ -97,6 +90,7 @@ img {
     bottom: 50px;
     transform: translateX(-50%);
     z-index: 2;
+    pointer-events: none;
 }
 
 /* Displays tree as pixelated */
@@ -106,6 +100,7 @@ img {
     height: auto;
     bottom: 0;
     image-rendering: pixelated;
+    pointer-events: none;
 }
 
 /* ==== CUSTOM TREE AREA ==== */
@@ -120,6 +115,7 @@ img {
     top: 35%;
     left: 15%;
     cursor: pointer;
+    pointer-events: all;
 }
 
 #tree-legs-area {
@@ -129,6 +125,7 @@ img {
     top: 35%;
     left: 65%;
     cursor: pointer;
+    pointer-events: all;
 }
 
 #tree-mouth-area {
@@ -138,6 +135,7 @@ img {
     top: 65%;
     left: 20%;
     cursor: pointer;
+    pointer-events: all;
 }
 
 #tree-eyes-area {
@@ -147,6 +145,7 @@ img {
     top: 20%;
     left: 40%;
     cursor: pointer;
+    pointer-events: all;
 }
 
 #tree-body-color {
@@ -156,6 +155,7 @@ img {
     top: 35%;
     left: 40%;
     cursor: pointer;
+    pointer-events: all;
 }
 
 #tree-legs-color {
@@ -165,6 +165,7 @@ img {
     top: 65%;
     left: 60%;
     cursor: pointer;
+    pointer-events: all;
 }
 
 /* ==== CUSTOMIZED CLICKABLE DOORS ====*/

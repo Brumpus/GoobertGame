@@ -6,13 +6,6 @@ import { load, rooms } from "../App";
 
 
 export default class Shop extends React.Component {
-    componentDidMount() {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '../shop-style.css';
-        
-        document.head.appendChild(link);
-    }
 
     render() {
         return(

@@ -16,7 +16,7 @@ export default class Bedroom extends React.Component {
                         onClick={() => alert('You found my secret easter egg!')}
                     >
                         <img className="img-fluid" 
-                            src="bedroom-images/BedroomLogo.webp" 
+                            src="../images/bedroom/BedroomLogo.webp" 
                             alt="BedRoom" 
                         />
                     </button>

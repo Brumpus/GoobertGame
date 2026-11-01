@@ -3,9 +3,9 @@
 import React from "react";
 import { arcadeClickSound, arcadeHoverSound, doorOpenSound } from "./audio";
 import { gooberts, load, rooms } from "../App";
-import type { Goobert } from "../Goobert";
 import "../styles/game-room.css";
 import { initFlappyGoobert } from "../games/flappy-goobert";
+import type { Goobert } from "../Goobert";
 
 /*
  * Game Room
