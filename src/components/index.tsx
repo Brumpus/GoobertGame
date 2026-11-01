@@ -3,8 +3,7 @@ import "../styles/index.css";
 import React, { useState } from "react";
 import { indexClickSound, indexHoverSound } from "./audio";
 import Credits from "./credits";
-import { createRoot } from "react-dom/client";
-
+import { load, rooms } from "../App";
 
 /*
  * Goobies Main Menu
@@ -49,27 +48,26 @@ export default function MainMenu(): React.JSX.Element {
                     {/* Save system will be connected later. */}
                     <div className="row justify-content-center my-3">
                         <div className="col-10 col-md-6 col-lg-3">
-                            <button
-                                type="button"
+                            <button 
                                 className="btn btn-continue menu-button w-100"
                                 onMouseEnter={() => indexHoverSound.play()}
                                 onClick={() => indexClickSound.play()}
                             >
                                 Continue Game
                             </button>
+                                
                         </div>
                     </div>
 
                     {/* New Game opens the Hub. */}
                     <div className="row justify-content-center my-3">
                         <div className="col-10 col-md-6 col-lg-3">
-                            <button
-                                type="button"
+                            <button 
                                 className="btn btn-new-game menu-button w-100"
                                 onMouseEnter={() => indexHoverSound.play()}
                                 onClick={() => {
                                     indexClickSound.play();
-                                    window.location.href = "hub.html";
+                                    load(rooms.hub);
                                 }}
                             >
                                 New Game
@@ -96,7 +94,3 @@ export default function MainMenu(): React.JSX.Element {
         </main>
     );
 }
-
-createRoot(document.getElementById('content')!).render(
-    <MainMenu />
-);

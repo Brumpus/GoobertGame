@@ -13,7 +13,7 @@
     "type": "module",
     "scripts": {
         "build": "webpack --config-node-env production",
-        "build-dev": "webpack"
+        "build-dev": "webpack serve"
     },
     "devDependencies": {
         "@types/howler": "^2.2.13",
@@ -22,15 +22,17 @@
         "copy-webpack-plugin": "^14.0.0",
         "css-loader": "^7.1.5",
         "html-webpack-plugin": "^5.6.8",
-        "react": "^19.3.0",
+        "react": "^19.3.1",
         "react-dom": "^19.3.0",
         "style-loader": "^4.0.0",
         "ts-loader": "^9.6.2",
         "typescript": "^5.9.3",
         "webpack": "^5.112.0",
-        "webpack-cli": "^7.2.3"
+        "webpack-cli": "^7.2.3",
+        "webpack-dev-server": "^6.1.0"
     },
     "dependencies": {
-        "howler": "^2.2.4"
+        "howler": "^2.2.4",
+        "react-router": "^8.5.1"
     }
 }

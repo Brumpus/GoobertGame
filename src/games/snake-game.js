@@ -203,7 +203,7 @@ function eatApple() {
     updateImage(newSquare);
 
     if(gameGoobert) {
-        gameGoobert.fullness = Math.min(gameGoobert.fullness + 5, 100); // Wash goobert
+        gameGoobert.fullness = Math.min(gameGoobert.fullness + 5, 100); // feed goobert
         // Update slider position
         document.getElementById('goobert-percentage').value = gameGoobert.fullness;
     }

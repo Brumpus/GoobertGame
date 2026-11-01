@@ -13,15 +13,22 @@
 
 
 .info-card {
-    top: 0px;
-    left: 0px;
+    display: grid;
+    position: absolute;
+    z-index: 2;
+}
+/* Align items on top of one another */
+.info-card > * {
+    position: relative;
+    grid-row: 1;
+    grid-column: 1;
 }
 
 #card-frame-back, #card-frame-front {
     background-image: url(../images/ui/ui-frame.png);
     position: absolute;
-    top: inherit;
-    left: inherit;
+    top: 0;
+    left: 0;
     width: 84px;
     height: 168px;
     image-rendering: crisp-edges;
@@ -97,14 +104,9 @@ of each other.*/
    inherit this.
    ----------------------------------- */
 
-.ui-statbar-container {
-    top: 83px;
-    left: 26px;
-}
-
 #ui-statbar-fullness, #ui-statbar-awakeness, #ui-statbar-swagosity, #ui-statbar-cleanliness {
     position: absolute;
-    left: inherit;
+    left: 1.65em;
     width: 46px;
     height: 11px;
     background-image: url(../images/ui/ui-bars.png);
@@ -112,7 +114,7 @@ of each other.*/
 }
 
 #ui-statbar-fullness {
-    top: inherit;
+    top: 5.2em;
     background-position-x: 0px;
 }
 #ui-statbar-awakeness {
@@ -125,7 +127,7 @@ of each other.*/
 }
 #ui-statbar-cleanliness {
     top: 140px;
-    background-image: url(../images/goobert-parts/Transparent-BG.png);
+    background-position-x: -138px;
 }
 
 /* ----------------------------------------
@@ -142,14 +144,9 @@ of each other.*/
    -22px is a flexing arm
    ---------------------------------------- */
 
-.ui-icon-container {
-    top: 83px;
-    left: 9px;
-}
-
 #ui-icon-fullness, #ui-icon-awakeness, #ui-icon-swagosity, #ui-icon-cleanliness {
     position: absolute;
-    left: inherit;
+    left: 0.55em;
     width: 11px;
     height: 11px;
     background-image: url(../images/ui/UI-Icons.png);
@@ -158,6 +155,7 @@ of each other.*/
 
 #ui-icon-fullness {
     top: inherit;
+    top: 82px;
     background-position-x: 0px;
 }
 #ui-icon-awakeness {
@@ -175,8 +173,8 @@ of each other.*/
 
 #ui-card-xbutton {
     position: absolute;
-    top: inherit;
-    left: inherit;
+    left: 0;
+    top: 0;
     width: 15px;
     height: 15px;
     background-image: url(../images/ui/ui-x-button.png);

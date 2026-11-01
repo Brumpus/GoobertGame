@@ -96,11 +96,7 @@ export default function Hub(props: any): React.JSX.Element {
                 // Play the opening sound and enter
                 onClick={() => {
                     doorOpenSound.play();
-                    
-                    // Give the sound time to play before leaving the page.
-                    setTimeout(() => {
-                        window.location.href = "index.html";
-                    }, 500);
+                    load(rooms.menu);
                 }} />   
             </div>
 

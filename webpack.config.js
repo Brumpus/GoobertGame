@@ -17,6 +17,12 @@ const config = {
         path: path.resolve(__dirname, "dist"),
         clean: true
     },
+    devServer: {
+        static: "./dist",
+        historyApiFallback: {
+            index: "/index.html"
+        }
+    },
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
@@ -42,13 +48,13 @@ const config = {
                 {from: "./src/audio", to: "audio"},
                 // {from: "./src/css", to: "css"},  // no longer needed after css/style loaders added
                 {from: "./src/bootstrap", to: "bootstrap"},
-                {from: "./src/icons-1.13.1", to: "icons-1.13.1"},
+                {from: "./src/icons-1.13.1/font", to: "icons-1.13.1/font"},
                 { from: "./src/react", to: "react" },
             ]
         }),
         new HtmlWebpackPlugin({
-            template: "./src/hub.html",
-            filename: "hub.html",
+            template: "./src/index.html",
+            filename: "index.html",
             
         })
     ]
@@ -65,8 +71,8 @@ if (production) {
             ]
         }),
         new HtmlWebpackPlugin({
-            template: "./src/hub.html",
-            filename: "hub.html"
+            template: "./src/index.html",
+            filename: "index.html"
         })
     ];
 }

@@ -5,6 +5,7 @@ import { refreshGameBody, setBodySize, stopGame, body, width, height } from "../
 import { load, rooms } from "../App";
 import { initSnakeGame, setSnakeVelocity } from "../games/snake-game";
 import "../games/snake-stylesheet.css";
+import "../icons-1.13.1/font/bootstrap-icons.min.css";
 
 /*
 Main React component for the Snake minigame.
@@ -13,9 +14,7 @@ displaying controls, and returning to Game Room.
 */
 export default function SnakeGame(): React.JSX.Element {
 
-    let [scriptsReady, setScriptsReady] = useState(false);
     let [selectedDifficulty, setSelectedDifficulty] = useState("none");
-    let [fullness, setFullness] = useState(gameGoobert ? gameGoobert.fullness : 0)
 
     /*
     React calls this method when the player leaves Snake.

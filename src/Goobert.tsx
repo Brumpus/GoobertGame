@@ -6,7 +6,7 @@ const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
 const EYES_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-eyes.png';
 const MOUTH_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-mouths.png';
 type GoobertProps = {
-    room: any,
+    room: string,
     name: any,
     x: string,
     y: string,
