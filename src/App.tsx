@@ -8,17 +8,8 @@ import GoobertElement, { type Goobert } from "./Goobert";
 
 import UIGoobertCard from "./components/ui-script";
 
-import SnakeGame from "./components/snake";
-import FlappyGoobert from "./components/flappy-goobert";
 import { BrowserRouter, useNavigate } from "react-router";
 import PageController from "./PageController";
-
-// How many of each type of asset exist
-const MAX_EYE_TYPES = 10;
-const MAX_BODY_TYPES = 7;
-const MAX_LEG_TYPES = 7;
-const MAX_MOUTH_TYPES = 11;
-const MAX_COLORS = 7;
 
 export let gooberts: Goobert[] = [];
 
@@ -62,20 +53,20 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 		setRoom(url); // Let gooberts know which room they're on
 	}
 
-	useEffect(() => {
-		// Define the load function to create a goobert and re-render the page
-		renderGoobert = (goobert: Goobert) => {
-			setGoobertList([...goobertList, goobert]);
-			gooberts = goobertList; // Make gooberts public globally
-			(window as any).gooberts = gooberts;
-		}
+	// useEffect(() => {
+	// 	// Define the load function to create a goobert and re-render the page
+	// 	renderGoobert = (goobert: Goobert) => {
+	// 		setGoobertList([...goobertList, goobert]);
+	// 		gooberts = goobertList; // Make gooberts public globally
+	// 		(window as any).gooberts = gooberts;
+	// 	}
 
-		// Allow developer to create a goobert from console
-		(window as any).createGoobert = (
-			name: string,
-			room = rooms.hub
-		) => renderGoobert(createGoobert(name, room));
-	});
+	// 	// Allow developer to create a goobert from console
+	// 	(window as any).createGoobert = (
+	// 		name: string,
+	// 		room = rooms.hub
+	// 	) => createGoobert(name, room);
+	// });
 
 
 	return (
@@ -135,50 +126,6 @@ init();
 // Implemented by TopElement, loads a room defined within the rooms variable
 type Load = ((component: string) => void);
 export let load: Load;
-
-export function createGoobert(
-	name: string,
-	location = rooms.hub,
-	x = (Math.random() * (window.innerWidth - 64) /* goobert width */),
-	y = ((Math.random() * (window.innerHeight - 550 - 64) /* goobert height */)) + 550
-) {
-	return (
-		{
-			name: name,
-			x: x,
-			y: y,
-			room: location,
-			id: name + (gooberts.length + 1),
-
-			fullness: 0, // Eating, catch the food game
-			swagosity: 50, // Boredom, Snake
-			awakeness: 50, // Sleeping
-			cleanliness: 50, // Bathing, Flappy Goobert
-
-			bodyType: Math.floor(Math.random() * MAX_BODY_TYPES),
-			bodyColor: Math.floor(Math.random() * MAX_COLORS),
-			legType: Math.floor(Math.random() * MAX_LEG_TYPES),
-			legColor: Math.floor(Math.random() * MAX_COLORS),
-			eyeType: Math.floor(Math.random() * MAX_EYE_TYPES),
-			mouthType: Math.floor(Math.random() * MAX_MOUTH_TYPES),
-			eyeExpression: 0,
-			mouthExpression: 0,
-
-			eat(amt = 10) { this.fullness += amt },
-			sleep() { this.awakeness = 100 },
-			entertain(quality: number) { this.swagosity += quality },
-			bathe(amt: number) { this.cleanliness += amt },
-
-			onGoobertSelected: (goobert: Goobert) => {
-				// Setup by TopElement
-			}
-		}
-	);
-}
-// Defined within TopElement, takes a goobert and adds it to the list 
-// used to render TopElement gooberts
-type RenderGoobert = ((goobert: Goobert) => void);
-export let renderGoobert: Function;
 
 // Make variables accessible to console
 (window as any).rooms = rooms;

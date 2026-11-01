@@ -1,11 +1,11 @@
 'use strict';
-import React, { useState, type MouseEvent as RMouseEvent } from "react";
+import React, { useState, type PointerEvent, type MouseEvent as RMouseEvent } from "react";
 
 const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
 const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
 const EYES_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-eyes.png';
 const MOUTH_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-mouths.png';
-type GoobertProps = {
+export type GoobertProps = {
     room: any,
     name: any,
     x: number,
@@ -74,8 +74,10 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     
     
     /* Will trigger only for a particular instance of a goobert when the sprite is clicked */
-    let handleMouseStart = (mouse: RMouseEvent) => {
+    let handleMouseStart = (mouse: PointerEvent) => {
         if(props.isUi) return; // ui gooberts can't move
+
+        mouse.currentTarget.setPointerCapture(mouse.pointerId);
 
         // Update positions to be within game screen
         if(x > window.innerWidth) {
@@ -92,19 +94,17 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 mouseDY:  mouse.clientY - y
             }
         );
-        console.log(startPos.mouseDX, startPos.mouseDY)
         setIsDragged(true);
-
-        window.addEventListener("mousemove", handleMouseOver);
-        window.addEventListener("mouseup", handleMouseEnd);
     }
     // Drags gooberts as the mouse moves
-    let handleMouseOver = (mouse: MouseEvent) => {
+    let handleMouseOver = (mouse: PointerEvent) => {
+        if(!isDragged) return; // Don't drag gooberts that have not been clicked on
+
         setX(mouse.clientX - startPos.mouseDX);
         setY(mouse.clientY - startPos.mouseDY);
     }
     // Stop goobert from being dragged and open ui card if not dragged
-    let handleMouseEnd = (mouse: MouseEvent) => {
+    let handleMouseEnd = (mouse: PointerEvent) => {
         mouse.preventDefault();
 
         if(x == startPos.x && y == startPos.y) {
@@ -112,8 +112,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             click(props.name);
         }
         
-        window.removeEventListener("mousemove", handleMouseOver);
-        window.removeEventListener("mouseup", handleMouseEnd);
         setIsDragged(false);
     }
 
@@ -123,9 +121,13 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     }
     return (
         <div className="goobert-container" 
-            onMouseDown={(mouse: RMouseEvent<HTMLDivElement>) => handleMouseStart(mouse)} 
+            onPointerDown={handleMouseStart}
+            onPointerMove={handleMouseOver}
+            onPointerUp={handleMouseEnd}
+
             // Mouseover and mousend handled on the window level because if the mouse is moving quickly,
             // it may leave the goobert div before onmouseover is caled.
+
             style={{left: `${x}px`, top: `${y}px`}}
         >
             <img src={LEG_SPRITE_SHEET} draggable={false} style={{
