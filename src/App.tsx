@@ -10,8 +10,7 @@ import UIGoobertCard from "./components/ui-script";
 
 import { BrowserRouter, useNavigate } from "react-router";
 import PageController from "./PageController";
-
-export let gooberts: Goobert[] = [];
+import useGooberts, { GoobertProvider } from "./GoobertContext";
 
 export type Room = {
 	room: React.JSX.Element
@@ -36,11 +35,9 @@ type TopElementProps = {
 	uiGoobert?: Goobert
 }
 const TopElement = (props: TopElementProps): React.JSX.Element => {
+	let gooberts = useGooberts().gooberts;
 	const [room, setRoom] = useState(props.room);
 	const [uiGoobert, setUiGoobert] = useState(props.uiGoobert);
-	const [goobertList, setGoobertList] = useState(gooberts);
-
-	gooberts = goobertList;
 
 	const handleUiCloseButton = () => {
 		setUiGoobert(undefined);
@@ -53,22 +50,6 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 		setRoom(url); // Let gooberts know which room they're on
 	}
 
-	// useEffect(() => {
-	// 	// Define the load function to create a goobert and re-render the page
-	// 	renderGoobert = (goobert: Goobert) => {
-	// 		setGoobertList([...goobertList, goobert]);
-	// 		gooberts = goobertList; // Make gooberts public globally
-	// 		(window as any).gooberts = gooberts;
-	// 	}
-
-	// 	// Allow developer to create a goobert from console
-	// 	(window as any).createGoobert = (
-	// 		name: string,
-	// 		room = rooms.hub
-	// 	) => createGoobert(name, room);
-	// });
-
-
 	return (
 		<>
 			{/* Display the currently selected room (Hub, Bedroom, etc...) */}
@@ -77,7 +58,7 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 			<div id="gooberts">
 				{
 					// Filter gooberts to only display the ones on the current room
-					goobertList.filter((goobert, i) => {
+					gooberts.filter((goobert, i) => {
 						return goobert.room === room
 					}).map((goobert, i) => {
 						// Create a goobert for each object stored in this room
@@ -89,7 +70,7 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 								isUi={false}
 								onGoobertSelected={
 									() => {
-										setUiGoobert(goobert);
+										setUiGoobert(goobert as unknown as Goobert);
 									}
 								}
 							/>
@@ -114,9 +95,11 @@ const root = createRoot(
 function init() {
 	topElement = React.createRef();
 	root.render(
-		<BrowserRouter>
-			<TopElement room={new URL(window.location.href).pathname} />
-		</BrowserRouter>
+		<GoobertProvider>
+			<BrowserRouter>
+				<TopElement room={new URL(window.location.href).pathname} />
+			</BrowserRouter>
+		</GoobertProvider>
 	);
 }
 

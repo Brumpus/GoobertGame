@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import type { Goobert, GoobertProps } from "./Goobert";
+import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import GoobertElement from "./Goobert";
 
@@ -11,12 +11,17 @@ const MAX_MOUTH_TYPES = 11;
 const MAX_COLORS = 7;
 
 interface GoobertContextType {
-    gooberts: GoobertProps[];
+    gooberts: Goobert[];
     createGoobert: (
         name: string,
         location?: string,
         x?: number,
         y?: number
+    ) => void;
+    updatePosition: (
+        id: string,
+        x: number,
+        y: number
     ) => void;
 }
 
@@ -24,8 +29,8 @@ const GoobertContext = createContext<GoobertContextType | null>(null);
 
 
 export function GoobertProvider({ children }: any) {
-    const [gooberts, setGooberts] = useState<GoobertProps[]>([]);
-
+    const [gooberts, setGooberts] = useState<Goobert[]>([]);
+    (window as any).gooberts = gooberts;
 
     const createGoobert = (
         name: string,
@@ -34,11 +39,27 @@ export function GoobertProvider({ children }: any) {
         y?: number
     ) => {
         const goobert = renderGoobert(name, location, x, y);
+        goobert.id = name + gooberts.length;
 
         setGooberts(prev => [...prev, goobert]);
     };
+    (window as any).createGoobert = createGoobert;
+
+    const updatePosition = (id: string, x: number, y: number) => {
+        let newArray = [...gooberts];
+        // Update goobert position
+        for(let goobert of newArray) {
+            if(goobert.id == id) {
+                goobert.x = x;
+                goobert.y = y;
+            }
+        }
+        // Update gooberts array with new position
+        setGooberts(newArray);
+    }
+
     return (
-        <GoobertContext.Provider value={{gooberts, createGoobert}}>
+        <GoobertContext.Provider value={{gooberts, createGoobert, updatePosition}}>
             {children}
         </GoobertContext.Provider>
     )
