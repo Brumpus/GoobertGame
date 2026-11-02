@@ -4,7 +4,6 @@ import React from "react";
 import { arcadeClickSound, arcadeHoverSound, doorOpenSound } from "./audio";
 import { load, rooms } from "../App";
 import "../styles/game-room.css";
-import { initFlappyGoobert } from "../games/flappy-goobert";
 import type { Goobert } from "../Goobert";
 import useGooberts from "../GoobertContext";
 
@@ -20,28 +19,27 @@ import useGooberts from "../GoobertContext";
 export let gameGoobert: Goobert | null = null;
 
 export default function GameRoom() {
-    let gooberts = useGooberts().gooberts;
+    let { gooberts, doorRefs } = useGooberts();
 
     return (
         <main id="main" className="game-room">
 
-            {/* Return to the Hub */}
-            <div className="game-room-controls">
-                <button
-                    type="button"
-                    className="btn game-room-exit"
+            {/* EXIT TO HUB */}
+            <div className="exit-controls" ref={doorRefs.gameRoomHub}>
+                <button 
+                    className="exit-button" 
+                    // Play the door click sound before returning to the Hub.
                     onClick={() => {
                         doorOpenSound.play();
                         load(rooms.hub);
-                    }}
-                >
-                    <img
-                        className="game-room-exit-icon"
+                    }}>
+
+                    <img 
+                        className="exit-icon" 
                         src="images/pixelarticons/arrow-left.svg"
-                        alt=""
-                        aria-hidden="true"
+                        aria-hidden="true" 
                     />
-                    <span>Back to hub</span>
+                    <span>BACK TO HUB</span>
                 </button>
             </div>
 

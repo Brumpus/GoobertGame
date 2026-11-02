@@ -186,3 +186,29 @@ of each other.*/
 .icon { 
     position: relative;
 }
+
+/* EXIT TO HUB */
+.exit-controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 4;
+}
+
+.exit-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background-color: #ffd43b;
+    color: black;
+    border: 3px solid black;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.exit-button:hover {
+    background-color: #ffd53b;
+}

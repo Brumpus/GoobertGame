@@ -1,6 +1,7 @@
 'use strict';
-import React, { useState, type PointerEvent, type MouseEvent as RMouseEvent } from "react";
+import React, { useState, type PointerEvent, type Ref, type RefObject, type MouseEvent as RMouseEvent } from "react";
 import useGooberts from "./GoobertContext";
+import { rooms } from "./App";
 
 const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
 const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
@@ -23,8 +24,9 @@ type GoobertProps = {
     mouthExpression: number,
     eyeExpression: number,
     
-    className: string,
-    onGoobertSelected: Function
+    onGoobertSelected: Function,
+    className?: string,
+    ref?: Ref<HTMLElement>
 }
 export type Goobert = {
     name: string, 
@@ -60,7 +62,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let [x, setX] = useState(props.x);
     let [y, setY] = useState(props.y);
     let [isDragged, setIsDragged] = useState(false);
-    const { updatePosition } = useGooberts();
+    const { updatePosition, updateRoom, doorRefs } = useGooberts();
 
     
     // Used for identifying mouse movement on goobert click
@@ -114,6 +116,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         if(x == startPos.x && y == startPos.y) {
             // Did not move goobert; interpret as click
             click(props.name);
+        } else {
+            checkNewRoom();
         }
         
         setIsDragged(false);
@@ -122,6 +126,43 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let click = (name: string) => {
         console.log(`${name} says, "I've been poked!"`);
         props.onGoobertSelected();
+    }
+
+    function checkNewRoom() {
+        // Check intersection with doors
+        const keys = Object.keys(doorRefs) as (keyof typeof doorRefs)[];
+
+        for (let i = 0; i < keys.length; i++) {
+            let keyString = keys[i];
+            if(keyString == undefined) continue;
+            let ref: RefObject<HTMLImageElement | HTMLDivElement | null> = doorRefs[keyString];
+            
+            let boundingRect = ref.current?.getBoundingClientRect();
+            if(boundingRect && 
+                x < boundingRect.right &&
+                x + 64 > boundingRect.left &&
+                y < boundingRect.bottom &&
+                y + 64 > boundingRect.top
+            ) {
+                // Convert string to room key
+                let roomString = (keys as (keyof typeof rooms)[])[i];
+                if(roomString == undefined) continue;
+                
+                // If going to hub, convert to correct room
+                if(roomString.includes("Hub")) roomString = "hub";
+                updateRoom(props.id, rooms[roomString]);
+
+                // Randomize position
+                updatePosition(
+                    props.id,
+                    (Math.random() * (window.innerWidth - 64) /* world width */),
+                    ((Math.random() * (window.innerHeight - 550 - 64) /* world height */)) + 550
+                );
+
+                break; // No need to finish as doors do not overlap
+            }
+            
+        }
     }
     return (
         <div className="goobert-container" 

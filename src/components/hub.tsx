@@ -3,13 +3,14 @@ import React from "react";
 import { load, rooms } from "../App";
 import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound } from "./audio";
 import "../styles/hub.css";
+import useGooberts from "../GoobertContext";
 
 
 /* 
 Displays the test Goobert in the Hub.
 The different body parts are displayed using separate image elements.
 */
-export const TestGoobert = (props: any) => {
+const TestGoobert = (props: any) => {
     return (
         <div className="goobert-container" style={{scale: "3 3", left: "17em", top: "36em"}}>
             <img id="goobert-legs" src="images/goobert-parts/Transparent-BG.png"/>
@@ -24,6 +25,9 @@ Main Hub component where the player can customize Gooberts
 and navigate to different rooms.
 */
 export default function Hub(props: any): React.JSX.Element {
+    let { doorRefs } = useGooberts();
+
+
     return (
         <main id="main" className="hub">
 
@@ -52,6 +56,8 @@ export default function Hub(props: any): React.JSX.Element {
             <div className="sleep-door-container">
                 <img src="images/hub/DreamDoor.webp" alt="BEDROOM" id="sleep-door"
                 
+                ref={doorRefs.bedroom}
+                
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
                 // Play the opening sound and enter
@@ -64,6 +70,8 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Game Room door */}
             <div className="game-door-container">
                 <img src="images/hub/game-door.png" alt="GAME" id="game-door"
+
+                ref={doorRefs.gameRoom}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
@@ -77,6 +85,8 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Shop door */}
             <div className="shop-door-container">
                 <img src="images/hub/shop-door.png" alt="SHOP" id="shop-door"
+
+                ref={doorRefs.shop}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
@@ -90,6 +100,8 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Return to main menu door */}
             <div className="leave-door-container">
                 <img src="images/hub/leave-door.png" alt="LEAVE" id="leave-door"
+
+                ref={doorRefs.menu}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
@@ -103,6 +115,8 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Dungeon door */}
             <div className="dungeon-door-container">
                 <img src="images/doors/DungeonDoor.webp" alt="THE DUNGEON" id="dungeon-door" 
+
+                ref={doorRefs.dungeon}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => dungeonHoverSound.play()}

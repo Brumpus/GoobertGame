@@ -1,7 +1,7 @@
 "use strict";
 import "./styles/ui.css";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from 'react-dom/client';
 
 import GoobertElement, { type Goobert } from "./Goobert";
@@ -64,7 +64,6 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 						// Create a goobert for each object stored in this room
 						return (
 							<GoobertElement
-								className=""
 								key={goobert.id}
 								{...goobert}
 								isUi={false}
