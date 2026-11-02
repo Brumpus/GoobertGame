@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState, type RefObject } from "react";
+import React, { createContext, useContext, useRef, useState, type RefObject } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 

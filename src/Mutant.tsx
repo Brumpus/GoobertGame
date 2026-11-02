@@ -1,6 +1,5 @@
 
-import React, { useState } from "react";
-import type { Goobert } from "./App";
+import React from "react";
 
 const SLEEP_MUTANT_ASSET = 'images/goobert-parts/mutant-tired.gif';
 const DIRTY_MUTANT_ASSET = 'images/goobert-parts/mutant-dirty.gif';

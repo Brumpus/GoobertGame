@@ -1,7 +1,6 @@
 "use strict";
 import React, { useState, type MouseEventHandler, type PointerEvent } from "react";
-import GoobertElement from "../Goobert";
-import type { Goobert } from "../App";
+import GoobertElement, { type Goobert } from "../Goobert";
 
 /* TODO: 
  - change the goobert to match the appearance of the clicked goobert
