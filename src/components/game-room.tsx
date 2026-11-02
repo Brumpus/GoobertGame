@@ -64,8 +64,10 @@ export default function GameRoom() {
                     onClick={() => {
                         arcadeClickSound.play();
 
-                        // Load flappy goobert if no gooberts are available for selection
-                        if(gooberts.filter((goobert) => goobert.room == rooms.gameRoom).length == 0) {
+                        // Load snake if no gooberts are available for selection
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
                             load(rooms.snakeGame);
                         } else {
                             // Select the Goobert for rewards.
@@ -91,7 +93,9 @@ export default function GameRoom() {
                         arcadeClickSound.play();
 
                         // Load flappy goobert if no gooberts are available for selection
-                        if(gooberts.filter((goobert) => goobert.room == rooms.gameRoom).length == 0) {
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
                             load(rooms.flappyGoobert);
                         } else {
                             // Select the Goobert for rewards.
@@ -115,11 +119,16 @@ export default function GameRoom() {
                     onClick={() => {
                         arcadeClickSound.play();
 
-                        // Select the first Goobie for rewards.
-                        gameGoobert = gooberts[0] || null;
-
-                        // Open Frogoobert.
-                        load(rooms.frogoobert);
+                       // Load flappy goobert if no gooberts are available for selection
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
+                            load(rooms.frogoobert);
+                        } else {
+                            // Select the Goobert for rewards.
+                            setGameSelector("Frogoobert");
+                            setGoobertSelector(rooms.frogoobert);
+                        }
                     }}
                 >
                     <img
@@ -192,9 +201,9 @@ function GoobertList(props: ListProps) {
                                 gameGoobert = goobert;
                                 load(props.room);
                             }}
+                            key={"game-" + goobert.id}
                         >
                             <GoobertElement
-                                key={"game-" + goobert.id}
                                 {...goobert}
                                 isUi={true}
                                 x={0}
