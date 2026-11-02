@@ -40,11 +40,6 @@ export default function GameRoom() {
                         load(rooms.hub);
                     }}>
 
-                    <img 
-                        className="exit-icon" 
-                        src="images/pixelarticons/arrow-left.svg"
-                        aria-hidden="true" 
-                    />
                     <span>BACK TO HUB</span>
                 </button>
             </div>
@@ -112,16 +107,24 @@ export default function GameRoom() {
                     />
                 </button>
 
-                {/* Frogoobert - Coming Soon */}
+                {/* Frogoobert */}
                 <button
                     type="button"
                     className="machine-button"
                     onMouseEnter={() => arcadeHoverSound.play()}
-                    onClick={() => arcadeClickSound.play()}
+                    onClick={() => {
+                        arcadeClickSound.play();
+
+                        // Select the first Goobie for rewards.
+                        gameGoobert = gooberts[0] || null;
+
+                        // Open Frogoobert.
+                        load(rooms.frogoobert);
+                    }}
                 >
                     <img
                         src="images/game-room/frogoobert-machine.png"
-                        alt="Frogoobert - Coming Soon"
+                        alt="Play Frogoobert"
                     />
                 </button>
 

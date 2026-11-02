@@ -20,12 +20,7 @@ export default function Shop() {
                         doorOpenSound.play();
                         load(rooms.hub);
                     }}>
-
-                    <img 
-                        className="exit-icon" 
-                        src="images/pixelarticons/arrow-left.svg"
-                        aria-hidden="true" 
-                    />
+                        
                     <span>BACK TO HUB</span>
                 </button>
             </div>

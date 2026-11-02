@@ -1,8 +1,9 @@
 
 "use strict";
 import React, { useEffect, useState } from "react";
+import useGooberts from "../GoobertContext";
 import { stopGame } from "../games/games-global";
-import { initFlappyGoobert, jump } from "../games/flappy-goobert";
+import { initFlappyGoobert, jump, setCleanlinessReward } from "../games/flappy-goobert";
 import { load, rooms } from "../App";
 import { gameGoobert } from "./game-room";
 import "../games/flappy-goobert.css";
@@ -15,18 +16,38 @@ export let gameOver: boolean;
  * Displays the game, tracks when the game ends,
  * and allows the player to restart or leave.
  */
-export default function FlappyGoobert(): React.JSX.Element {
-    let [showPlayAgain, setShowPlayAgain] = useState(false); 
+    export default function FlappyGoobert(): React.JSX.Element {
+        let [showPlayAgain, setShowPlayAgain] = useState(false); 
 
-    useEffect(() => {
-        if (!showPlayAgain) {
-            initFlappyGoobert();
-        }
-    }, [showPlayAgain]);
+        // Access the latest Goobie data from React context.
+        const { gooberts, updateStat } = useGooberts();
+
+        // Find the Goobie currently playing Flappy Goobert.
+        const currentGoobie = gooberts.find(
+            goobert => goobert.id === gameGoobert?.id
+        );
+
+        // Connect Flappy Goobert's rewards to React context.
+        useEffect(() => {
+            setCleanlinessReward((amount: number) => {
+                if (gameGoobert) {
+                    updateStat(gameGoobert.id, "cleanliness", amount);
+                }
+            });
+
+            // Disconnect when leaving the game.
+            return () => setCleanlinessReward(null);
+        }, [updateStat]);
+
+        useEffect(() => {
+            if (!showPlayAgain) {
+                initFlappyGoobert();
+            }
+        }, [showPlayAgain]);
 
 
-    setPlayAgain = setShowPlayAgain;
-    gameOver = showPlayAgain;
+        setPlayAgain = setShowPlayAgain;
+        gameOver = showPlayAgain;
 
 
     /*
@@ -104,7 +125,7 @@ export default function FlappyGoobert(): React.JSX.Element {
             <div id="flappy-score" className="flappy-score">Score: 0</div>
 
             {/* Display Cleanliness when a Goobert is selected.  */}
-            {gameGoobert &&
+            {currentGoobie &&
                 <div className="cleanliness-label">
                     <label
                         htmlFor="goobert-percentage"
@@ -117,7 +138,7 @@ export default function FlappyGoobert(): React.JSX.Element {
                         type="range"
                         min={0}
                         max={100}
-                        value={gameGoobert.cleanliness}
+                        value={currentGoobie.cleanliness}
                         id="goobert-percentage"
                         key={"FlappyGoobertCleanliness"}
                         readOnly
