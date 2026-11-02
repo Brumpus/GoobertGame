@@ -1,4 +1,5 @@
 .dungeon {
+    position: relative;
     overflow: hidden;
 }
 
@@ -17,4 +18,29 @@
 
 #escape{
     background-color: linear-gradient(rgba(255, 255, 255, 0.7), rgba(0, 0, 0, 0.0));
+}
+
+/* ==== MUTANT DISPLAY ==== */
+
+/*
+ * Keeps mutant sprites visible and prevents them
+ * from interfering with Dungeon interactions.
+ */
+.mutant-container {
+    scale: 2;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* ==== MOBILE MUTANTS ==== */
+
+@media (max-width: 768px) {
+
+    /*
+     * Reduces mutant sprite size on mobile devices
+     * so the four mutants have more room to fit.
+     */
+    .dungeon .mutant-container {
+        scale: 1;
+    }
 }
