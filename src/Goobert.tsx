@@ -72,7 +72,7 @@ export type Goobert = {
 };
 
 /*
- * Tracks the Goobie's current position while dragging.
+ * Tracks the Goobert's current position while dragging.
  * Refs store the latest position without waiting for React to rerender.
  * This helps prevent dragging from stopping or jumping unexpectedly.
  */
@@ -96,9 +96,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     const { updatePosition, updateRoom, doorRefs } = useGooberts();
 
     /*
-    * Synchronizes the Goobie's displayed position with GoobertContext.
+    * Synchronizes the Goobert's displayed position with GoobertContext.
     * This ensures external position updates are reflected on screen...
-    * including when a Goobie moves between rooms.
+    * including when a Goobert moves between rooms.
     */
     useEffect(() => {
         const nextPosition = {
@@ -111,7 +111,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     }, [props.x, props.y]);
 
     /*
-    * Converts the Goobie's position into viewport coordinates.
+    * Converts the Goobert's position into viewport coordinates.
     * Accounts for the Hub's position and scrolling so collision
     * detection works across desktop and mobile layouts.
     */
@@ -155,8 +155,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     };
 
     /*
-    * Prevents Goobies from occupying the same space as Hub doors.
-    * The tree is excluded so Goobies can walk in front of it.
+    * Prevents Gooberts from occupying the same space as Hub doors.
+    * The tree is excluded so Gooberts can walk in front of it.
     */
     const overlapsDoor = (x: number, y: number): boolean => {
         if (props.room !== rooms.hub) return false;
@@ -178,9 +178,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         });
     };
 
-    /*
-    * Updates the Goobie's position while enforcing movement boundaries.
-    * Keeps Goobies within the Hub, prevents door overlap, and restricts
+    /**
+    * Updates the Goobert's position while enforcing movement boundaries.
+    * Keeps Gooberts within the Hub, prevents door overlap, and restricts
     * desktop movement to the ground area
     * IMPORTANT:
     * Mobile uses different boundaries to support the responsive layout.
@@ -205,8 +205,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     };
 
     /*
-    * Updates the Goobie's position while enforcing movement boundaries.
-    * Keeps Goobies within the Hub, prevents door overlap, and restricts
+    * Updates the Goobert's position while enforcing movement boundaries.
+    * Keeps Gooberts within the Hub, prevents door overlap, and restricts
     * desktop movement to the ground area.
     *
     * Mobile uses different boundaries to support the responsive layout.
@@ -219,9 +219,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         if (props.room === rooms.hub && hub) {
             /*
-            * Adjusts Goobie movement boundaries for mobile screens.
+            * Adjusts Goobert movement boundaries for mobile screens.
             * Mobile uses the visible Hub height instead of its scrollable height
-            * to prevent Goobies from being dragged off-screen.
+            * to prevent Gooberts from being dragged off-screen.
             * Desktop keeps its original movement boundaries.
             */
             const isMobile = window.innerWidth <= 768;
@@ -238,11 +238,11 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             boundedX = Math.min(boundedX, maxX);
             boundedY = Math.min(boundedY, maxY);
 
-            // Keep Goobies on the ground on desktop.
+            // Keep Gooberts on the ground on desktop.
             // Mobile uses a different, responsive Hub layout.
             if (window.innerWidth > 768) {
                 boundedY = Math.max(
-                    Math.min(550, maxY),
+                    Math.min(0, maxY),
                     boundedY
                 );
             }
@@ -265,9 +265,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     };
 
     /*
-    * Starts dragging when the player presses a Goobie.
+    * Starts dragging when the player presses a Goobert.
     * Captures pointer events so dragging continues even when the
-    * pointer moves outside the Goobie's sprite.
+    * pointer moves outside the Goobert's sprite.
     */
     const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
         if (props.isUi) return;
@@ -300,6 +300,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         const deltaY = event.clientY - start.pointerY;
 
         if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+            // Prevent drags less than 3px from moving goobert
             movedRef.current = true;
         }
 
@@ -312,9 +313,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     };
 
     /*
-    * Ends dragging when the player releases the Goobie.
-    * A normal click opens the Goobie's interaction UI.
-    * If dragged near a door, the Goobie transfers to that room.
+    * Ends dragging when the player releases the Goobert.
+    * A normal click opens the Goobert's interaction UI.
+    * If dragged near a door, the Goobert transfers to that room.
     */
     const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
         if (!draggingRef.current) return;
@@ -331,11 +332,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             return;
         }
 
-        // Transfer the Goobie if released near a door.
+        // Transfer the Goobert if released near a door.
         const doorKey = findNearbyDoor(
             positionRef.current.x,
             positionRef.current.y
         );
+        console.log(doorKey)
 
         if (!doorKey) return;
 
@@ -345,19 +347,20 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             roomKey = "hub";
         }
 
-        const destination = rooms[roomKey as keyof typeof rooms];
+        const destination = roomKey as keyof typeof rooms;
 
         if (!destination) return;
 
-        updateRoom(props.id, destination);
+        updateRoom(props.id, rooms[destination]);
 
 
-        // Spawn the Goobie within the visible destination area.
+
+        // Spawn the Goobert within the visible destination area.
         const hub = document.querySelector(".hub");
 
         /*
-         * Uses the Hub's dimensions when spawning Goobies.
-         * Prevents Goobies from spawning outside the mobile display
+         * Uses the Hub's dimensions when spawning Gooberts.
+         * Prevents Gooberts from spawning outside the mobile display
          * while preserving desktop spawning boundaries.
          */
         const isMobile = window.innerWidth <= 768;
