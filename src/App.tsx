@@ -11,6 +11,7 @@ import UIGoobertCard from "./components/ui-script";
 import { BrowserRouter, useNavigate } from "react-router";
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
+import Frogoobert from "./components/frogoobert";
 
 export type Room = {
 	room: React.JSX.Element
@@ -19,13 +20,15 @@ export const rooms = {
 	menu: "",
 
 	hub: "/hub",
+	tree: "/tree",
 	gameRoom: "/game-room",
 	shop: "/shop",
 	bedroom: "/bedroom",
 	dungeon: "/dungeon",
 
 	snakeGame: "games/snake",
-	flappyGoobert: "games/flappy-goobert"
+	flappyGoobert: "games/flappy-goobert",
+	frogoobert: "/frogoobert",
 
 }
 

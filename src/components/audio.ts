@@ -45,13 +45,13 @@ export const indexClickSound = new Howl({
 // Door hover sound.
 export const doorHoverSound = new Howl({
     src: ["audio/sfx/door-hover.mp3"],
-    volume: 0.3
+    volume: 0.5
 });
 
 // Door click sound.
 export const doorOpenSound = new Howl({
     src: ["audio/sfx/door-click.mp3"],
-    volume: 0.9
+    volume: 1.0
 });
 
 // Dungeon entrance hover.

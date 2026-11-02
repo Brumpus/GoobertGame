@@ -7,20 +7,6 @@ import useGooberts from "../GoobertContext";
 
 
 /* 
-Displays the test Goobert in the Hub.
-The different body parts are displayed using separate image elements.
-*/
-const TestGoobert = (props: any) => {
-    return (
-        <div className="goobert-container" style={{scale: "3 3", left: "17em", top: "36em"}}>
-            <img id="goobert-legs" src="images/goobert-parts/Transparent-BG.png"/>
-            <img id="goobert-body" src="images/goobert-parts/Transparent-BG.png"/>
-            <img id="goobert-mouth" src="images/goobert-parts/Transparent-BG.png"/>
-            <img id="goobert-eyes" src="images/goobert-parts/Transparent-BG.png"/>
-        </div>
-    );
-}
-/* 
 Main Hub component where the player can customize Gooberts
 and navigate to different rooms.
 */
@@ -31,24 +17,20 @@ export default function Hub(props: any): React.JSX.Element {
     return (
         <main id="main" className="hub">
 
-            {/* Tree used for Goobert Customization */}
-            <div className="tree-container">
-
-                <img src="images/hub/gooberts_tree.png" 
-                    alt="GOOBERTS HUB" 
-                    className="pixelated-tree" 
-                    id="goobert-tree" />
-
-                {/* Clickable areas that change the Goobert's appearance */}
-                <div id="tree-body-area" onClick={changeBodyType}></div>
-                <div id="tree-legs-area" onClick={changeLegType}></div>
-                <div id="tree-mouth-area" onClick={changeMouth}></div>
-                <div id="tree-eyes-area" onClick={changeEyes}></div>
-                <div id="tree-body-color" onClick={changeBodyColor}></div>
-                <div id="tree-legs-color" onClick={changeLegColor}></div>
-
-                {/* Display the Goobert being customized */}
-                <TestGoobert createGoobert
+            {/* Click the tree to enter the customization room */}
+            <div
+                className="tree-container"
+                onClick={() => {
+                    doorOpenSound.play();
+                    load(rooms.tree);
+                }}
+                style={{ cursor: "pointer" }}
+            >
+                <img
+                    src="images/hub/gooberts_tree.png"
+                    alt="CUSTOMIZE GOOBERT"
+                    className="pixelated-tree"
+                    id="goobert-tree"
                 />
             </div>
 

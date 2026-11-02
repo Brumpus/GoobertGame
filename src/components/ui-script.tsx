@@ -90,21 +90,32 @@ export default function UIGoobertCard({goobert, onUiClose}: UIProps): React.JSX.
                 y={11} 
                 className="goobert-container icon"
             />
+            
+            <div className="ui-goobert-name"> 
+                {goobert.name} 
+            </div>
+
             <div className="ui-statbar-container">
                 <img id="ui-statbar-fullness" style={{width:statBarWidth * (goobert.fullness / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-statbar-awakeness" style={{width:statBarWidth * (goobert.awakeness / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
-                <img id="ui-statbar-swagosity" style={{width:statBarWidth * (goobert.swagosity / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
+                <img id="ui-statbar-dexterity" style={{width:statBarWidth * (goobert.dexterity / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-statbar-cleanliness" style={{width:statBarWidth * (goobert.cleanliness / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
             </div>
+            
             <img id="card-frame-front" src="images/goobert-parts/Transparent-BG.png" />
+            
             <div className="ui-icon-container">
                 <img id="ui-icon-fullness" src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-icon-awakeness" src="images/goobert-parts/Transparent-BG.png"/>
-                <img id="ui-icon-swagosity" src="images/goobert-parts/Transparent-BG.png"/>
+                <img id="ui-icon-dexterity" src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-icon-cleanliness" src="images/goobert-parts/Transparent-BG.png"/>
             </div>
+            
             <img id="ui-card-xbutton" src="images/goobert-parts/Transparent-BG.png" onClick={onUiClose} />
-
+            
+            <div className="ui-goobert-name">
+                {goobert.name}
+            </div>
         </div>
     );
 }
