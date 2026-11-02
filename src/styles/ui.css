@@ -17,7 +17,7 @@
     position: absolute;
     width: 84px;
     height: 168px;
-    z-index: 2;
+    z-index: 5;
 }
 /* Align items on top of one another */
 .info-card > * {
