@@ -68,12 +68,7 @@ export default function Tree(): React.JSX.Element {
     // Randomize only the feature associated with the clicked apple.
     const changeFeature = (feature: Feature) => {
         setAppearance(previous => {
-            let selected = randomNumber(limits[feature]);
-
-            // Avoid selecting the same sprite twice in a row.
-            if (selected === previous[feature]) {
-                selected = (selected + 1) % limits[feature];
-            }
+            let selected = (previous[feature] + 1) % limits[feature];
 
             return {
                 ...previous,
