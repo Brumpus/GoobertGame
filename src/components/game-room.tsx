@@ -169,7 +169,9 @@ type ListProps = {
 function GoobertList(props: ListProps) {
     let { gooberts } = useGooberts();
     // Only render at most 5 gooberts at once
-    let list = [...gooberts];
+    let list =  gooberts.filter((goobert, i) => {
+        return goobert.room === rooms.gameRoom
+    })
     list.length = Math.min(list.length, 5);
     return (
         <div id="goobert-list">
@@ -179,9 +181,7 @@ function GoobertList(props: ListProps) {
             </div>
             {
                 // Filter gooberts to only display the ones on the current room
-                list.filter((goobert, i) => {
-                    return goobert.room === rooms.gameRoom
-                }).map((goobert, i) => {
+                list.map((goobert, i) => {
                     // Create a goobert for each object stored in this room
                     return (
                         <div className="list-element" 
