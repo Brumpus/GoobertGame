@@ -35,12 +35,10 @@ export default function Mutant({/*goobert,*/ type, x, y}: MutantProps): React.JS
     }
 
     return (
-        <div className="mutant-container" style={{
-            position: 'fixed',
-            scale: "2 2",
-            left: x,
-            top: y,
-            imageRendering: "crisp-edges"
+        <div className="mutant-container" style={
+            {    
+                left: x,
+                top: y
             }}>
             <img src={setType()}/>
         </div>

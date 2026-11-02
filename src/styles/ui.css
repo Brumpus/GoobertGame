@@ -212,3 +212,9 @@ of each other.*/
 .exit-button:hover {
     background-color: #ffd53b;
 }
+.mutant-container {
+    position: fixed;
+    scale: 2 2;
+    image-rendering: crisp-edges;
+    z-index: 1;
+}
