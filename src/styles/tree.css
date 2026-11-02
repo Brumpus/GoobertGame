@@ -261,7 +261,7 @@
 }
 
 
-/* ==== CREATE GOOBIE BUTTON ==== */
+/* ==== CREATE Goobert BUTTON ==== */
 .tree-create-controls {
     position: absolute;
     bottom: 25px;
@@ -298,7 +298,7 @@
 }
 
 
-/* ==== GOOBIE NAMING ==== */
+/* ==== Goobert NAMING ==== */
 .tree-create-controls {
     display: flex;
     flex-direction: column;

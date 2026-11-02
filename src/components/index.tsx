@@ -7,7 +7,7 @@ import { load, rooms } from "../App";
 import useGooberts from "../GoobertContext";
 
 /*
- * Goobies Main Menu
+ * Gooberts Main Menu
  * React switches between Menu and Credits without reloading.
  * All audio is handled by components/audio.js using Howler.js.
  */
@@ -35,12 +35,12 @@ export default function MainMenu(): React.JSX.Element {
         <main className="main-menu">
             {screen === "menu" ? (
                 <>
-                    {/* Animated Goobies logo */}
+                    {/* Animated Gooberts logo */}
                     <div className="row">
                         <div className="col text-center">
                             <img
-                                src="images/index/Goobies_Logo_text.gif"
-                                alt="Goobies"
+                                src="images/index/Gooberts_Logo_text.gif"
+                                alt="Gooberts"
                                 id="game-title"
                                 className="img-fluid"
                             />

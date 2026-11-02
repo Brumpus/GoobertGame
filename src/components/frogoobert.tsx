@@ -97,8 +97,8 @@ export default function Frogoobert(): React.JSX.Element {
             position.x + 0.25 < car.x + car.width
         );
 
-    // Use the same selected Goobie object and 0-100 stat meter as other arcade games.
-    const rewardGoobie = (amount: number) => {
+    // Use the same selected Goobert object and 0-100 stat meter as other arcade games.
+    const rewardGoobert = (amount: number) => {
         if (!gameGoobert) return;
         gameGoobert.dexterity = Math.min(100, Math.max(0, gameGoobert.dexterity + amount));
         setDexterity(gameGoobert.dexterity);
@@ -128,7 +128,7 @@ export default function Frogoobert(): React.JSX.Element {
             setScore(newScore);
             setBestScore(previous => Math.max(previous, newScore));
             highestRowRef.current = next.y;
-            rewardGoobie(rowsAdvanced); // +1 entertainment per new row
+            rewardGoobert(rowsAdvanced); // +1 entertainment per new row
         }
 
         if (next.y === 0) {
@@ -136,7 +136,7 @@ export default function Frogoobert(): React.JSX.Element {
             scoreRef.current = newScore;
             setScore(newScore);
             setBestScore(previous => Math.max(previous, newScore));
-            rewardGoobie(5); // +5 entertainment for completing a crossing
+            rewardGoobert(5); // +5 entertainment for completing a crossing
             resetPlayer();
         }
     };
@@ -212,7 +212,7 @@ export default function Frogoobert(): React.JSX.Element {
                 <div className="frogoobert-meter">
                     <label htmlFor="frogoobert-dexterity">Dexterity</label>
                     <input id="frogoobert-dexterity" type="range" min={0} max={100}
-                        value={dexterity} readOnly aria-label="Goobie's Dexterity" />
+                        value={dexterity} readOnly aria-label="Goobert's Dexterity" />
                     <span>{Math.round(dexterity)}%</span>
                 </div>
             )}
@@ -237,7 +237,7 @@ export default function Frogoobert(): React.JSX.Element {
                         }} />
                 ))}
 
-                <div className={`frogoobert-player${appearance ? " has-goobie" : ""}`}
+                <div className={`frogoobert-player${appearance ? " has-Goobert" : ""}`}
                     style={{
                         left: `${player.x / COLS * 100}%`,
                         top: `${player.y / ROWS * 100}%`,

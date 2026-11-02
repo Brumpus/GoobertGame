@@ -16,7 +16,7 @@ import useGooberts from "../GoobertContext";
  * The other three machines only play sound effects.
  */
 
-// The first Goobie receives rewards from arcade games.
+// The first Goobert receives rewards from arcade games.
 export let gameGoobert: Goobert | null = null;
 
 export default function GameRoom() {

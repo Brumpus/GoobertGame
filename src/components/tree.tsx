@@ -58,9 +58,9 @@ export default function Tree(): React.JSX.Element {
     const { createGoobert } = useGooberts();
 
     // Store the name entered by the player.
-    const [goobieName, setGoobieName] = useState("");
+    const [GoobertName, setGoobertName] = useState("");
 
-    // Store the currently selected Goobie appearance.
+    // Store the currently selected Goobert appearance.
     const [appearance, setAppearance] = useState<Appearance>(
         randomAppearance
     );
@@ -82,9 +82,9 @@ export default function Tree(): React.JSX.Element {
         });
     };
 
-    // Create a Goobie with the chosen name and appearance.
+    // Create a Goobert with the chosen name and appearance.
     const handleCreateGoobert = () => {
-        const name = goobieName.trim();
+        const name = GoobertName.trim();
 
         // Prevent empty or whitespace-only names.
         if (!name) {
@@ -99,7 +99,7 @@ export default function Tree(): React.JSX.Element {
             appearance
         );
 
-        // Return to the Hub after creating the Goobie.
+        // Return to the Hub after creating the Goobert.
         doorOpenSound.play();
         load(rooms.hub);
     };
@@ -182,26 +182,26 @@ export default function Tree(): React.JSX.Element {
                 </button>
             </div>
 
-            {/* CREATE GOOBIE */}
+            {/* CREATE Goobert */}
             <div className="tree-create-controls">
 
                 <input
                     type="text"
                     className="tree-name-input"
-                    placeholder="Name your Goobie"
-                    aria-label="Goobie name"
+                    placeholder="Name your Goobert"
+                    aria-label="Goobert name"
                     maxLength={20}
-                    value={goobieName}
-                    onChange={(event) => setGoobieName(event.target.value)}
+                    value={GoobertName}
+                    onChange={(event) => setGoobertName(event.target.value)}
                 />
 
                 <button
                     type="button"
                     className="tree-create"
                     onClick={handleCreateGoobert}
-                    disabled={!goobieName.trim()}
+                    disabled={!GoobertName.trim()}
                 >
-                    CREATE GOOBIE
+                    CREATE Goobert
                 </button>
 
             </div>

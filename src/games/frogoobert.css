@@ -31,7 +31,7 @@
     cursor: pointer;
 }
 
-/* ==== SCOREBOARD AND GOOBIE METER ==== */
+/* ==== SCOREBOARD AND Goobert METER ==== */
 .frogoobert-scoreboard {
     display: flex;
     justify-content: center;
@@ -99,7 +99,7 @@
     border-radius: 3px;
 }
 
-/* ==== GOOBIE SPRITE ==== */
+/* ==== Goobert SPRITE ==== */
 .frogoobert-player {
     position: absolute;
     background: #7be36b;
@@ -108,7 +108,7 @@
     box-sizing: border-box;
     z-index: 3;
 }
-.frogoobert-player.has-goobie { background: transparent; border: none; border-radius: 0; }
+.frogoobert-player.has-Goobert { background: transparent; border: none; border-radius: 0; }
 .frogoobert-part {
     position: absolute;
     width: 64px;

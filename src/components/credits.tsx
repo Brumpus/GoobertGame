@@ -9,7 +9,7 @@ type CreditsProps = {
 }
 export default function Credits(props: CreditsProps) {
     return (
-        <section className="credits-screen" aria-label="Goobies credits">
+        <section className="credits-screen" aria-label="Gooberts credits">
             {/* Return to the menu without reloading the page. */}
             <button type="button" className="btn btn-credits credits-back menu-button"
                     onMouseEnter={props.onHover} onClick={props.onBack}>
@@ -19,7 +19,7 @@ export default function Credits(props: CreditsProps) {
             {/* The text moves upward automatically, like movie credits. */}
             <div className="credits-window">
                 <div className="credits-scroll">
-                    <h1>GOOBIES</h1>
+                    <h1>GoobertS</h1>
                     {/* Development team with rainbow colors */}
                     <h2>Development Team</h2>
 

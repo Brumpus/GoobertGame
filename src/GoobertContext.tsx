@@ -71,9 +71,9 @@ export function GoobertProvider({ children }: any) {
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
 
-    // ==== CENTRALIZED GOOBIE STAT UPDATES ====
+    // ==== CENTRALIZED Goobert STAT UPDATES ====
 
-    // Update a specific Goobie's stat through React state.
+    // Update a specific Goobert's stat through React state.
     // Positive amounts restore stats; negative amounts decrease them.
     // useCallback prevents the function from being recreated on every render.
     const updateStat = useCallback((
@@ -98,7 +98,7 @@ export function GoobertProvider({ children }: any) {
         );
     }, []);
 
-    // ==== AUTOMATIC GOOBIE STAT DEPLETION ====
+    // ==== AUTOMATIC Goobert STAT DEPLETION ====
 
     // Decrease stats every 5 seconds for testing.
     useEffect(() => {
@@ -223,7 +223,7 @@ export function renderGoobert(
         eyeExpression: 0,
         mouthExpression: 0,
 
-        // Restore Goobie needs without exceeding 100.
+        // Restore Goobert needs without exceeding 100.
         eat(amt = 10) {
             this.fullness = Math.min(100, this.fullness + amt);
         },

@@ -29,11 +29,11 @@ export default function Shop() {
             <div className="row">
                 <div className="col text-center">
 
-                    <h1 className="shop-title">GOOBIE SHOP</h1>
+                    <h1 className="shop-title">Goobert SHOP</h1>
 
                     {/* SHOP DESCRIPTION */}
                     <p className="shop-description">
-                        Customize your Goobie!
+                        Customize your Goobert!
                     </p>
                     
                 </div>

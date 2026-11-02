@@ -170,7 +170,7 @@ function checkPipeIntersection() {
                 // Intersecting with a pipe
                 endFlappyRound();
             } else {
-                // Restore Cleanliness when Goobie touches water.
+                // Restore Cleanliness when Goobert touches water.
                 if (gameGoobert && cleanlinessReward) {
                     cleanlinessReward(0.2);
                 }

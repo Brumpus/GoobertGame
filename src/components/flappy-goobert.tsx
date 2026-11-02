@@ -19,11 +19,11 @@ export let gameOver: boolean;
     export default function FlappyGoobert(): React.JSX.Element {
         let [showPlayAgain, setShowPlayAgain] = useState(false); 
 
-        // Access the latest Goobie data from React context.
+        // Access the latest Goobert data from React context.
         const { gooberts, updateStat } = useGooberts();
 
-        // Find the Goobie currently playing Flappy Goobert.
-        const currentGoobie = gooberts.find(
+        // Find the Goobert currently playing Flappy Goobert.
+        const currentGoobert = gooberts.find(
             goobert => goobert.id === gameGoobert?.id
         );
 
@@ -125,7 +125,7 @@ export let gameOver: boolean;
             <div id="flappy-score" className="flappy-score">Score: 0</div>
 
             {/* Display Cleanliness when a Goobert is selected.  */}
-            {currentGoobie &&
+            {currentGoobert &&
                 <div className="cleanliness-label">
                     <label
                         htmlFor="goobert-percentage"
@@ -138,7 +138,7 @@ export let gameOver: boolean;
                         type="range"
                         min={0}
                         max={100}
-                        value={currentGoobie.cleanliness}
+                        value={currentGoobert.cleanliness}
                         id="goobert-percentage"
                         key={"FlappyGoobertCleanliness"}
                         readOnly

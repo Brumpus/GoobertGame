@@ -1,18 +1,18 @@
 import { Howl } from "howler";
 /*
- * Goobies Audio
+ * Gooberts Audio
  * Uses Howler.js to play background music.
  */
 // Main menu (index) music
 export const indexMusic = new Howl({
-    src: ["audio/music/goobie-themesong.mp3"],
+    src: ["audio/music/Goobert-themesong.mp3"],
     loop: true,
     volume: 1.0
 });
 
 // Background music for the Hub and its rooms.
 export const hubMusic = new Howl({
-    src: ["audio/music/slow-goobies-theme.mp3"],
+    src: ["audio/music/slow-Gooberts-theme.mp3"],
     loop: true,
     volume: 0.4
 });
