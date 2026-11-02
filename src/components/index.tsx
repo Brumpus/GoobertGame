@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { indexClickSound, indexHoverSound } from "./audio";
 import Credits from "./credits";
 import { load, rooms } from "../App";
+import useGooberts from "../GoobertContext";
 
 /*
  * Goobies Main Menu
@@ -13,6 +14,7 @@ import { load, rooms } from "../App";
 
 export default function MainMenu(): React.JSX.Element {
     let [screen, setScreen] = useState("menu");
+    let { doorRefs } = useGooberts();
 
     // let showCredits = this.showCredits.bind(this); - commented out because idk what these do
     // let showMenu = this.showMenu.bind(this);
@@ -46,7 +48,7 @@ export default function MainMenu(): React.JSX.Element {
                     </div>
 
                     {/* Save system will be connected later. */}
-                    <div className="row justify-content-center my-3">
+                    <div className="row justify-content-center my-3" ref={doorRefs.menuHub}>
                         <div className="col-10 col-md-6 col-lg-3">
                             <button 
                                 className="btn btn-continue menu-button w-100"

@@ -2,9 +2,10 @@
 "use strict";
 import React from "react";
 import { arcadeClickSound, arcadeHoverSound, doorOpenSound } from "./audio";
-import { gooberts, load, rooms, type Goobert } from "../App";
+import { load, rooms } from "../App";
 import "../styles/game-room.css";
-import { initFlappyGoobert } from "../games/flappy-goobert";
+import type { Goobert } from "../Goobert";
+import useGooberts from "../GoobertContext";
 
 /*
  * Game Room
@@ -17,129 +18,126 @@ import { initFlappyGoobert } from "../games/flappy-goobert";
 // The first Goobie receives rewards from arcade games.
 export let gameGoobert: Goobert | null = null;
 
-export default class GameRoom extends React.Component {
+export default function GameRoom() {
+    let { gooberts, doorRefs } = useGooberts();
 
-    render() {
+    return (
+        <main id="main" className="game-room">
 
-        return (
-            <main id="main" className="game-room">
+            {/* EXIT TO HUB */}
+            <div className="exit-controls" ref={doorRefs.gameRoomHub}>
+                <button 
+                    className="exit-button" 
+                    // Play the door click sound before returning to the Hub.
+                    onClick={() => {
+                        doorOpenSound.play();
+                        load(rooms.hub);
+                    }}>
 
-                {/* Return to the Hub */}
-                <div className="game-room-controls">
-                    <button
-                        type="button"
-                        className="btn game-room-exit"
-                        onClick={() => {
-                            doorOpenSound.play();
-                            load(rooms.hub);
-                        }}
-                    >
-                        <img
-                            className="game-room-exit-icon"
-                            src="images/pixelarticons/arrow-left.svg"
-                            alt=""
-                            aria-hidden="true"
-                        />
-                        <span>Back to hub</span>
-                    </button>
-                </div>
-
-                {/* Game Room Logo */}
-                <div className="game-room-logo-wrap">
-                    <img
-                        src="images/game-room/game-room-logo.png"
-                        alt="Game Room"
-                        className="game-room-logo"
+                    <img 
+                        className="exit-icon" 
+                        src="images/pixelarticons/arrow-left.svg"
+                        aria-hidden="true" 
                     />
-                </div>
+                    <span>BACK TO HUB</span>
+                </button>
+            </div>
 
-                {/* Arcade Machines */}
-                <div className="game-room-machines">
+            {/* Game Room Logo */}
+            <div className="game-room-logo-wrap">
+                <img
+                    src="images/game-room/game-room-logo.png"
+                    alt="Game Room"
+                    className="game-room-logo"
+                />
+            </div>
 
-                    {/* Snake */}
-                    <button
-                        type="button"
-                        className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => {
-                            arcadeClickSound.play();
+            {/* Arcade Machines */}
+            <div className="game-room-machines">
 
-                            // Select the first Goobie for rewards.
-                            gameGoobert = gooberts[0] || null;
+                {/* Snake */}
+                <button
+                    type="button"
+                    className="machine-button"
+                    onMouseEnter={() => arcadeHoverSound.play()}
+                    onClick={() => {
+                        arcadeClickSound.play();
 
-                            // Open Snake.
-                            load(rooms.snakeGame);
-                        }}
-                    >
-                        <img
-                            src="images/game-room/snake-machine.png"
-                            alt="Play Snake"
-                        />
-                    </button>
+                        // Select the first Goobie for rewards.
+                        gameGoobert = gooberts[0] || null;
 
-                    {/* Flappy Goobert */}
-                    <button
-                        type="button"
-                        className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => {
-                            arcadeClickSound.play();
+                        // Open Snake.
+                        load(rooms.snakeGame);
+                    }}
+                >
+                    <img
+                        src="images/game-room/snake-machine.png"
+                        alt="Play Snake"
+                    />
+                </button>
 
-                            // Select the first Goobie for rewards.
-                            gameGoobert = gooberts[0] || null;
+                {/* Flappy Goobert */}
+                <button
+                    type="button"
+                    className="machine-button"
+                    onMouseEnter={() => arcadeHoverSound.play()}
+                    onClick={() => {
+                        arcadeClickSound.play();
 
-                            // Open Flappy Goobert.
-                            load(rooms.flappyGoobert);
-                        }}
-                    >
-                        <img
-                            src="images/game-room/flappy-goobert-machine.png"
-                            alt="Play Flappy Goobert"
-                        />
-                    </button>
+                        // Select the first Goobie for rewards.
+                        gameGoobert = gooberts[0] || null;
 
-                    {/* Frogoobert - Coming Soon */}
-                    <button
-                        type="button"
-                        className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => arcadeClickSound.play()}
-                    >
-                        <img
-                            src="images/game-room/frogoobert-machine.png"
-                            alt="Frogoobert - Coming Soon"
-                        />
-                    </button>
+                        // Open Flappy Goobert.
+                        load(rooms.flappyGoobert);
+                    }}
+                >
+                    <img
+                        src="images/game-room/flappy-goobert-machine.png"
+                        alt="Play Flappy Goobert"
+                    />
+                </button>
 
-                    {/* Pipelined - Coming Soon */}
-                    <button
-                        type="button"
-                        className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => arcadeClickSound.play()}
-                    >
-                        <img
-                            src="images/game-room/pipelined-machine.png"
-                            alt="Pipelined - Coming Soon"
-                        />
-                    </button>
+                {/* Frogoobert - Coming Soon */}
+                <button
+                    type="button"
+                    className="machine-button"
+                    onMouseEnter={() => arcadeHoverSound.play()}
+                    onClick={() => arcadeClickSound.play()}
+                >
+                    <img
+                        src="images/game-room/frogoobert-machine.png"
+                        alt="Frogoobert - Coming Soon"
+                    />
+                </button>
 
-                    {/* Feast Fest - Coming Soon */}
-                    <button
-                        type="button"
-                        className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => arcadeClickSound.play()}
-                    >
-                        <img
-                            src="images/game-room/feast-fest-machine.png"
-                            alt="Feast Fest - Coming Soon"
-                        />
-                    </button>
+                {/* Pipelined - Coming Soon */}
+                <button
+                    type="button"
+                    className="machine-button"
+                    onMouseEnter={() => arcadeHoverSound.play()}
+                    onClick={() => arcadeClickSound.play()}
+                >
+                    <img
+                        src="images/game-room/pipelined-machine.png"
+                        alt="Pipelined - Coming Soon"
+                    />
+                </button>
 
-                </div>
+                {/* Feast Fest - Coming Soon */}
+                <button
+                    type="button"
+                    className="machine-button"
+                    onMouseEnter={() => arcadeHoverSound.play()}
+                    onClick={() => arcadeClickSound.play()}
+                >
+                    <img
+                        src="images/game-room/feast-fest-machine.png"
+                        alt="Feast Fest - Coming Soon"
+                    />
+                </button>
 
-            </main>
-        );
-    }
+            </div>
+
+        </main>
+    );
 }
