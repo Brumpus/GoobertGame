@@ -1,10 +1,11 @@
 
 "use strict";
-import React from "react";
+import React, { useState, type MouseEvent, type MouseEventHandler } from "react";
 import { arcadeClickSound, arcadeHoverSound, doorOpenSound } from "./audio";
 import { load, rooms } from "../App";
 import "../styles/game-room.css";
 import type { Goobert } from "../Goobert";
+import GoobertElement from "../Goobert";
 import useGooberts from "../GoobertContext";
 
 /*
@@ -19,7 +20,12 @@ import useGooberts from "../GoobertContext";
 export let gameGoobert: Goobert | null = null;
 
 export default function GameRoom() {
-    let { gooberts, doorRefs } = useGooberts();
+    let { doorRefs, gooberts } = useGooberts();
+    let [goobertSelector, setGoobertSelector] = useState("");
+    let [gameSelector, setGameSelector] = useState("");
+    const closeGoobertSelector = (mouse: MouseEvent) => setGoobertSelector("");
+    
+
 
     return (
         <main id="main" className="game-room">
@@ -63,11 +69,16 @@ export default function GameRoom() {
                     onClick={() => {
                         arcadeClickSound.play();
 
-                        // Select the first Goobie for rewards.
-                        gameGoobert = gooberts[0] || null;
+                        // Load flappy goobert if no gooberts are available for selection
+                        if(gooberts.filter((goobert) => goobert.room == rooms.gameRoom).length == 0) {
+                            load(rooms.snakeGame);
+                        } else {
+                            // Select the Goobert for rewards.
+                            setGameSelector("Snake");
+                            setGoobertSelector(rooms.snakeGame);
+                        }
 
-                        // Open Snake.
-                        load(rooms.snakeGame);
+
                     }}
                 >
                     <img
@@ -84,11 +95,15 @@ export default function GameRoom() {
                     onClick={() => {
                         arcadeClickSound.play();
 
-                        // Select the first Goobie for rewards.
-                        gameGoobert = gooberts[0] || null;
+                        // Load flappy goobert if no gooberts are available for selection
+                        if(gooberts.filter((goobert) => goobert.room == rooms.gameRoom).length == 0) {
+                            load(rooms.flappyGoobert);
+                        } else {
+                            // Select the Goobert for rewards.
+                            setGameSelector("Flappy Bird");
+                            setGoobertSelector(rooms.flappyGoobert);
+                        }
 
-                        // Open Flappy Goobert.
-                        load(rooms.flappyGoobert);
                     }}
                 >
                     <img
@@ -138,6 +153,55 @@ export default function GameRoom() {
 
             </div>
 
+            {/* Display goobert selector when game is clicked */}
+            { goobertSelector != "" && gooberts.length > 0 &&
+                <GoobertList room={goobertSelector} game={gameSelector} close={closeGoobertSelector} />
+            }
+
         </main>
+    );
+}
+type ListProps = {
+    room: string;
+    game: string;
+    close: MouseEventHandler<HTMLDivElement>;
+}
+function GoobertList(props: ListProps) {
+    let { gooberts } = useGooberts();
+    // Only render at most 5 gooberts at once
+    let list = [...gooberts];
+    list.length = Math.min(list.length, 5);
+    return (
+        <div id="goobert-list">
+            <div className="list-element header">
+                Select {props.game} Goobert
+                <div className="close" onClick={props.close}>x</div>
+            </div>
+            {
+                // Filter gooberts to only display the ones on the current room
+                list.filter((goobert, i) => {
+                    return goobert.room === rooms.gameRoom
+                }).map((goobert, i) => {
+                    // Create a goobert for each object stored in this room
+                    return (
+                        <div className="list-element" 
+                            onClick={() => {
+                                gameGoobert = goobert;
+                                load(props.room);
+                            }}
+                        >
+                            <GoobertElement
+                                key={"game-" + goobert.id}
+                                {...goobert}
+                                isUi={true}
+                                x={0}
+                                y={0}
+                            />
+                            {goobert.name}
+                        </div>
+                    );
+                })
+            }
+        </div>
     );
 }

@@ -20,8 +20,8 @@ const PageController = () => {
             <Route path="/bedroom" element={<Bedroom />} />
             <Route path="/dungeon" element={<Dungeon />} />
 
-            <Route path="/flappy-goobert" element={<FlappyGoobert />} />
-            <Route path="/snake" element={<SnakeGame />} />
+            <Route path="games/flappy-goobert" element={<FlappyGoobert />} />
+            <Route path="games/snake" element={<SnakeGame />} />
 
             {/* Default: main menu */}
             <Route path="*" element={rooms.menu} />

@@ -116,6 +116,7 @@ body {
     border: 0.1em solid;
     padding: 0.3em;
     border-color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 .cleanliness-label > input {
     accent-color: #14a9ff;
