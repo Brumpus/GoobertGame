@@ -337,7 +337,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             positionRef.current.x,
             positionRef.current.y
         );
-        console.log(doorKey)
 
         if (!doorKey) return;
 
