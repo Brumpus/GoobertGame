@@ -8,7 +8,6 @@ import useGooberts from "../GoobertContext";
 
 export default function Dungeon() {
     let { doorRefs } = useGooberts();
-    console.log("Rendering dungeon...");
     return(
         <main className="dungeon">
             <div className="dungeonWrapper d-flex flex-column justify-content-between vh-100">

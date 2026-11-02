@@ -8,6 +8,14 @@ import { gameGoobert } from "../components/game-room.tsx";
 import "./flappy-goobert.css";
 import { setPlayAgain, gameOver } from "../components/flappy-goobert.tsx";
 
+// Callback used to restore Cleanliness through React context.
+let cleanlinessReward = null;
+
+// Allow the React component to register its reward function.
+export function setCleanlinessReward(callback) {
+    cleanlinessReward = callback;
+}
+
 export function initFlappyGoobert() {
     stopGame();
     setBody(document.getElementById("main"));
@@ -162,11 +170,9 @@ function checkPipeIntersection() {
                 // Intersecting with a pipe
                 endFlappyRound();
             } else {
-                // Intersecting with water
-                if(gameGoobert) {
-                    gameGoobert.cleanliness = Math.min(gameGoobert.cleanliness + 0.2, 100); // Wash goobert
-                    // Update slider position
-                    document.getElementById('goobert-percentage').value = gameGoobert.cleanliness;
+                // Restore Cleanliness when Goobert touches water.
+                if (gameGoobert && cleanlinessReward) {
+                    cleanlinessReward(0.2);
                 }
             }
         }

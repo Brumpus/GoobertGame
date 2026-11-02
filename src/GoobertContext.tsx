@@ -1,6 +1,15 @@
-import React, { createContext, useContext, useRef, useState, type RefObject } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState, type RefObject } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
+
+export type GoobertAppearance = {
+    bodyType: number;
+    bodyColor: number;
+    legType: number;
+    legColor: number;
+    eyeType: number;
+    mouthType: number;
+};
 
 // How many of each type of asset exist
 const MAX_EYE_TYPES = 10;
@@ -11,11 +20,20 @@ const MAX_COLORS = 7;
 
 interface GoobertContextType {
     gooberts: Goobert[];
+
+    // Stats that minigames and rooms are allowed to update.
+    updateStat: (
+        id: string,
+        stat: "fullness" | "awakeness" | "cleanliness" | "dexterity",
+        amount: number
+    ) => void;
+
     createGoobert: (
         name: string,
         location?: string,
         x?: number,
-        y?: number
+        y?: number,
+        appearance?: GoobertAppearance
     ) => void;
 
     updatePosition: (
@@ -23,6 +41,7 @@ interface GoobertContextType {
         x: number,
         y: number,
     ) => void;
+
     updateRoom: (
         id: string,
         x: string
@@ -52,18 +71,77 @@ export function GoobertProvider({ children }: any) {
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
 
+    // ==== CENTRALIZED Goobert STAT UPDATES ====
+
+    // Update a specific Goobert's stat through React state.
+    // Positive amounts restore stats; negative amounts decrease them.
+    // useCallback prevents the function from being recreated on every render.
+    const updateStat = useCallback((
+        id: string,
+        stat: "fullness" | "awakeness" | "cleanliness" | "dexterity",
+        amount: number
+    ) => {
+        setGooberts(previous =>
+            previous.map(goobert => {
+                if (goobert.id !== id) {
+                    return goobert;
+                }
+
+                return {
+                    ...goobert,
+                    [stat]: Math.min(
+                        100,
+                        Math.max(0, goobert[stat] + amount)
+                    )
+                };
+            })
+        );
+    }, []);
+
+    // ==== AUTOMATIC Goobert STAT DEPLETION ====
+
+    // Decrease stats every 5 seconds for testing.
+    useEffect(() => {
+        const interval = window.setInterval(() => {
+
+            setGooberts(previous =>
+                previous.map(goobert => ({
+                    ...goobert,
+
+                    // All four stats deplete over time.
+                    fullness: Math.max(0, goobert.fullness - 1),
+                    awakeness: Math.max(0, goobert.awakeness - 1),
+                    cleanliness: Math.max(0, goobert.cleanliness - 1),
+                    dexterity: Math.max(0, goobert.dexterity - 1)
+                }))
+            );
+
+        }, 10000);
+
+        // Remove the timer when the provider unmounts.
+        return () => window.clearInterval(interval);
+
+    }, []);
+
     // Allow gooberts to be created from anywhere
     const createGoobert = (
         name: string,
         location?: string,
         x?: number,
-        y?: number
+        y?: number,
+        appearance?: GoobertAppearance
     ) => {
         const goobert = renderGoobert(name, location, x, y);
+
+        if (appearance) {
+            Object.assign(goobert, appearance);
+        }
+
         goobert.id = name + gooberts.length;
 
         setGooberts(prev => [...prev, goobert]);
     };
+    
     (window as any).createGoobert = createGoobert;
 
     // Update goobert position
@@ -109,7 +187,7 @@ export function GoobertProvider({ children }: any) {
 
     // Render goobert context provider
     return (
-        <GoobertContext.Provider value={{gooberts, createGoobert, updatePosition, updateRoom, doorRefs}}>
+        <GoobertContext.Provider value={{gooberts, createGoobert, updatePosition, updateRoom, updateStat, doorRefs}}>
             {children}
         </GoobertContext.Provider>
     )
@@ -132,7 +210,7 @@ export function renderGoobert(
         className: "",
 
         fullness: 0, // Eating, catch the food game
-        swagosity: 50, // Boredom, Snake
+        dexterity: 50, // Exercise, Snake & Frogoobert
         awakeness: 50, // Sleeping
         cleanliness: 50, // Bathing, Flappy Goobert
 
@@ -145,10 +223,23 @@ export function renderGoobert(
         eyeExpression: 0,
         mouthExpression: 0,
 
-        eat(amt = 10) { this.fullness += amt },
-        sleep() { this.awakeness = 100 },
-        entertain(quality: number) { this.swagosity += quality },
-        bathe(amt: number) { this.cleanliness += amt },
+        // Restore Goobert needs without exceeding 100.
+        eat(amt = 10) {
+            this.fullness = Math.min(100, this.fullness + amt);
+        },
+
+        sleep() {
+            this.awakeness = 100;
+        },
+
+        // Dexterity is earned through minigames.
+        entertain(quality: number) {
+            this.dexterity = Math.min(100, this.dexterity + quality);
+        },
+
+        bathe(amt: number) {
+            this.cleanliness = Math.min(100, this.cleanliness + amt);
+        },
 
         onGoobertSelected: (goobert: Goobert) => {
             // Setup by TopElement

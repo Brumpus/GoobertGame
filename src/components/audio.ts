@@ -1,18 +1,18 @@
 import { Howl } from "howler";
 /*
- * Goobies Audio
+ * Gooberts Audio
  * Uses Howler.js to play background music.
  */
 // Main menu (index) music
 export const indexMusic = new Howl({
-    src: ["audio/music/goobie-themesong.mp3"],
+    src: ["audio/music/Goobert-themesong.mp3"],
     loop: true,
     volume: 1.0
 });
 
 // Background music for the Hub and its rooms.
 export const hubMusic = new Howl({
-    src: ["audio/music/slow-goobies-theme.mp3"],
+    src: ["audio/music/slow-Gooberts-theme.mp3"],
     loop: true,
     volume: 0.4
 });
@@ -45,13 +45,13 @@ export const indexClickSound = new Howl({
 // Door hover sound.
 export const doorHoverSound = new Howl({
     src: ["audio/sfx/door-hover.mp3"],
-    volume: 0.3
+    volume: 0.5
 });
 
 // Door click sound.
 export const doorOpenSound = new Howl({
     src: ["audio/sfx/door-click.mp3"],
-    volume: 0.9
+    volume: 1.0
 });
 
 // Dungeon entrance hover.

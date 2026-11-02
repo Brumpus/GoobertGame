@@ -64,7 +64,7 @@ export default function SnakeGame(): React.JSX.Element {
                 </label>
                 <br />
                 <input type="range" min={0} max={100} value={gameGoobert.fullness} 
-                id="goobert-percentage" key={"SnakeFullness"} />
+                id="goobert-percentage" key={"SnakeFullness"} readOnly />
             </div>
             }
 

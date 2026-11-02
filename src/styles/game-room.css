@@ -18,6 +18,41 @@ html, body {
     background-repeat: no-repeat;
     background-color: black;
 }
+/* Return to Hub button */
+.game-room-controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+/* Game room exit is strictly for the exit button */
+.game-room-exit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background-color: #ffd43b;
+    color: black;
+    border: 3px solid black;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.game-room-exit:hover {
+    background-color: #ffd53b;
+}
+
+/* Hover state color change for the exit button */
+.game-room-exit:hover {
+    background-color: #ffd53b;
+}
+/* Game room exit icon using the arrow-left SVG */
+.game-room-exit-icon {
+    width: 18px;
+    height: 18px;
+    image-rendering: pixelated;
+}
 
 /*--------------------*/
 /*   Game room logo   */

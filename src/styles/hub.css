@@ -1,3 +1,4 @@
+
 /* Hub styles: desktop first, mobile adjustments at the bottom. */
 
 /* ==== PAGE SETUP =====*/
@@ -17,58 +18,8 @@ img {
     -webkit-user-drag: none;
 }
 
-/* ==== GOOBERT POSITIONING ==== */
-/* Size and appearance of Gooberts body parts*/
-#goobert-legs,
-#goobert-body,
-#goobert-mouth,
-#goobert-eyes {
-    grid-column: 1;
-    grid-row: 1;
-
-    width: 64px;
-    height: 64px;
-    image-rendering: crisp-edges;
-}
-
-/* ==== GOOBERT SPRITE SHEETS ==== */
-#goobert-legs {
-    background-image: url("../images/goobert-parts/208-tamagotchi-legs.png");
-}
-
-#goobert-body {
-    background-image: url("../images/goobert-parts/208-tamagotchi-bodies.png");
-}
-
-#goobert-mouth {
-    background-image: url("../images/goobert-parts/208-tamagotchi-mouths.png");
-}
-
-#goobert-eyes {
-    background-image: url("../images/goobert-parts/208-tamagotchi-eyes.png");
-}
-
-/* Positions Goobert relative to tree */
-.goobert-container {
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    overflow: hidden;
-
-    display: grid;
-    z-index: 2;
-    cursor: pointer;
-}
-
-/* Layers Goobert's body parts */
-.goobert-container img {
-    position: relative;
-    image-rendering: crisp-edges;
-    grid-column: 1;
-    grid-row: 1;
-}
-
 /* ====BACKGROUND POSITIONING ====*/
+/* Forest Background fills entire browser */
 .hub {
     background-image: url("../images/hub/gooberts_forest_background.jpg");
     background-size: cover;
@@ -78,6 +29,12 @@ img {
     height: 100vh;
     position: relative;
     overflow: hidden;
+    /*
+     * Includes padding within the Hub's total width.
+     * Prevents mobile padding from pushing the Hub
+     * beyond the screen boundaries.
+     */
+    box-sizing: border-box;
 }
 
 /* ==== TREE POSITIONING ==== */
@@ -90,7 +47,6 @@ img {
     bottom: 50px;
     transform: translateX(-50%);
     z-index: 2;
-    pointer-events: none;
 }
 
 /* Displays tree as pixelated */
@@ -100,73 +56,9 @@ img {
     height: auto;
     bottom: 0;
     image-rendering: pixelated;
-    pointer-events: none;
+    cursor: pointer;
 }
 
-/* ==== CUSTOM TREE AREA ==== */
-/* 
- * Invisible clickable areas placed over different parts of the tree.
- * Clickable areas use percentages so they are aligned with tree if size changes.
- */
-#tree-body-area {
-    position: absolute;
-    width: 20%;
-    height: 20%;
-    top: 35%;
-    left: 15%;
-    cursor: pointer;
-    pointer-events: all;
-}
-
-#tree-legs-area {
-    position: absolute;
-    width: 20%;
-    height: 20%;
-    top: 35%;
-    left: 65%;
-    cursor: pointer;
-    pointer-events: all;
-}
-
-#tree-mouth-area {
-    width: 20%;
-    height: 20%;
-    position: absolute;
-    top: 65%;
-    left: 20%;
-    cursor: pointer;
-    pointer-events: all;
-}
-
-#tree-eyes-area {
-    position: absolute;
-    width: 20%;
-    height: 20%;
-    top: 20%;
-    left: 40%;
-    cursor: pointer;
-    pointer-events: all;
-}
-
-#tree-body-color {
-    position: absolute;
-    width: 20%;
-    height: 20%;
-    top: 35%;
-    left: 40%;
-    cursor: pointer;
-    pointer-events: all;
-}
-
-#tree-legs-color {
-    width: 20%;
-    height: 20%;
-    position: absolute;
-    top: 65%;
-    left: 60%;
-    cursor: pointer;
-    pointer-events: all;
-}
 
 /* ==== CUSTOMIZED CLICKABLE DOORS ====*/
 /* SLEEP DOOR POSITIONING */
@@ -236,8 +128,31 @@ img {
     cursor: pointer;
 }
 
-/* ==== MOBILE HUB ==== */
+/* ==== TABLET HUB ==== */
+@media (min-width: 769px) and (max-width: 1199px) {
 
+    /* Scale the tree and move it closer to the bottom. */
+    .hub .tree-container {
+        bottom: 25%;
+        transform: translateX(-50%) scale(0.75);
+        transform-origin: bottom center;
+    }
+
+    /* Resize the doors for smaller desktop and tablet screens. */
+    .hub #sleep-door,
+    .hub #game-door,
+    .hub #shop-door,
+    .hub #leave-door {
+        width: 100px;
+    }
+
+    /* Keep the Dungeon door proportional. */
+    .hub #dungeon-door {
+        width: 35%;
+    }
+}
+
+/* ==== MOBILE HUB ==== */
 @media (max-width: 768px) {
 
     /* Two columns of doors, with space for the tree above. */
@@ -249,7 +164,7 @@ img {
         justify-items: center;
         align-content: start;
 
-        padding: 350px 15px 25px;
+        padding: clamp(310px, 45vw, 350px) 15px 25px;
         width: 100%;
         height: 100vh;          /* Fallback for older browsers. */
         height: 100dvh;         /* Uses the visible mobile viewport. */
@@ -257,9 +172,9 @@ img {
         overflow-y: auto;
     }
 
-    /* Scale the entire tree, including its clickable areas. */
+    /* Scale the entire tree on mobile. */
     .hub .tree-container {
-        top: 5px;
+        top: 25%;
         bottom: auto;
         transform: translateX(-50%) scale(0.45);
         transform-origin: top center;
@@ -311,7 +226,10 @@ img {
 
     /* Scale the tree a little further on narrow screens. */
     .hub .tree-container {
+        top: 22%;
+        bottom: auto;
         transform: translateX(-50%) scale(0.40);
+        transform-origin: top center;
     }
 
     /* The smaller tree needs less reserved vertical space. */
@@ -327,4 +245,72 @@ img {
     .hub #dungeon-door {
         width: 75px;
     }
+}
+
+/* ==== FOLDING DEVICES HUB ==== */
+@media (min-width: 500px) and (max-width: 600px) {
+
+    .hub .tree-container {
+        top: 15%;
+    }
+}
+
+/* ==== SMALL LAPTOP HUB ==== */
+@media (min-width: 1200px) and (max-width: 1366px) {
+
+    .hub .tree-container {
+        bottom: 21%;
+        transform: translateX(-50%) scale(0.85);
+        transform-origin: bottom center;
+    }
+}
+
+/* ==== GOOBERT POSITIONING ==== */
+#goobert-legs,
+#goobert-body,
+#goobert-mouth,
+#goobert-eyes {
+    grid-column: 1;
+    grid-row: 1;
+    width: 64px;
+    height: 64px;
+    image-rendering: crisp-edges;
+}
+
+/* ==== GOOBERT SPRITE SHEETS ==== */
+#goobert-legs {
+    background-image: url("../images/goobert-parts/208-tamagotchi-legs.png");
+}
+
+#goobert-body {
+    background-image: url("../images/goobert-parts/208-tamagotchi-bodies.png");
+}
+
+#goobert-mouth {
+    background-image: url("../images/goobert-parts/208-tamagotchi-mouths.png");
+}
+
+#goobert-eyes {
+    background-image: url("../images/goobert-parts/208-tamagotchi-eyes.png");
+}
+
+/* ==== GOOBERT CONTAINER ==== */
+.goobert-container {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    display: grid;
+    z-index: 4;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+}
+
+/* ==== GOOBERT BODY PART LAYERS ==== */
+.goobert-container img {
+    position: relative;
+    image-rendering: crisp-edges;
+    grid-column: 1;
+    grid-row: 1;
 }

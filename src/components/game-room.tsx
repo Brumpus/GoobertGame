@@ -16,7 +16,7 @@ import useGooberts from "../GoobertContext";
  * The other three machines only play sound effects.
  */
 
-// The first Goobie receives rewards from arcade games.
+// The first Goobert receives rewards from arcade games.
 export let gameGoobert: Goobert | null = null;
 
 export default function GameRoom() {
@@ -40,11 +40,6 @@ export default function GameRoom() {
                         load(rooms.hub);
                     }}>
 
-                    <img 
-                        className="exit-icon" 
-                        src="images/pixelarticons/arrow-left.svg"
-                        aria-hidden="true" 
-                    />
                     <span>BACK TO HUB</span>
                 </button>
             </div>
@@ -69,8 +64,10 @@ export default function GameRoom() {
                     onClick={() => {
                         arcadeClickSound.play();
 
-                        // Load flappy goobert if no gooberts are available for selection
-                        if(gooberts.filter((goobert) => goobert.room == rooms.gameRoom).length == 0) {
+                        // Load snake if no gooberts are available for selection
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
                             load(rooms.snakeGame);
                         } else {
                             // Select the Goobert for rewards.
@@ -96,7 +93,9 @@ export default function GameRoom() {
                         arcadeClickSound.play();
 
                         // Load flappy goobert if no gooberts are available for selection
-                        if(gooberts.filter((goobert) => goobert.room == rooms.gameRoom).length == 0) {
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
                             load(rooms.flappyGoobert);
                         } else {
                             // Select the Goobert for rewards.
@@ -112,16 +111,29 @@ export default function GameRoom() {
                     />
                 </button>
 
-                {/* Frogoobert - Coming Soon */}
+                {/* Frogoobert */}
                 <button
                     type="button"
                     className="machine-button"
                     onMouseEnter={() => arcadeHoverSound.play()}
-                    onClick={() => arcadeClickSound.play()}
+                    onClick={() => {
+                        arcadeClickSound.play();
+
+                       // Load flappy goobert if no gooberts are available for selection
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
+                            load(rooms.frogoobert);
+                        } else {
+                            // Select the Goobert for rewards.
+                            setGameSelector("Frogoobert");
+                            setGoobertSelector(rooms.frogoobert);
+                        }
+                    }}
                 >
                     <img
                         src="images/game-room/frogoobert-machine.png"
-                        alt="Frogoobert - Coming Soon"
+                        alt="Play Frogoobert"
                     />
                 </button>
 
@@ -169,7 +181,9 @@ type ListProps = {
 function GoobertList(props: ListProps) {
     let { gooberts } = useGooberts();
     // Only render at most 5 gooberts at once
-    let list = [...gooberts];
+    let list =  gooberts.filter((goobert, i) => {
+        return goobert.room === rooms.gameRoom
+    })
     list.length = Math.min(list.length, 5);
     return (
         <div id="goobert-list">
@@ -179,9 +193,7 @@ function GoobertList(props: ListProps) {
             </div>
             {
                 // Filter gooberts to only display the ones on the current room
-                list.filter((goobert, i) => {
-                    return goobert.room === rooms.gameRoom
-                }).map((goobert, i) => {
+                list.map((goobert, i) => {
                     // Create a goobert for each object stored in this room
                     return (
                         <div className="list-element" 
@@ -189,9 +201,9 @@ function GoobertList(props: ListProps) {
                                 gameGoobert = goobert;
                                 load(props.room);
                             }}
+                            key={"game-" + goobert.id}
                         >
                             <GoobertElement
-                                key={"game-" + goobert.id}
                                 {...goobert}
                                 isUi={true}
                                 x={0}

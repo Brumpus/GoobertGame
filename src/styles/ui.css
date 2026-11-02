@@ -15,7 +15,9 @@
 .info-card {
     display: grid;
     position: absolute;
-    z-index: 2;
+    width: 84px;
+    height: 168px;
+    z-index: 5;
 }
 /* Align items on top of one another */
 .info-card > * {
@@ -104,7 +106,7 @@ of each other.*/
    inherit this.
    ----------------------------------- */
 
-#ui-statbar-fullness, #ui-statbar-awakeness, #ui-statbar-swagosity, #ui-statbar-cleanliness {
+#ui-statbar-fullness, #ui-statbar-awakeness, #ui-statbar-dexterity, #ui-statbar-cleanliness {
     position: absolute;
     left: 1.65em;
     width: 46px;
@@ -121,7 +123,7 @@ of each other.*/
     top: 102px;
     background-position-x: -46px;
 }
-#ui-statbar-swagosity {
+#ui-statbar-dexterity {
     top: 121px;
     background-position-x: -92px;
 }
@@ -144,7 +146,7 @@ of each other.*/
    -22px is a flexing arm
    ---------------------------------------- */
 
-#ui-icon-fullness, #ui-icon-awakeness, #ui-icon-swagosity, #ui-icon-cleanliness {
+#ui-icon-fullness, #ui-icon-awakeness, #ui-icon-dexterity, #ui-icon-cleanliness {
     position: absolute;
     left: 0.55em;
     width: 11px;
@@ -162,7 +164,7 @@ of each other.*/
     top: 102px;
     background-position-x: -33px;
 }
-#ui-icon-swagosity {
+#ui-icon-dexterity {
     top: 121px;
     background-position-x: -44px;
 }
@@ -217,4 +219,34 @@ of each other.*/
     scale: 2 2;
     image-rendering: crisp-edges;
     z-index: 1;
+}
+
+/* ==== Goobert NAME BELOW STATS CARD ==== */
+.info-card > .ui-goobert-name {
+    position: absolute;
+    top: 172px;
+    left: 50%;
+    right: auto;
+
+    transform: translateX(-50%);
+
+    width: max-content;
+    max-width: 160px;
+    box-sizing: border-box;
+
+    color: yellow;
+    background: black;
+    padding: 4px 8px;
+
+    font-family: 'Pixelify Sans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.2;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+
+    z-index: 10;
+    pointer-events: none;
 }
