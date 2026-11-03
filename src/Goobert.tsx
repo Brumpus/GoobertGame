@@ -222,9 +222,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         for (const key of keys) {
 
-            // Goobert should never enter the Index.
-            if (key === "menu") continue;
-
             const door = doorRefs[key].current;
 
             if (!door) continue;
@@ -423,18 +420,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         const destination = roomKey as keyof typeof rooms;
 
-        // Prevent Goobert from entering the main menu.
-        if (roomKey === "menu" || roomKey === "index") {
-            return;
-        }
 
         // Reject invalid room destinations.
         if (!Object.prototype.hasOwnProperty.call(rooms, destination)) {
-            return;
-        }
-
-        // Additional protection against the main menu.
-        if (rooms[destination] === rooms.menu) {
             return;
         }
 
