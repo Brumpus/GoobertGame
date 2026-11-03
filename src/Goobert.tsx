@@ -93,7 +93,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         y: props.y
     });
 
-    const { updatePosition, updateRoom, doorRefs } = useGooberts();
+    const { updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
 
     /*
     * Synchronizes the Goobert's displayed position with GoobertContext.
@@ -177,6 +177,26 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             );
         });
     };
+    const overlapsBed = (x: number, y: number): boolean => {
+        if (props.room !== rooms.bedroom) return false;
+
+        const bedroom = document.querySelector(".bedroom");
+        if (!bedroom) return false;
+
+        const goobertRect = getGoobertRect(x, y);
+
+        const beds = bedroom.querySelectorAll(
+            ".bedroom-bed-button"
+        );
+
+        return Array.from(beds).some(door => {
+            return overlaps(
+                goobertRect,
+                door.getBoundingClientRect()
+            );
+        });
+    };
+
 
     /**
     * Updates the Goobert's position while enforcing movement boundaries.
@@ -338,8 +358,15 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             positionRef.current.y
         );
 
-        if (!doorKey) return;
+        if (doorKey) moveRooms(doorKey);
 
+        if(overlapsBed(positionRef.current.x, positionRef.current.y)) {
+            goToBed();
+        }
+
+        
+    };
+    const moveRooms = (doorKey: string) => {
         let roomKey = String(doorKey);
 
         if (roomKey.includes("Hub")) {
@@ -384,7 +411,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         updatePosition(props.id, spawnX, spawnY);
 
-    };
+    } 
+    const goToBed = () =>   {
+        // TODO: make sleeping more interesting
+        console.log("bed time!");
+        updateStat(props.id, "awakeness", 10000000000);   
+    }
 
     
     // Resets dragging if the browser interrupts the pointer interaction.
