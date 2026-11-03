@@ -15,6 +15,7 @@ export type FallingItem = {
     y: number;          // Position from top to bottom.
     speed: number;      // How quickly the item falls.
     isTrash: boolean;   // Whether the item is trash or food.
+    spriteIndex: number; // Which image to display from the sprite sheet.
 };
 
 // Keeps track of all items currently falling.
@@ -28,6 +29,11 @@ export function createFallingItem(gameWidth: number): FallingItem {
 
     // Give the item a 25% chance of being trash.
     const isTrash = Math.random() < 0.25;
+    
+    // Randomly choose a food or trash image.
+    const spriteIndex = isTrash
+    ? 18 + Math.floor(Math.random() * 6)
+    : Math.floor(Math.random() * 18);
 
     return {
         // Choose a random horizontal position.
@@ -39,8 +45,9 @@ export function createFallingItem(gameWidth: number): FallingItem {
         // Give each item a random falling speed.
         speed: 2 + Math.random() * 3,
 
-        // Remember whether the item is trash.
-        isTrash: isTrash
+        // Remember whether the item is trash and which sprite to use.
+        isTrash: isTrash,
+        spriteIndex: spriteIndex
     };
 }
 

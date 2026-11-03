@@ -172,7 +172,7 @@ export default function GameRoom() {
                 >
                     <img
                         src="images/game-room/feast-fest-machine.png"
-                        alt="Feast Fest - Coming Soon"
+                        alt="Play Feast Fest"
                     />
                 </button>
 
