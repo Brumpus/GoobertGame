@@ -2,7 +2,7 @@
 "use strict";
 import React, { useState } from "react";
 import { load, rooms } from "../App";
-import { doorOpenSound } from "./audio";
+import { doorOpenSound, goobertCreateSound } from "./audio";
 import useGooberts from "../GoobertContext";
 import "../styles/tree.css";
 
@@ -99,9 +99,14 @@ export default function Tree(): React.JSX.Element {
             appearance
         );
 
-        // Return to the Hub after creating the Goobert.
-        doorOpenSound.play();
-        load(rooms.hub);
+        // Play the Goobie creation sound.
+        goobertCreateSound.play();
+
+        // Clear the name for the next Goobie.
+        setGoobertName("");
+
+        // Generate a new appearance for the next Goobie.
+        setAppearance(randomAppearance());
     };
 
     return (

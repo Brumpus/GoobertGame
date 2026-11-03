@@ -10,6 +10,7 @@ import React, {
 } from "react";
 
 import useGooberts from "./GoobertContext";
+import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
 
 const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
@@ -328,6 +329,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         if (!movedRef.current) {
             console.log(`${props.name} says, "I've been poked!"`);
+            // Play the Goobert click sound
+            goobertClickSound.play();
             props.onGoobertSelected();
             return;
         }
