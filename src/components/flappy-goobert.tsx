@@ -5,8 +5,9 @@ import useGooberts from "../GoobertContext";
 import { stopGame } from "../games/games-global";
 import { initFlappyGoobert, jump, setCleanlinessReward } from "../games/flappy-goobert";
 import { load, rooms } from "../App";
-import { gameGoobert } from "./game-room";
 import "../games/flappy-goobert.css";
+import type { Goobert } from "../Goobert";
+import { gameGoobert } from "./game-room";
 
 
 export let setPlayAgain: Function | null;
@@ -16,6 +17,9 @@ export let gameOver: boolean;
  * Displays the game, tracks when the game ends,
  * and allows the player to restart or leave.
  */
+export type FlappyProps = {
+    gameGoobert: Goobert | null
+}
     export default function FlappyGoobert(): React.JSX.Element {
         let [showPlayAgain, setShowPlayAgain] = useState(false); 
 

@@ -10,6 +10,12 @@ export type GoobertAppearance = {
     eyeType: number;
     mouthType: number;
 };
+export type GoobertStats = {
+    fullness: number;
+    dexterity: number;
+    awakeness: number;
+    cleanliness: number;
+}
 
 // How many of each type of asset exist
 const MAX_EYE_TYPES = 10;
@@ -33,7 +39,8 @@ interface GoobertContextType {
         location?: string,
         x?: number,
         y?: number,
-        appearance?: GoobertAppearance
+        appearance?: GoobertAppearance,
+        stats?: GoobertStats
     ) => void;
 
     updatePosition: (
@@ -129,12 +136,16 @@ export function GoobertProvider({ children }: any) {
         location?: string,
         x?: number,
         y?: number,
-        appearance?: GoobertAppearance
+        appearance?: GoobertAppearance,
+        stats?: GoobertStats
     ) => {
         const goobert = renderGoobert(name, location, x, y);
 
         if (appearance) {
             Object.assign(goobert, appearance);
+        }
+        if (stats) {
+            Object.assign(goobert, stats);
         }
 
         goobert.id = name + gooberts.length;

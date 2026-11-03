@@ -4,6 +4,7 @@ import { load, rooms } from "../App";
 import { gameGoobert } from "./game-room";
 import { doorOpenSound, gameOverSound, frogoobertJumpSound } from "./audio";
 import "../games/frogoobert.css";
+import useGooberts from "../GoobertContext";
 
 const COLS = 9;
 const ROWS = 17;
@@ -71,6 +72,8 @@ export default function Frogoobert(): React.JSX.Element {
     const [gameOver, setGameOver] = useState(false);
     const [dexterity, setDexterity] = useState(gameGoobert?.dexterity ?? 0);
 
+    const { updateStat } = useGooberts();
+
     const playerRef = useRef<Position>({ x: START_X, y: START_Y });
     const carsRef = useRef<Car[]>(cars);
     const scoreRef = useRef(0);
@@ -107,6 +110,7 @@ export default function Frogoobert(): React.JSX.Element {
         if (!gameGoobert) return;
         gameGoobert.dexterity = Math.min(100, Math.max(0, gameGoobert.dexterity + amount));
         setDexterity(gameGoobert.dexterity);
+        updateStat(gameGoobert.id, "dexterity", amount);
     };
 
     const movePlayer = (dx: number, dy: number) => {

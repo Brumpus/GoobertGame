@@ -3,6 +3,13 @@ import { gameGoobert } from "../components/game-room.tsx";
 import { gameOverSound, snakeEatingSound } from "../components/audio.ts";
 import "./snake-stylesheet.css";
 
+// Callback used to restore Cleanliness through React context.
+let fullnessReward = null;
+
+// Allow the React component to register its reward function.
+export function setFullnessReward(callback) {
+    fullnessReward = callback;
+}
 
 export function initSnakeGame(boardWidth, boardHeight) {
     if (typeof stopGame === "function") {
@@ -97,7 +104,7 @@ function moveSnake() {
 
     // Update head x
     snake.head.x = currentSquare.x + snake.velocity.x;
-    if (snake.head.x > width) {
+    if (snake.head.x > width) {dexterity
         snake.head.x = 0;
     } else if (snake.head.x < 0) {
         snake.head.x = width;
@@ -215,6 +222,7 @@ function eatApple() {
         gameGoobert.fullness = Math.min(gameGoobert.fullness + 5, 100); // feed goobert
         // Update slider position
         document.getElementById('goobert-percentage').value = gameGoobert.fullness;
+        fullnessReward(5);
     }
 }
 function findValidSpaces() {
