@@ -231,3 +231,6 @@ body {
     height: 100%;
     overflow: hidden;
 }
+.hint {
+    font-size: small;
+}

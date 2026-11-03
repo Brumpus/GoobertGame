@@ -30,6 +30,7 @@ export default function MainMenu(): React.JSX.Element {
         indexClickSound.play();
         setScreen("menu");
     }
+    let { gooberts } = useGooberts();
 
     return (
         <main className="main-menu">
@@ -56,6 +57,9 @@ export default function MainMenu(): React.JSX.Element {
                                 onClick={() => indexClickSound.play()}
                             >
                                 Continue Game
+                                {gooberts.filter((goobert) => goobert.room == rooms.menu).length > 0 && 
+                                    <div className="hint"><br />Drag gooberts here to bring them back to the game!</div>
+                                }
                             </button>
                                 
                         </div>
