@@ -209,20 +209,61 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     const findNearbyDoor = (x: number, y: number) => {
         const goobertRect = getGoobertRect(x, y);
 
+        const goobertCenterX =
+            (goobertRect.left + goobertRect.right) / 2;
+
+        const goobertCenterY =
+            (goobertRect.top + goobertRect.bottom) / 2;
+
+        let closestDoor: keyof typeof doorRefs | null = null;
+        let closestDistance = Infinity;
+
         const keys = Object.keys(doorRefs) as (keyof typeof doorRefs)[];
 
         for (const key of keys) {
+
+            // Goobert should never enter the Index.
+            if (key === "menu") continue;
+
             const door = doorRefs[key].current;
+
             if (!door) continue;
+
+            // Only detect doors in the current room.
+            const activeRoom = props.room === rooms.hub
+                ? document.querySelector(".hub")
+                : document.querySelector(".game-room, .bedroom, .shop");
+
+            if (activeRoom && !activeRoom.contains(door)) {
+                continue;
+            }
 
             const doorRect = door.getBoundingClientRect();
 
-            if (overlaps(goobertRect, doorRect, DOOR_DISTANCE)) {
-                return key;
+            // Check whether Goobert is close enough.
+            if (!overlaps(goobertRect, doorRect, DOOR_DISTANCE)) {
+                continue;
+            }
+
+            const doorCenterX =
+                (doorRect.left + doorRect.right) / 2;
+
+            const doorCenterY =
+                (doorRect.top + doorRect.bottom) / 2;
+
+            const distance = Math.hypot(
+                goobertCenterX - doorCenterX,
+                goobertCenterY - doorCenterY
+            );
+
+            // Select the nearest eligible door.
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestDoor = key;
             }
         }
 
-        return null;
+        return closestDoor;
     };
 
     /*
@@ -268,8 +309,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 );
             }
 
-            // Stop before entering a door.
-            if (overlapsDoor(boundedX, boundedY)) {
+            // Keep desktop door collision behavior.
+            // Allow Goobert to approach doors on mobile.
+            if (
+                window.innerWidth > 768 &&
+                overlapsDoor(boundedX, boundedY)
+            ) {
                 return;
             }
         }
@@ -378,7 +423,20 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         const destination = roomKey as keyof typeof rooms;
 
-        if (!destination) return;
+        // Prevent Goobert from entering the main menu.
+        if (roomKey === "menu" || roomKey === "index") {
+            return;
+        }
+
+        // Reject invalid room destinations.
+        if (!Object.prototype.hasOwnProperty.call(rooms, destination)) {
+            return;
+        }
+
+        // Additional protection against the main menu.
+        if (rooms[destination] === rooms.menu) {
+            return;
+        }
 
         updateRoom(props.id, rooms[destination]);
 

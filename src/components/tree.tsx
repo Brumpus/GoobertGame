@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { load, rooms } from "../App";
-import { doorOpenSound, goobertCreateSound } from "./audio";
+import { treeSound, goobertCreateSound } from "./audio";
 import useGooberts from "../GoobertContext";
 import "../styles/tree.css";
 
@@ -70,7 +70,7 @@ export default function Tree(): React.JSX.Element {
     // Track the currently displayed dice face (0 through 5).
     const [diceFace, setDiceFace] = useState(0);
 
-    // Randomize only the feature associated with the clicked fruit.
+    // Cycle through the available options for the selected feature.
     const changeFeature = (feature: Feature) => {
         setAppearance(previous => {
             let selected = (previous[feature] + 1) % limits[feature];
@@ -198,7 +198,10 @@ export default function Tree(): React.JSX.Element {
                     type="button"
                     className="tree-exit"
                     onClick={() => {
-                        doorOpenSound.play();
+                        // Play the Tree room exit sound.
+                        treeSound.play();
+
+                        // Return to the Hub.
                         load(rooms.hub);
                     }}
                 >
