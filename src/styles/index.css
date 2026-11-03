@@ -1,12 +1,13 @@
+
 /*--------------------------*/
 /* Gooberts Main Menu Styles */
 /*--------------------------*/
-@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
 body {
     background-image: url("../images/index/hills-background.gif");
-    
+
     /* Do not repeat the image */
     background-repeat: no-repeat;
 
@@ -32,8 +33,6 @@ body {
 .btn-continue, .btn-new-game {
     font-family: 'Pixelify Sans', sans-serif;
     font-weight: bold;
-
-    /* Set the font size and padding for the main menu buttons */
     font-size: 2rem;
     padding: 15px 30px;
 }
@@ -71,19 +70,18 @@ body {
     border-color: black;
 }
 
-/* New Game Button Hover */
 .btn-new-game:hover {
     background-color: #ffcd4db9;
     color: black;
     border-color: black;
 }
 
-/* Credits Button Hover */
 .btn-credits:hover {
     background-color: #ff922b9f;
     color: black;
     border-color: black;
 }
+
 
 /*--------------------------*/
 /*    Responsive Display    */
@@ -96,39 +94,43 @@ body {
 
 /* Smaller displays */
 @media (max-width: 768px) {
-
     .btn-continue, .btn-new-game {
         font-size: 1.4rem;
     }
-    
 }
 
 /* Micro displays */
 @media (max-width: 480px) {
-
     .btn-continue, .btn-new-game {
         font-size: 1.1rem;
     }
 
     /* Credits modal */
-
     #creditsModal .modal-content {
         font-size: .90rem;
     }
-
 }
-/* ==== CREDITS SCREEN ==== */
-/* Fill the screen while keeping the same menu background. */
+
+
+/*--------------------------*/
+/*       Credits Screen     */
+/*--------------------------*/
+
+/* Fill the screen while keeping the menu background */
 .credits-screen {
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+
+    background-color: rgba(0, 0, 0, 0.65);
     font-family: 'Pixelify Sans', sans-serif;
     color: white;
     text-align: center;
 }
 
-/* Back button stays visible while the credits scroll. */
+/* Keep the Back to Menu button visible */
 .credits-back {
     position: absolute;
     top: 20px;
@@ -137,54 +139,82 @@ body {
     border: 4px solid black;
 }
 
-/* Hide text when it moves outside the credits area. */
+/* Allow manual scrolling throughout the credits */
 .credits-window {
+    width: 100%;
     height: 100%;
-    overflow: hidden;
-    padding: 0 20px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 80px 20px 40px;
+    box-sizing: border-box;
+
     text-shadow: 2px 2px 3px black;
+
+    /* Keep scrolling within the credits */
+    overscroll-behavior: contain;
+
+    /* Allow vertical touchscreen scrolling */
+    touch-action: pan-y;
 }
 
-/* Move the credits upward like movie credits. */
+/* Credits no longer scroll automatically */
 .credits-scroll {
-    padding-top: 100vh;
-    padding-bottom: 30vh;
-    animation: credits-roll 32s linear infinite;
+    padding-top: 0;
+    padding-bottom: 40px;
+    animation: none;
+    transform: none;
 }
 
-.credits-scroll h1 { font-size: 3rem; margin-bottom: 3rem; }
-.credits-scroll h2 { font-size: 2rem; margin: 3rem 0 1.5rem; }
-.credits-scroll p { font-size: 1.4rem; margin-bottom: 1rem; }
-
-/* Pause the scrolling when someone hovers over the credits. */
-.credits-scroll:hover { animation-play-state: paused; }
-
-@keyframes credits-roll {
-    from { transform: translateY(0); }
-    to { transform: translateY(-100%); }
+/* Credits text */
+.credits-scroll h1 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
 }
 
-/* Make the credits readable on smaller phones. */
+.credits-scroll h2 {
+    font-size: 2rem;
+    margin: 3rem 0 1.5rem;
+}
+
+.credits-scroll p {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+
+/*--------------------------*/
+/*    Mobile Credits Layout */
+/*--------------------------*/
+
 @media (max-width: 480px) {
-    .credits-scroll h1 { font-size: 2.2rem; }
-    .credits-scroll h2 { font-size: 1.6rem; }
-    .credits-scroll p { font-size: 1.1rem; }
-    .credits-back { top: 12px; left: 12px; }
+    .credits-scroll h1 {
+        font-size: 2.2rem;
+    }
+
+    .credits-scroll h2 {
+        font-size: 1.6rem;
+    }
+
+    .credits-scroll p {
+        font-size: 1.1rem;
+    }
+
+    .credits-back {
+        top: 12px;
+        left: 12px;
+    }
+
+    .credits-window {
+        padding: 75px 12px 30px;
+    }
 }
 
-/* Respect accessibility settings that reduce animation. */
-@media (prefers-reduced-motion: reduce) {
-    .credits-window { overflow-y: auto; }
-    .credits-scroll { padding-top: 90px; animation: none; }
-}
 
-/* CREDITS BACKGROUND */
-
-/* Dark overlay behind credits text for legibility */
-.credits-screen {
-    background-color: rgba(0,0,0,0.65);
-    color: white;
-}
+/*--------------------------*/
+/*    Page Overflow Rules   */
+/*--------------------------*/
 
 /* Prevent unwanted scrollbars on the main menu */
 html,
@@ -197,13 +227,6 @@ body {
 
 /* Keep the React app within the browser window */
 #content {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-/* Keep the Credits screen within the window */
-.credits-screen {
     width: 100%;
     height: 100%;
     overflow: hidden;

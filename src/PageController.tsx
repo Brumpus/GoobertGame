@@ -23,9 +23,10 @@ const PageController = () => {
             <Route path="/game-room" element={<GameRoom />} />
             <Route path="/bedroom" element={<Bedroom />} />
             <Route path="/dungeon" element={<Dungeon />} />
+            
             <Route path="/games/flappy-goobert" element={<FlappyGoobert />} />
             <Route path="/games/snake" element={<SnakeGame />} />
-            <Route path="/frogoobert" element={<Frogoobert />} />
+            <Route path="/games/frogoobert" element={<Frogoobert />} />
             <Route path="/games/feast-fest" element={<FeastFest />} />
 
             {/* Default: main menu */}

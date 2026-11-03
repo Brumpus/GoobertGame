@@ -1,6 +1,6 @@
 import { body, gridSize, height, keys, refreshGameBody, resetGame, setBodySize, setHeight, setWidth, start, stopGame, width } from "./games-global.ts";
 import { gameGoobert } from "../components/game-room.tsx";
-
+import { gameOverSound, snakeEatingSound } from "../components/audio.ts";
 import "./snake-stylesheet.css";
 
 // Callback used to restore Cleanliness through React context.
@@ -104,7 +104,7 @@ function moveSnake() {
 
     // Update head x
     snake.head.x = currentSquare.x + snake.velocity.x;
-    if (snake.head.x > width) {dexterity
+    if (snake.head.x > width) {
         snake.head.x = 0;
     } else if (snake.head.x < 0) {
         snake.head.x = width;
@@ -133,7 +133,13 @@ function moveSnake() {
         for (let position of snake.positions) {
             // Kill snake if it is touching itself
             if (position.x == snake.head.x && position.y == snake.head.y && position != snake.head) {
+                
+                // Play the game-over sound.
+                gameOverSound.play();
+
+                // Reset the game.
                 resetGame();
+                return;
             }
         }
 
@@ -193,6 +199,9 @@ function setObjPosition(obj) {
     setPosition(obj.div, obj.x, obj.y);
 }
 function eatApple() {
+    // Play the eating sound when Snake collects apple
+    snakeEatingSound.play();
+    
     let newSquare = { x: apple.x, y: apple.y, id: snake.positions.length };
     newSquare.asset = [snake.direction, assets.head];
 

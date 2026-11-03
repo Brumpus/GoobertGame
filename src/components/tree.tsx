@@ -1,8 +1,8 @@
-
 "use strict";
+
 import React, { useState } from "react";
 import { load, rooms } from "../App";
-import { doorOpenSound } from "./audio";
+import { treeSound, goobertCreateSound } from "./audio";
 import useGooberts from "../GoobertContext";
 import "../styles/tree.css";
 
@@ -25,17 +25,19 @@ const limits: Record<Feature, number> = {
     mouthType: 11
 };
 
+// Each fruit uses a 64x64 section of fruit-buttons.png.
+// The sprite sheet contains six fruits arranged horizontally.
 const apples: {
     feature: Feature;
-    image: string;
+    spriteIndex: number;
     label: string;
 }[] = [
-    { feature: "bodyType", image: "red-apple.png", label: "Body Type" },
-    { feature: "bodyColor", image: "orange-apple.png", label: "Body Color" },
-    { feature: "legType", image: "yellow-apple.png", label: "Leg Type" },
-    { feature: "legColor", image: "cyan-apple.png", label: "Leg Color" },
-    { feature: "eyeType", image: "blue-apple.png", label: "Eyes" },
-    { feature: "mouthType", image: "purple-apple.png", label: "Mouth" }
+    { feature: "bodyType", spriteIndex: 0, label: "Body Type" },
+    { feature: "bodyColor", spriteIndex: 1, label: "Body Color" },
+    { feature: "legType", spriteIndex: 2, label: "Leg Type" },
+    { feature: "legColor", spriteIndex: 3, label: "Leg Color" },
+    { feature: "eyeType", spriteIndex: 4, label: "Eyes" },
+    { feature: "mouthType", spriteIndex: 5, label: "Mouth" }
 ];
 
 function randomNumber(max: number): number {
@@ -65,7 +67,10 @@ export default function Tree(): React.JSX.Element {
         randomAppearance
     );
 
-    // Randomize only the feature associated with the clicked apple.
+    // Track the currently displayed dice face (0 through 5).
+    const [diceFace, setDiceFace] = useState(0);
+
+    // Cycle through the available options for the selected feature.
     const changeFeature = (feature: Feature) => {
         setAppearance(previous => {
             let selected = (previous[feature] + 1) % limits[feature];
@@ -74,6 +79,21 @@ export default function Tree(): React.JSX.Element {
                 ...previous,
                 [feature]: selected
             };
+        });
+    };
+
+    // Randomize all Goobert features and roll the dice.
+    const rollDice = () => {
+
+        // Generate a new random Goobert appearance.
+        setAppearance(randomAppearance());
+
+        // Select a different dice face from the previous roll.
+        setDiceFace(previous => {
+            const next = Math.floor(Math.random() * 5);
+
+            // Skip the previously displayed face.
+            return next >= previous ? next + 1 : next;
         });
     };
 
@@ -94,9 +114,14 @@ export default function Tree(): React.JSX.Element {
             appearance
         );
 
-        // Return to the Hub after creating the Goobert.
-        doorOpenSound.play();
-        load(rooms.hub);
+        // Play the Goobie creation sound.
+        goobertCreateSound.play();
+
+        // Clear the name for the next Goobie.
+        setGoobertName("");
+
+        // Generate a new appearance for the next Goobie.
+        setAppearance(randomAppearance());
     };
 
     return (
@@ -142,7 +167,7 @@ export default function Tree(): React.JSX.Element {
 
                 </div>
 
-                {/* CUSTOMIZATION APPLES */}
+                {/* CUSTOMIZATION FRUITS */}
                 <div className="tree-apples">
                     {apples.map(apple => (
                         <button
@@ -153,9 +178,13 @@ export default function Tree(): React.JSX.Element {
                             aria-label={`Randomize ${apple.label}`}
                             onClick={() => changeFeature(apple.feature)}
                         >
-                            <img
-                                src={`images/tree/${apple.image}`}
-                                alt=""
+                            {/* Display the corresponding fruit from the sprite sheet */}
+                            <span
+                                className="tree-fruit-sprite"
+                                style={{
+                                    backgroundPosition:
+                                        `${apple.spriteIndex * 20}% 0%`
+                                }}
                             />
                         </button>
                     ))}
@@ -169,7 +198,10 @@ export default function Tree(): React.JSX.Element {
                     type="button"
                     className="tree-exit"
                     onClick={() => {
-                        doorOpenSound.play();
+                        // Play the Tree room exit sound.
+                        treeSound.play();
+
+                        // Return to the Hub.
                         load(rooms.hub);
                     }}
                 >
@@ -177,7 +209,7 @@ export default function Tree(): React.JSX.Element {
                 </button>
             </div>
 
-            {/* CREATE Goobert */}
+            {/* CREATE GOOBERT */}
             <div className="tree-create-controls">
 
                 <input
@@ -190,13 +222,16 @@ export default function Tree(): React.JSX.Element {
                     onChange={(event) => setGoobertName(event.target.value)}
                 />
 
+                {/* SAVE GOOBERT BUTTON */}
                 <button
                     type="button"
                     className="tree-create"
+                    title="Save Goobert"
+                    aria-label="Save Goobert"
                     onClick={handleCreateGoobert}
                     disabled={!GoobertName.trim()}
                 >
-                    CREATE Goobert
+                    <span className="tree-save-sprite" />
                 </button>
 
             </div>
@@ -208,9 +243,16 @@ export default function Tree(): React.JSX.Element {
                     className="tree-randomize"
                     title="Randomize Goobert"
                     aria-label="Randomize Goobert"
-                    onClick={() => setAppearance(randomAppearance())}
+                    onClick={rollDice}
                 >
-                    <i className="bi bi-dice-5-fill"></i>
+                    {/* Display the current dice face from the sprite sheet */}
+                    <span
+                        className="tree-dice-sprite"
+                        style={{
+                            backgroundPosition:
+                                `${diceFace * 20}% 0%`
+                        }}
+                    />
                 </button>
             </div>
 

@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { load, rooms } from "../App";
 import { gameGoobert } from "./game-room";
-import { doorOpenSound } from "./audio";
+import { doorOpenSound, gameOverSound, frogoobertJumpSound } from "./audio";
 import "../games/frogoobert.css";
 import useGooberts from "../GoobertContext";
 
@@ -88,8 +88,13 @@ export default function Frogoobert(): React.JSX.Element {
     };
 
     const endGame = () => {
+        // Prevent the game-over sound from playing multiple times
         if (gameOverRef.current) return;
         gameOverRef.current = true;
+
+        // Play the game-over sound when Goobert hit by car.
+        gameOverSound.play();
+
         setGameOver(true);
     };
 
@@ -118,6 +123,9 @@ export default function Frogoobert(): React.JSX.Element {
         };
         if (next.x === current.x && next.y === current.y) return;
 
+        // Play the jump sound when Frogoobert moves to a new tile.
+        frogoobertJumpSound.play();
+        
         playerRef.current = next;
         setPlayer(next);
         if (checkCollision(next, carsRef.current)) {

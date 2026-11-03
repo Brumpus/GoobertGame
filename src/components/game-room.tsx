@@ -150,16 +150,25 @@ export default function GameRoom() {
                     />
                 </button>
 
-                {/* Feast Fest - Falling Food Minigame */}
+                {/* Feast Fest */}
                 <button
                     type="button"
                     className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => {
-                            // Play the arcade sound and open Feast Fest.
-                            arcadeClickSound.play();
+                    onMouseEnter={() => arcadeHoverSound.play()}
+                    onClick={() => {
+                        arcadeClickSound.play();
+
+                       // Load flappy goobert if no gooberts are available for selection
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
                             load(rooms.feastFest);
-                        }}
+                        } else {
+                            // Select the Goobert for rewards.
+                            setGameSelector("Feast Fest");
+                            setGoobertSelector(rooms.feastFest);
+                        }
+                    }}
                 >
                     <img
                         src="images/game-room/feast-fest-machine.png"
