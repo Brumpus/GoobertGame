@@ -36,14 +36,21 @@
     touch-action: none;
 }
 
-/* Falling food and trash */
+/* Falling food and trash sprites */
 .feast-item {
     position: absolute;
     width: 32px;
     height: 32px;
+
+    /* Elena's food and trash sprite sheet */
+    background-image: url("../images/games/food-and-trash.png");
+
+    /* 6 columns x 4 rows, each sprite is 32x32 */
+    background-size: 192px 128px;
+    background-repeat: no-repeat;
 }
 
-/* Temporary catcher until Goobert is added */
+/* Temporary catcher until Goobert is added (possibly) */
 .feast-catcher {
     position: absolute;
     bottom: 10px;
@@ -87,6 +94,27 @@
     margin-top: 10px;
     padding: 10px 20px;
     cursor: pointer;
+}
+
+/* Light pink Back to Game Room button */
+.feast-back-button {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 20;
+    background-color: #ffb6c1;
+    color: black;
+    border: 2px solid black;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Slightly lighter pink when hovering */
+.feast-back-button:hover {
+    background-color: #ffcddd;
 }
 
 /*

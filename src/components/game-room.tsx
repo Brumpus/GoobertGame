@@ -150,16 +150,20 @@ export default function GameRoom() {
                     />
                 </button>
 
-                {/* Feast Fest - Coming Soon */}
+                {/* Feast Fest - Falling Food Minigame */}
                 <button
                     type="button"
                     className="machine-button"
-                    onMouseEnter={() => arcadeHoverSound.play()}
-                    onClick={() => arcadeClickSound.play()}
+                        onMouseEnter={() => arcadeHoverSound.play()}
+                        onClick={() => {
+                            // Play the arcade sound and open Feast Fest.
+                            arcadeClickSound.play();
+                            load(rooms.feastFest);
+                        }}
                 >
                     <img
                         src="images/game-room/feast-fest-machine.png"
-                        alt="Feast Fest - Coming Soon"
+                        alt="Play Feast Fest"
                     />
                 </button>
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { load, rooms } from "../App";
 import { createFallingItem, type FallingItem } from "../games/feast-fest";
 import "../games/feast-fest.css";
 
@@ -9,8 +10,8 @@ import "../games/feast-fest.css";
  * Move the catcher left and right using a mouse or finger.
  *
  * Catch food: +1 point
- * Catch trash: -1 point
- * Miss food: Game Over
+ * Catch trash: Game Over
+ * Miss food: -1 point
  *
  * Goobert's animation and the team's sprites
  * will be added later.
@@ -49,7 +50,7 @@ export default function FeastFest(): React.JSX.Element {
             const catcherLeft = catcherXRef.current;
 
             let pointsEarned = 0;
-            let missedFood = false;
+            let caughtTrash = false;
             const remainingItems: FallingItem[] = [];
 
             /*
@@ -71,18 +72,22 @@ export default function FeastFest(): React.JSX.Element {
                     movedItem.y + 32 > catcherY;
 
                 if (touchesCatcher) {
-                    // Food adds points; trash removes points.
-                    pointsEarned += movedItem.isTrash ? -1 : 1;
+                    if (movedItem.isTrash) {
+                        // Catching trash ends the game.
+                        caughtTrash = true;
+                    } else {
+                        // Catching foods adds one point.
+                        pointsEarned += 1;
+                    }
                     continue;
                 }
 
-                // Missing food ends the game.
+                // Missing food subtracts one point.
                 if (
                     !movedItem.isTrash &&
                     movedItem.y + 32 >= boardHeight
                 ) {
-                    missedFood = true;
-                    remainingItems.push(movedItem);
+                    pointsEarned -= 1;
                     continue;
                 }
 
@@ -102,7 +107,7 @@ export default function FeastFest(): React.JSX.Element {
             }
 
             // Occasionally spawn a new item.
-            if (!missedFood && Math.random() < 0.04) {
+            if (!caughtTrash && Math.random() < 0.04) {
                 remainingItems.push(
                     createFallingItem(boardWidth)
                 );
@@ -112,8 +117,8 @@ export default function FeastFest(): React.JSX.Element {
             itemsRef.current = remainingItems;
             setItems(remainingItems);
 
-            // End the game when food hits the ground.
-            if (missedFood) {
+            // End the game when the player catches trash.
+            if (caughtTrash) {
                 setGameOver(true);
                 window.clearInterval(gameTimer);
             }
@@ -166,6 +171,14 @@ export default function FeastFest(): React.JSX.Element {
 
     return (
         <main className="feast-screen">
+            <button
+                type="button"
+                className="feast-back-button"
+                onClick={() => load(rooms.gameRoom)}
+            >
+                Back to Game Room
+            </button>
+
             <h1>Feast Fest!</h1>
             <p>Catch the food and avoid the trash!</p>
 
@@ -182,7 +195,7 @@ export default function FeastFest(): React.JSX.Element {
                 onPointerMove={handlePointerMove}
             >
 
-                {/* Falling food and trash */}
+                {/* Display food and trash from the sprite sheet */}
                 {items.map((item, index) => (
                     <div
                         key={index}
@@ -190,10 +203,13 @@ export default function FeastFest(): React.JSX.Element {
                         style={{
                             left: item.x,
                             top: item.y,
-                            backgroundColor: item.isTrash
-                                ? "#d9534f"
-                                : "#7ac943",
-                            borderRadius: "6px"
+
+                            // Each sprite is 32x32 pixels in a sheet with 6 columns.
+                            backgroundPosition: `${
+                                -(item.spriteIndex % 6) * 32
+                            }px ${
+                                -Math.floor(item.spriteIndex / 6) * 32
+                            }px`
                         }}
                     />
                 ))}
@@ -209,7 +225,7 @@ export default function FeastFest(): React.JSX.Element {
             {gameOver && (
                 <div className="feast-game-over-panel">
                     <h2>Game Over!</h2>
-                    <p>You let food hit the ground!</p>
+                    <p>You ate trash!</p>
                     <p>Final Score: {score}</p>
 
                     <button

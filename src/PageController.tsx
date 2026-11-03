@@ -11,6 +11,7 @@ import Dungeon from "./components/dungeon";
 import FlappyGoobert from "./components/flappy-goobert";
 import SnakeGame from "./components/snake";
 import Frogoobert from "./components/frogoobert";
+import FeastFest from "./components/feast-fest";
 
 const PageController = () => { 
     return (
@@ -25,6 +26,7 @@ const PageController = () => {
             <Route path="/games/flappy-goobert" element={<FlappyGoobert />} />
             <Route path="/games/snake" element={<SnakeGame />} />
             <Route path="/frogoobert" element={<Frogoobert />} />
+            <Route path="/games/feast-fest" element={<FeastFest />} />
 
             {/* Default: main menu */}
             <Route path="*" element={<MainMenu />} />
