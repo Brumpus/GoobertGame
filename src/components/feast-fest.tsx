@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createFallingItem, type FallingItem } from "../games/feast-fest";
 import "../games/feast-fest.css";
+import { load, rooms } from "../App";
 
 /*
  * Feast Fest - Falling Food Minigame
@@ -169,6 +170,14 @@ export default function FeastFest(): React.JSX.Element {
             <h1>Feast Fest!</h1>
             <p>Catch the food and avoid the trash!</p>
 
+            {/* Button to return to the Game Room*/}
+            <button
+                type="button"
+                className="btn game-return-btn"
+                onClick={() => load(rooms.gameRoom)}>
+                Back to Game Room
+            </button>
+            
             {/* Display the current score */}
             <div className="feast-score">
                 Score: {score}

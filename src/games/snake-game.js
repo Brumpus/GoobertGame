@@ -104,7 +104,7 @@ function moveSnake() {
 
     // Update head x
     snake.head.x = currentSquare.x + snake.velocity.x;
-    if (snake.head.x > width) {dexterity
+    if (snake.head.x > width) {
         snake.head.x = 0;
     } else if (snake.head.x < 0) {
         snake.head.x = width;

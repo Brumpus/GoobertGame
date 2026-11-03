@@ -48,8 +48,8 @@ export default function MainMenu(): React.JSX.Element {
                     </div>
 
                     {/* Save system will be connected later. */}
-                    <div className="row justify-content-center my-3" ref={doorRefs.menuHub}>
-                        <div className="col-10 col-md-6 col-lg-3">
+                    <div className="row justify-content-center my-3">
+                        <div className="col-10 col-md-6 col-lg-3" ref={doorRefs.menuHub}>
                             <button 
                                 className="btn btn-continue menu-button w-100"
                                 onMouseEnter={() => indexHoverSound.play()}
