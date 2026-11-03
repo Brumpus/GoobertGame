@@ -175,3 +175,8 @@ html, body {
 html {
     overflow-x: hidden;
 }
+
+.bedroom {
+    overscroll-behavior: none;
+    touch-action: none;
+}

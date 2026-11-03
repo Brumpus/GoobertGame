@@ -1,14 +1,15 @@
 "use strict";
 import "./styles/ui.css";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
 
 import GoobertElement, { type Goobert } from "./Goobert";
 
 import UIGoobertCard from "./components/ui-script";
 
-import { BrowserRouter, useNavigate } from "react-router";
+import { BrowserRouter, useNavigate, useLocation } from "react-router";
+import { indexMusic, hubMusic } from "./components/audio";
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
 
@@ -45,6 +46,40 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 	const handleUiCloseButton = () => {
 		setUiGoobert(undefined);
 	}
+
+// Keep background music synchronized with the current room.
+const location = useLocation();
+
+	useEffect(() => {
+		const playRoomMusic = () => {
+			const isMenu = location.pathname === "/" || location.pathname === "";
+
+			const selectedMusic = isMenu ? indexMusic : hubMusic;
+			const otherMusic = isMenu ? hubMusic : indexMusic;
+
+			otherMusic.stop();
+
+			if (!selectedMusic.playing()) {
+				selectedMusic.play();
+			}
+		};
+
+		// Start music after user interaction to satisfy browser autoplay rules.
+		const handleInteraction = () => {
+			playRoomMusic();
+		};
+
+		document.addEventListener("click", handleInteraction, { once: true });
+
+		// If music has already started, switch tracks when navigating.
+		if (indexMusic.playing() || hubMusic.playing()) {
+			playRoomMusic();
+		}
+
+		return () => {
+			document.removeEventListener("click", handleInteraction);
+		};
+	}, [location.pathname]);
 
 	// Define the load function to load a room and re-render the page
 	const navigate = useNavigate();
