@@ -13,6 +13,14 @@ import useGooberts from "./GoobertContext";
 import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
 
+import { 
+    randomTarget,
+    arrived,
+    step,
+    type Point,
+    type Bounds
+ } from "./GoobertAI";
+
 const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
 const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
 const EYES_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-eyes.png';
@@ -20,6 +28,7 @@ const MOUTH_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-mouths.png';
 
 const SPRITE_SIZE = 64;
 const DOOR_DISTANCE = 20;
+const GROUND_LIMIT = 350;
 
 type GoobertProps = {
     room: string;
@@ -325,7 +334,97 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         setPosition(nextPosition);
 
         updatePosition(props.id, boundedX, boundedY);
+
+        return true;
     };
+
+    /* 
+    * Wandering AI allows Gooberts to move across the screen when not being dragged.
+    * Goobies will wander around the Hub and other rooms, avoiding doors and staying 
+    * within boundaries. The wandering behavior is paused when the player interacts 
+    * with a Goobert.
+    */
+   const getWanderBounds = (): Bounds => {
+        const hub = document.querySelector(".hub");
+        const isMobile = window.innerWidth <= 768;
+
+        // Adjusts wandering boundaries for the Hub room
+        if (props.room === rooms.hub && hub) {
+            const maxX = Math.max(0, hub.clientWidth - SPRITE_SIZE);
+            const maxY = Math.max(
+                0,
+                (isMobile ? hub.clientHeight : hub.scrollHeight) - SPRITE_SIZE
+            );
+
+            // Keeps Gooberts on the ground on desktop, but allows them to wander freely on mobile.
+            return {
+                minX: 0,
+                maxX,
+                minY: isMobile ? 0 : Math.min(GROUND_LIMIT, maxY),
+                maxY
+            };
+        }
+
+        // Default wandering boundaries for other rooms
+        return {
+            minX: 0,
+            maxX: Math.max(0, window.innerWidth - SPRITE_SIZE),
+            minY: 0,
+            maxY: Math.max(0, innerHeight - SPRITE_SIZE)
+        };
+   };
+
+   // targetRef stores the current wandering target, and waitRef controls the 
+   // waiting time before selecting a new target.
+   const targetRef = useRef<Point | null > (null);
+   const waitRef = useRef(20);
+
+   const latestMove = useRef({ move, getWanderBounds });
+   latestMove.current = { move, getWanderBounds };
+
+   useEffect(() => {
+    if (props.isUi) return;
+
+    const timer = window.setInterval(() => {
+        // Skip wandering behavior if the Goobert is being dragged or waiting.
+        if (draggingRef.current) {
+            return;
+        }
+
+        // Decrease the wait time before selecting a new wandering target.
+        if (waitRef.current > 0) {
+            waitRef.current -= 1;
+            return;
+        }
+
+        // If no target is set, generate a new random target within the wandering bounds.
+        if (targetRef.current === null) {
+            targetRef.current = randomTarget(latestMove.current.getWanderBounds());
+            return;
+        }
+
+        // Move the Goobert towards the current target. 
+        // If it has arrived, reset the target and set a new wait time.
+        const current = positionRef.current;
+        if (arrived(current, targetRef.current)) {
+            targetRef.current = null;
+            waitRef.current = 20 + Math.floor(Math.random() * 60);
+            return;
+        }
+
+        const next = step(current, targetRef.current, 2);
+        const worked = latestMove.current.move(next.x, next.y);
+
+        // If the move was unsuccessful due to boundaries, reset the target 
+        // and set a short wait time before trying again.
+        if (!worked) {
+            targetRef.current = null;
+            waitRef.current = 10;
+        }
+    }, 50);
+
+    return () => window.clearInterval(timer);
+   }, [props.isUi]);
 
     /*
     * Starts dragging when the player presses a Goobert.
