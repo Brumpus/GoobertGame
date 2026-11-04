@@ -28,7 +28,8 @@ export const rooms = {
 
 	snakeGame: "games/snake",
 	flappyGoobert: "games/flappy-goobert",
-	frogoobert: "/frogoobert",
+	frogoobert: "/games/frogoobert",
+	pipeGame: "/games/pipelined",
 	feastFest: "/games/feast-fest",
 
 }
