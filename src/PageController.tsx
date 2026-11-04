@@ -12,6 +12,7 @@ import FlappyGoobert from "./components/flappy-goobert";
 import SnakeGame from "./components/snake";
 import Frogoobert from "./components/frogoobert";
 import Pipelined from "./components/PipeGame/pipelined";
+import FeastFest from "./components/feast-fest";
 
 const PageController = () => { 
     return (
@@ -23,10 +24,13 @@ const PageController = () => {
             <Route path="/game-room" element={<GameRoom />} />
             <Route path="/bedroom" element={<Bedroom />} />
             <Route path="/dungeon" element={<Dungeon />} />
+            
             <Route path="/games/flappy-goobert" element={<FlappyGoobert />} />
             <Route path="/games/snake" element={<SnakeGame />} />
-            <Route path="/frogoobert" element={<Frogoobert />} />
-            <Route path="/pipelined" element={<Pipelined />} />
+            
+            <Route path="/games/pipelined" element={<Pipelined />} />
+            <Route path="/games/frogoobert" element={<Frogoobert />} />
+            <Route path="/games/feast-fest" element={<FeastFest />} />
 
             {/* Default: main menu */}
             <Route path="*" element={<MainMenu />} />

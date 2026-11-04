@@ -1,7 +1,7 @@
 "use strict";
-import React from "react";
+import React, { useState }from "react";
 import { load, rooms } from "../App";
-import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound } from "./audio";
+import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound, treeSound} from "./audio";
 import "../styles/hub.css";
 import useGooberts from "../GoobertContext";
 
@@ -13,6 +13,9 @@ and navigate to different rooms.
 export default function Hub(props: any): React.JSX.Element {
     let { doorRefs } = useGooberts();
 
+    // Controls whether the exit confirmation popup is visible.
+    const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+
 
     return (
         <main id="main" className="hub">
@@ -20,8 +23,16 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Click the tree to enter the customization room */}
             <div
                 className="tree-container"
+
+                // Play the sound when the mouse enters the tree.
+                onMouseEnter={() => {
+                    treeSound.play();
+                }}
+
+                // Play the sound when the tree is clicked.
                 onClick={() => {
-                    doorOpenSound.play();
+                    treeSound.stop();
+                    treeSound.play();
                     load(rooms.tree);
                 }}
                 style={{ cursor: "pointer" }}
@@ -84,14 +95,15 @@ export default function Hub(props: any): React.JSX.Element {
                 <img src="images/hub/leave-door.png" alt="LEAVE" id="leave-door"
 
                 ref={doorRefs.menu}
-                
+
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
+
                 // Play the opening sound and enter
                 onClick={() => {
                     doorOpenSound.play();
                     load(rooms.menu);
-                }} />   
+                }} />
             </div>
 
             {/* Dungeon door */}

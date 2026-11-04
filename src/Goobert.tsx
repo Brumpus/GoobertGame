@@ -10,6 +10,7 @@ import React, {
 } from "react";
 
 import useGooberts from "./GoobertContext";
+import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
 
 const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
@@ -93,7 +94,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         y: props.y
     });
 
-    const { updatePosition, updateRoom, doorRefs } = useGooberts();
+    const { updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
 
     /*
     * Synchronizes the Goobert's displayed position with GoobertContext.
@@ -177,6 +178,26 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             );
         });
     };
+    const overlapsBed = (x: number, y: number): boolean => {
+        if (props.room !== rooms.bedroom) return false;
+
+        const bedroom = document.querySelector(".bedroom");
+        if (!bedroom) return false;
+
+        const goobertRect = getGoobertRect(x, y);
+
+        const beds = bedroom.querySelectorAll(
+            ".bedroom-bed-button"
+        );
+
+        return Array.from(beds).some(door => {
+            return overlaps(
+                goobertRect,
+                door.getBoundingClientRect()
+            );
+        });
+    };
+
 
     /**
     * Updates the Goobert's position while enforcing movement boundaries.
@@ -188,20 +209,58 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     const findNearbyDoor = (x: number, y: number) => {
         const goobertRect = getGoobertRect(x, y);
 
+        const goobertCenterX =
+            (goobertRect.left + goobertRect.right) / 2;
+
+        const goobertCenterY =
+            (goobertRect.top + goobertRect.bottom) / 2;
+
+        let closestDoor: keyof typeof doorRefs | null = null;
+        let closestDistance = Infinity;
+
         const keys = Object.keys(doorRefs) as (keyof typeof doorRefs)[];
 
         for (const key of keys) {
+
             const door = doorRefs[key].current;
+
             if (!door) continue;
+
+            // Only detect doors in the current room.
+            const activeRoom = props.room === rooms.hub
+                ? document.querySelector(".hub")
+                : document.querySelector(".game-room, .bedroom, .shop");
+
+            if (activeRoom && !activeRoom.contains(door)) {
+                continue;
+            }
 
             const doorRect = door.getBoundingClientRect();
 
-            if (overlaps(goobertRect, doorRect, DOOR_DISTANCE)) {
-                return key;
+            // Check whether Goobert is close enough.
+            if (!overlaps(goobertRect, doorRect, DOOR_DISTANCE)) {
+                continue;
+            }
+
+            const doorCenterX =
+                (doorRect.left + doorRect.right) / 2;
+
+            const doorCenterY =
+                (doorRect.top + doorRect.bottom) / 2;
+
+            const distance = Math.hypot(
+                goobertCenterX - doorCenterX,
+                goobertCenterY - doorCenterY
+            );
+
+            // Select the nearest eligible door.
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestDoor = key;
             }
         }
 
-        return null;
+        return closestDoor;
     };
 
     /*
@@ -247,8 +306,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 );
             }
 
-            // Stop before entering a door.
-            if (overlapsDoor(boundedX, boundedY)) {
+            // Keep desktop door collision behavior.
+            // Allow Goobert to approach doors on mobile.
+            if (
+                window.innerWidth > 768 &&
+                overlapsDoor(boundedX, boundedY)
+            ) {
                 return;
             }
         }
@@ -328,6 +391,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         if (!movedRef.current) {
             console.log(`${props.name} says, "I've been poked!"`);
+            // Play the Goobert click sound
+            goobertClickSound.play();
             props.onGoobertSelected();
             return;
         }
@@ -338,8 +403,15 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             positionRef.current.y
         );
 
-        if (!doorKey) return;
+        if (doorKey) moveRooms(doorKey);
 
+        if(overlapsBed(positionRef.current.x, positionRef.current.y)) {
+            goToBed();
+        }
+
+        
+    };
+    const moveRooms = (doorKey: string) => {
         let roomKey = String(doorKey);
 
         if (roomKey.includes("Hub")) {
@@ -348,7 +420,11 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         const destination = roomKey as keyof typeof rooms;
 
-        if (!destination) return;
+
+        // Reject invalid room destinations.
+        if (!Object.prototype.hasOwnProperty.call(rooms, destination)) {
+            return;
+        }
 
         updateRoom(props.id, rooms[destination]);
 
@@ -384,7 +460,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         updatePosition(props.id, spawnX, spawnY);
 
-    };
+    } 
+    const goToBed = () =>   {
+        // TODO: make sleeping more interesting
+        console.log("bed time!");
+        updateStat(props.id, "awakeness", 10000000000);   
+    }
 
     
     // Resets dragging if the browser interrupts the pointer interaction.

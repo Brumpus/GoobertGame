@@ -11,7 +11,7 @@ type GoobertProps = {
     mouthType: number;
     eyeExpression: number;
     mouthexpression: number;
-    onGoobertSelected: function():void;
+    onGoobertSelected: Function;
 };
 export default function Goobert(props: GoobertProps): React.JSX.Element;
 export {};

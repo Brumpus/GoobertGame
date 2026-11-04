@@ -28,7 +28,7 @@
     position: absolute;
 
     /* Goobert Positioning */
-    left: 45%;
+    left: 47%;
     top: 70%;
 
     width: 64px;
@@ -62,7 +62,7 @@
     background-image: url("../images/goobert-parts/208-tamagotchi-eyes.png");
 }
 
-/* ==== CUSTOMIZATION APPLES ==== */
+/* ==== CUSTOMIZATION FRUITS ==== */
 .tree-apples {
     position: absolute;
     inset: 0;
@@ -82,10 +82,17 @@
     pointer-events: auto;
 }
 
-.tree-apple img {
+/* Display individual fruits from fruit-buttons.png */
+.tree-fruit-sprite {
+    display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+
+    /* Six 64x64 fruits arranged horizontally */
+    background-image: url("../images/tree/fruit-buttons.png");
+    background-repeat: no-repeat;
+    background-size: 600% 100%;
+
     image-rendering: pixelated;
     pointer-events: none;
 }
@@ -95,42 +102,42 @@
     border-radius: 50%;
 }
 
-/* Individual apple positions */
+/* ==== INDIVIDUAL FRUIT POSITIONS ==== */
 
-/* Red Apple Positioning */
+/* Red Fruit Positioning */
 .tree-apple-bodyType {
-    left: 22%;
-    top: 22%;
+    left: 29%;
+    top: 18%;
 }
 
-/* Orange Apple Positioning */
+/* Orange Fruit Positioning */
 .tree-apple-bodyColor {
-    left: 70%;
-    top: 20%;
-}
-
-/* Yellow Apple Positioning */
-.tree-apple-legType {
-    left: 71%;
-    top: 32%;
-}
-
-/* Cyan Apple Positioning */
-.tree-apple-legColor {
-    left: 22%;
-    top: 34%;
-}
-
-/* Blue Apple Positioning */
-.tree-apple-eyeType {
-    left: 65%;
-    top: 44%;
-}
-
-/* Purple Apple Positioning */
-.tree-apple-mouthType {
-    left: 24%;
+    left: 68%;
     top: 50%;
+}
+
+/* Yellow Fruit Positioning */
+.tree-apple-legType {
+    left: 55%;
+    top: 50%;
+}
+
+/* Cyan Fruit Positioning */
+.tree-apple-legColor {
+    left: 48%;
+    top: 12%;
+}
+
+/* Blue Fruit Positioning */
+.tree-apple-eyeType {
+    left: 53%;
+    top: 25%;
+}
+
+/* Purple Fruit Positioning */
+.tree-apple-mouthType {
+    left: 66%;
+    top: 19%;
 }
 
 /* ==== ROOM CONTROLS ==== */
@@ -182,12 +189,6 @@
 
 /* Bootstrap Dice Icon */
 .tree-randomize i {
-    font-size: clamp(32px, 3vw, 55px);
-    line-height: 1;
-}
-
-/* Bootstrap Dice Icon */
-.tree-randomize i {
     font-size: 30px;
     line-height: 1;
 }
@@ -219,7 +220,7 @@
 /* ==== MOBILE TREE ROOM ==== */
 @media (max-width: 768px) {
 
-    /* Match the background crop you preferred. */
+    /* Match the original background crop */
     .tree-scene {
         width: 150%;
         height: 100%;
@@ -260,8 +261,7 @@
     }
 }
 
-
-/* ==== CREATE Goobert BUTTON ==== */
+/* ==== CREATE GOOBERT BUTTON ==== */
 .tree-create-controls {
     position: absolute;
     bottom: 25px;
@@ -297,8 +297,7 @@
     }
 }
 
-
-/* ==== Goobert NAMING ==== */
+/* ==== GOOBERT NAMING ==== */
 .tree-create-controls {
     display: flex;
     flex-direction: column;
@@ -322,4 +321,167 @@
 .tree-create:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ==== MOBILE TREE CONTROLS ==== */
+@media (max-width: 768px) {
+
+    /* Name input and CREATE button on the bottom right */
+    .tree-create-controls {
+        position: absolute;
+        top: auto;
+        bottom: 15px;
+        right: 10px;
+        left: auto;
+
+        width: min(45vw, 170px);
+        gap: 5px;
+    }
+
+    /* Keep the name input inside its container */
+    .tree-name-input {
+        width: 100%;
+        min-width: 0;
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    /* Make the CREATE button fit */
+    .tree-create {
+        width: 100%;
+        padding: 7px 4px;
+        font-size: 11px;
+    }
+
+    /* Dice randomizer on the bottom left */
+    .tree-randomize-controls {
+        position: absolute;
+        top: auto;
+        bottom: 15px;
+        left: 15px;
+        right: auto;
+        transform: none;
+    }
+
+    .tree-randomize {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+    }
+
+    .tree-randomize i {
+        font-size: 24px;
+    }
+}
+
+/* ==== TREE SPRITE BUTTONS ==== */
+
+/* Randomize dice button */
+.tree-randomize {
+    width: clamp(48px, 6vw, 80px);
+    height: clamp(48px, 6vw, 80px);
+
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.tree-randomize:hover {
+    background: transparent;
+}
+
+/* Six dice faces, each 16x16 */
+.tree-dice-sprite {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../images/tree/randomize-button.png");
+    background-repeat: no-repeat;
+    background-size: 600% 100%;
+
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+/* SAVE button with original 4:1 proportions */
+.tree-create {
+    width: 128px;
+    height: 32px;
+
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tree-create:hover {
+    background: transparent;
+}
+
+.tree-save-sprite {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../images/tree/save-button.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+/* Keep disabled save button visibly inactive */
+.tree-create:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Keyboard accessibility */
+.tree-create:focus-visible,
+.tree-randomize:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
+}
+
+/* Mobile sprite button sizing */
+@media (max-width: 768px) {
+
+    .tree-randomize {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+    }
+
+    .tree-create {
+        width: 100%;
+        max-width: 128px;
+        aspect-ratio: 4 / 1;
+        height: auto;
+        padding: 0;
+    }
+
+    .tree-save-sprite {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 4 / 1;
+    }
+
+    .tree-save-sprite {
+        aspect-ratio: 4 / 1;
+    }
 }

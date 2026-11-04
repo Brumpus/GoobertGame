@@ -1,8 +1,15 @@
 import { body, gridSize, height, keys, refreshGameBody, resetGame, setBodySize, setHeight, setWidth, start, stopGame, width } from "./games-global.ts";
 import { gameGoobert } from "../components/game-room.tsx";
-
+import { gameOverSound, snakeEatingSound } from "../components/audio.ts";
 import "./snake-stylesheet.css";
 
+// Callback used to restore Cleanliness through React context.
+let fullnessReward = null;
+
+// Allow the React component to register its reward function.
+export function setFullnessReward(callback) {
+    fullnessReward = callback;
+}
 
 export function initSnakeGame(boardWidth, boardHeight) {
     if (typeof stopGame === "function") {
@@ -126,7 +133,13 @@ function moveSnake() {
         for (let position of snake.positions) {
             // Kill snake if it is touching itself
             if (position.x == snake.head.x && position.y == snake.head.y && position != snake.head) {
+                
+                // Play the game-over sound.
+                gameOverSound.play();
+
+                // Reset the game.
                 resetGame();
+                return;
             }
         }
 
@@ -186,6 +199,9 @@ function setObjPosition(obj) {
     setPosition(obj.div, obj.x, obj.y);
 }
 function eatApple() {
+    // Play the eating sound when Snake collects apple
+    snakeEatingSound.play();
+    
     let newSquare = { x: apple.x, y: apple.y, id: snake.positions.length };
     newSquare.asset = [snake.direction, assets.head];
 
@@ -206,6 +222,7 @@ function eatApple() {
         gameGoobert.fullness = Math.min(gameGoobert.fullness + 5, 100); // feed goobert
         // Update slider position
         document.getElementById('goobert-percentage').value = gameGoobert.fullness;
+        fullnessReward(5);
     }
 }
 function findValidSpaces() {
