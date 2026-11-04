@@ -6,17 +6,28 @@ const DIRTY_MUTANT_ASSET = 'images/goobert-parts/mutant-dirty.gif';
 const BORED_MUTANT_ASSET = 'images/goobert-parts/mutant-bored.png';
 const HUNGRY_MUTANT_ASSET = 'images/goobert-parts/mutant-hungry.gif';
 
-enum MutantType {SLEEPLESS, DIRTY, BORED, HUNGRY}
+export enum MutantType {SLEEPLESS, DIRTY, BORED, HUNGRY}
 
-type MutantProps = {
+export type Mutant = {
     //goobert: Goobert,
     type: MutantType,
+    goobertId?: string,
+    room: string,
     x: string,
     y: string,
 }
+export function createMutant(x: string, y: string, room: string, type: MutantType, goobertId: string): Mutant {
+    return ({
+        x: x,
+        y: y,
+        room: room,
+        type: type,
+        goobertId: goobertId
+    })
+}
 
 
-export default function Mutant({/*goobert,*/ type, x, y}: MutantProps): React.JSX.Element {
+export default function Mutant({/*goobert,*/ type, x, y}: Mutant): React.JSX.Element {
     //let [x, setX] = useState(goobert.x);
     //let [y, setY] = useState(goobert.y);
     let setType = () => {
@@ -45,5 +56,3 @@ export default function Mutant({/*goobert,*/ type, x, y}: MutantProps): React.JS
             
     )
 }
-
-export {MutantType};

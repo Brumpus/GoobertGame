@@ -28,10 +28,10 @@ export default function Dungeon() {
                         />
                     </div>
                     <div className="prisoners">
-                            <Mutant type={MutantType.SLEEPLESS} x={"15%"} y={"75%"}/>
-                            <Mutant type={MutantType.DIRTY} x={"35%"} y={"75%"}/>
-                            <Mutant type={MutantType.BORED} x={"55%"} y={"75%"}/>
-                            <Mutant type={MutantType.HUNGRY} x={"75%"} y={"75%"}/>
+                            <Mutant type={MutantType.SLEEPLESS} x={"15%"} room={rooms.dungeon} y={"75%"}/>
+                            <Mutant type={MutantType.DIRTY} room={rooms.dungeon} x={"35%"} y={"75%"}/>
+                            <Mutant type={MutantType.BORED} room={rooms.dungeon} x={"55%"} y={"75%"}/>
+                            <Mutant type={MutantType.HUNGRY} room={rooms.dungeon} x={"75%"} y={"75%"}/>
                     </div>
                 </div>
                 <div className="dungeonFloor">

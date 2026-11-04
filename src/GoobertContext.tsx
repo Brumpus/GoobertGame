@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState, type RefObject } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
+import { createMutant, MutantType, type Mutant } from "./Mutant";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -26,6 +27,7 @@ const MAX_COLORS = 7;
 
 interface GoobertContextType {
     gooberts: Goobert[];
+    mutants: Mutant[];
 
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
@@ -77,6 +79,8 @@ export function GoobertProvider({ children }: any) {
     // Allow gooberts to be globally accessible
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
+    const [mutants, setMutants] = useState<Mutant[]>([]);
+    (window as any).mutants = mutants;
 
     // ==== CENTRALIZED Goobert STAT UPDATES ====
 
@@ -111,23 +115,56 @@ export function GoobertProvider({ children }: any) {
     useEffect(() => {
         const interval = window.setInterval(() => {
 
-            setGooberts(previous =>
-                previous.map(goobert => ({
+            // Update gooberts to reduce stats, then convert things to mutants
+            setGooberts((previous) => {
+                const updatedGooberts = previous.map(goobert => ({
                     ...goobert,
-
-                    // All four stats deplete over time.
                     fullness: Math.max(0, goobert.fullness - 1),
                     awakeness: Math.max(0, goobert.awakeness - 1),
                     cleanliness: Math.max(0, goobert.cleanliness - 1),
                     dexterity: Math.max(0, goobert.dexterity - 1)
                 }))
-            );
 
+                // Loop through each goobert
+                let list = [...updatedGooberts];
+
+                // Filter keys for ones that are <= 0
+                const keys = ["fullness", "awakeness", "cleanliness", "dexterity"] as const;
+                for(let goobert of list) {
+                    // Turn to mutant if a stat is <= 0 and the goobert is not in the shadow realm
+                    let mutateStats = keys.filter((key) => goobert[key] <= 0 && goobert.room != "shadow-realm");
+
+                    if(mutateStats.length > 0) {
+                        // Goobert has stat <= 0; make it a mutant
+                        let type: MutantType;
+                        switch (mutateStats[0]) {
+                            case "fullness":
+                                type = MutantType.HUNGRY;
+                                break;
+                            case "awakeness":
+                                type = MutantType.SLEEPLESS;
+                                break;
+                            case "cleanliness":
+                                type = MutantType.DIRTY;
+                                break;
+                            case "dexterity":
+                                type = MutantType.BORED;
+                                break;
+                            default:
+                                type = MutantType.HUNGRY;       
+                        }
+                        let room = goobert.room;
+                        setMutants(prev => [...prev, createMutant(goobert.x + "px", goobert.y + "px", room, type, goobert.id)]);
+                        goobert.room = "shadow-realm";
+                    }
+                }
+
+                // set gooberts to updated list after reducing stats and converting to mutants
+                return (list);
+            });
         }, 10000);
 
-        // Remove the timer when the provider unmounts.
         return () => window.clearInterval(interval);
-
     }, []);
 
     // Allow gooberts to be created from anywhere
@@ -198,7 +235,12 @@ export function GoobertProvider({ children }: any) {
 
     // Render goobert context provider
     return (
-        <GoobertContext.Provider value={{gooberts, createGoobert, updatePosition, updateRoom, updateStat, doorRefs}}>
+        <GoobertContext.Provider value={{
+            gooberts, mutants,
+            
+            createGoobert, updatePosition, updateRoom, updateStat, 
+            
+            doorRefs}}>
             {children}
         </GoobertContext.Provider>
     )
@@ -220,10 +262,11 @@ export function renderGoobert(
         isUi: isUi,
         className: "",
 
-        fullness: 0, // Eating, catch the food game
-        dexterity: 50, // Exercise, Snake & Frogoobert
-        awakeness: 50, // Sleeping
-        cleanliness: 50, // Bathing, Flappy Goobert
+        // Initialize stats with a random number between 30 and 70
+        fullness: 30 + Math.floor(Math.random() * 41), // Eating, catch the food game
+        dexterity: 30 + Math.floor(Math.random() * 41), // Exercise, Snake & Frogoobert
+        awakeness: 30 + Math.floor(Math.random() * 41), // Sleeping
+        cleanliness: 30 + Math.floor(Math.random() * 41), // Bathing, Flappy Goobert
 
         bodyType: Math.floor(Math.random() * MAX_BODY_TYPES),
         bodyColor: Math.floor(Math.random() * MAX_COLORS),
