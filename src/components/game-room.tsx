@@ -137,12 +137,25 @@ export default function GameRoom() {
                     />
                 </button>
 
-                {/* Pipelined - Coming Soon */}
+                {/* Pipelined - Coming NOW!!!!!*/}
                 <button
                     type="button"
                     className="machine-button"
                     onMouseEnter={() => arcadeHoverSound.play()}
-                    onClick={() => arcadeClickSound.play()}
+                    onClick={() => {
+                        arcadeClickSound.play();
+
+                       // Load pipe game if no gooberts are available for selection
+                        let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
+                        if(validGooberts.length < 2) {
+                            if(validGooberts.length == 1 && validGooberts[0] != undefined) gameGoobert = validGooberts[0];
+                            load(rooms.pipeGame);
+                        } else {
+                            // Select the Goobert for rewards.
+                            setGameSelector("Pipelined");
+                            setGoobertSelector(rooms.pipeGame);
+                        }
+                    }}
                 >
                     <img
                         src="images/game-room/pipelined-machine.png"

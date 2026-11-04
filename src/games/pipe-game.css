@@ -1,0 +1,13 @@
+.pipe {
+    background: none;
+    padding: 0;
+}
+
+.pipelined {
+    background-color: aquamarine;
+}
+
+.pipe-grid {
+    justify-content: center;
+    
+}
