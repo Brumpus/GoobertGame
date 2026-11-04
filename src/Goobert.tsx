@@ -30,6 +30,9 @@ const SPRITE_SIZE = 64;
 const DOOR_DISTANCE = 20;
 const GROUND_LIMIT = 350;
 
+const GOOBERT_VELOCITY = 4; // Pixels per frame
+const AI_FPS = 60;
+
 type GoobertProps = {
     room: string;
     name: any;
@@ -412,17 +415,16 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             return;
         }
 
-        const next = step(current, targetRef.current, 2);
+        const next = step(current, targetRef.current, GOOBERT_VELOCITY);
         const worked = latestMove.current.move(next.x, next.y);
 
         // If the move was unsuccessful due to boundaries, reset the target 
         // and set a short wait time before trying again.
         if (!worked) {
             targetRef.current = null;
-            waitRef.current = 10;
+            waitRef.current = 25 + Math.random() * 120;
         }
-    }, 50);
-
+    }, 1000 / AI_FPS); 
     return () => window.clearInterval(timer);
    }, [props.isUi]);
 

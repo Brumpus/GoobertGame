@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { useState } from "react";
+import React, { useState, type KeyboardEvent } from "react";
 import { load, rooms } from "../App";
 import { treeSound, goobertCreateSound } from "./audio";
 import useGooberts from "../GoobertContext";
@@ -124,6 +124,15 @@ export default function Tree(): React.JSX.Element {
         setAppearance(randomAppearance());
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if(e.key == "Enter") {
+            handleCreateGoobert();
+        }
+
+        // Don't allow number inputs so as to keep ids accurate
+        if("0123456789".includes(e.key)) e.preventDefault();
+    }
+
     return (
         <main id="main" className="tree">
 
@@ -220,6 +229,7 @@ export default function Tree(): React.JSX.Element {
                     maxLength={20}
                     value={GoobertName}
                     onChange={(event) => setGoobertName(event.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
 
                 {/* SAVE GOOBERT BUTTON */}
