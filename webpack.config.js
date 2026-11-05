@@ -15,6 +15,7 @@ const config = {
     output: {
         filename: "tamagotchi-bundle.js",
         path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
         clean: true
     },
     devServer: {
