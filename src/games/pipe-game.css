@@ -1,11 +1,24 @@
-.pipe {
+body {
+    justify-content: center;
+    align-items: center;
+    
+}
+.game-container {
+    background-color: aliceblue;
+    width: fit-content;
+    padding: 20px;
+    border: 6px solid black;
+}
+.pipe-game-pipe {
     background: none;
     padding: 0;
 }
 
 .pipelined {
+    align-items: center;
+    justify-content: center;
     background-color: aquamarine;
-}
+    display: flex;}
 
 .pipe-grid {
     justify-content: center;
