@@ -11,7 +11,7 @@ import Dungeon from "./components/dungeon";
 import FlappyGoobert from "./components/flappy-goobert";
 import SnakeGame from "./components/snake";
 import Frogoobert from "./components/frogoobert";
-import Pipelined from "./components/pipelined";
+import Pipelined from "./components/PipeGame/pipelined";
 import FeastFest from "./components/feast-fest";
 
 const PageController = () => { 
