@@ -3,7 +3,7 @@ import { doorOpenSound } from "./audio";
 import { load, rooms } from "../App";
 
 import "../games/pipe-game.css"
-import Pipe from "../games/pipe";
+import Pipe, { Directions } from "../games/pipe";
 
 export default function Pipelined(){
     return(
@@ -24,20 +24,23 @@ interface Props {
     pipeType: string;
     initRotation: number;
     neighbors?: Pipe[];
+    startblue: boolean | undefined;
     x: number;
     y: number;
-    ref?: RefObject<null> | undefined;
     // Pipes variable held by pipeGame
     pipes: PipeState[][];
     setPipes: React.Dispatch<React.SetStateAction<PipeState[][]>>
 }
 type PipeState = {
+    pipeType: string;
     rotation: number,
-    isBlue: boolean
+    isBlue: boolean,
+    x: number,
+    y: number
 }
 
-export const PipeObject = ({pipeType, initRotation, x, y, pipes, setPipes, ref}: Props) => {
-    const[isBlue, setIsBlue] = useState<boolean>(false);
+export const PipeObject = ({startblue, pipeType, initRotation, x, y, pipes, setPipes}: Props) => {
+    const[isBlue, setIsBlue] = useState<boolean>(startblue ?? false);
     // const changeColor = () => {
     //     return pipeType = `${type}Blue`;
     // }
@@ -45,41 +48,128 @@ export const PipeObject = ({pipeType, initRotation, x, y, pipes, setPipes, ref}:
 	const [rotation, setRotation] = useState<number>(initRotation);
 
     const handleRotate = () => {
-        setRotation((prevRotation) => (prevRotation + 1) % 4);        
+        setRotation((prevRotation) => (prevRotation + 1) % 4);     
+        
+        fill(getPipeState());
     };
-    const getNeighbors = () => {
+    /**
+     * Get neighboring pipes
+     * @returns array of neighboring pipes
+     */
+    const getNeighbors = (pipe: PipeState) => {
         const neighbors: (PipeState|undefined)[] = [];
 
-        neighbors.push(pipes[y - 1]?.[x]);
-        neighbors.push(pipes[y + 1]?.[x]);
-        neighbors.push(pipes[y]?.[x - 1]);
-        neighbors.push(pipes[y]?.[x + 1]);
+        neighbors.push(pipes[pipe.y - 1]?.[pipe.x]);
+        neighbors.push(pipes[pipe.y]?.[pipe.x + 1]);
+        neighbors.push(pipes[pipe.y + 1]?.[pipe.x]);
+        neighbors.push(pipes[pipe.y]?.[pipe.x - 1]);
 
         return neighbors;
     }
-    const updatePipes = () => {
+    /**
+     * Check which neighboring pipes actually touch current pipe
+     * @returns Array of connected pipes
+     */
+    const getConnections = (pipe: PipeState) => {
+        const neighbors = getNeighbors(pipe);
+
+        const directions = getDirections(pipe);
+
+        const connections: PipeState[] = [];
+
+        for (let i = 0; i < 4; i++) {
+            const neighbor = neighbors[i];
+
+            // Skip empty neighboring cells
+            if (!neighbor) continue;
+
+            const neighborDirs = getDirections(neighbor);
+
+            // Check whether both pipes have an opening
+            // facing each other.
+            const oppositeDirection = (i + 2) % 4;
+
+            const currentHasOpening = directions[i] !== undefined;
+            const neighborHasOpening = neighborDirs[oppositeDirection] !== undefined;
+
+            if (currentHasOpening && neighborHasOpening) {
+                connections.push(neighbor);
+            }
+        }
+
+        console.log(connections);
+        return connections;
+    }
+    /**
+     * Get valid flow directions for pipes
+     * 
+     * @param pipe which pipe is being checked
+     * @returns directions the pipe is able to flow
+     */
+    const getDirections = (pipe: PipeState): (Directions | undefined)[] => {
+
+        const directions: (Directions | undefined)[] = [
+            Directions.up, 
+            Directions.right, 
+            Directions.down, 
+            Directions.left
+        ];
+
+        switch (pipe.pipeType) {
+            case "el":
+                directions[(pipe.rotation + 1) % 4] = undefined;
+                directions[(pipe.rotation + 2) % 4] = undefined;
+            break;
+            case "eye":
+                directions[(pipe.rotation + 1) % 4] = undefined;
+                directions[(pipe.rotation + 3) % 4] = undefined; 
+            break;
+            case "tee":
+                directions[(pipe.rotation + 1) % 4] = undefined;
+            break;
+        }
+
+        return directions;
+    }
+    const getPipeState = () => {return ({x: x, y: y, rotation: rotation, pipeType: pipeType, isBlue: isBlue})}
+    /**
+     * Update react state to allow pipes to communicate with their neighbors
+     */
+    const updatePipes = (pipeState: PipeState) => {
         setPipes(prev =>
             prev.map((row, rowIndex) =>
-            rowIndex === y
+            rowIndex === pipeState.y
                 ? row.map((pipe, colIndex) =>
-                    colIndex === x
-                        ? { rotation, isBlue }
+                    colIndex === pipeState.x
+                        ? { ...pipeState }
                         : pipe
                 )
                 : row
             )
         );
-        console.log("Updated pipes!");
     }
+    const fill = (pipeState: PipeState) => {
+        if(isBlue) {
+            const connections = getConnections(pipeState);
+
+            for(let pipe of connections) {
+                if(!pipe.isBlue) {
+                    pipe.isBlue = true;
+                    updatePipes(pipe)
+                    fill(pipe);
+                }
+            }
+        }
+    }
+    
+
 
 	return (
-		<div ref={ref} className='pipe-game-pipe col-3'>
+		<div className='pipe-game-pipe col-3'>
             <button className="btn" onClick={() => {
                 handleRotate();
-                setIsBlue(!isBlue);
-                
-                updatePipes();
-                console.log(getNeighbors());
+
+                updatePipes(getPipeState());
             }}>
                 <img
                     className=""
@@ -115,23 +205,40 @@ const pipesTwo = [
 ];
 
 const pipesThree = [
-    new Pipe("tee", 3),
+    new Pipe("tee", 3, true),
     new Pipe("tee", 2),
     new Pipe("tee", 2),
     new Pipe("el", 1)
 ];
 
+console.log(pipesThree);
+
 export const PipeGame = () => {
     
-    const [pipes, setPipes] = useState<PipeState[][]>(
-        Array.from({ length: 3 }, () =>
-            Array.from({ length: 4 }, () => ({
-                rotation: 0,
-                isBlue: false
-            }))
-        )
-    );
-
+    const [pipes, setPipes] = useState<PipeState[][]>([
+        pipesOne.map((pipe, x) => ({
+            rotation: pipe.initRotation - 1,
+            isBlue: pipe.isBlue,
+            pipeType: pipe.pipeType,
+            x: x,
+            y: 0
+        })),
+        pipesTwo.map((pipe, x) => ({
+            rotation: pipe.initRotation - 1,
+            isBlue: pipe.isBlue,
+            pipeType: pipe.pipeType,
+            x: x,
+            y: 1
+        })),
+        pipesThree.map((pipe, x) => ({
+            rotation: pipe.initRotation - 1,
+            isBlue: pipe.isBlue,
+            startblue: pipe.isBlue,
+            pipeType: pipe.pipeType,
+            x: x,
+            y: 2
+        }))
+    ]);
 	return (
 		<>
 			<div className="row">
