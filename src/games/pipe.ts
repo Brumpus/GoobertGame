@@ -8,9 +8,9 @@ export default class Pipe {
     startblue: boolean | undefined
     
 
-    constructor(pipeType: string, initRotation: number, startBlue?: boolean) {
+    constructor(pipeType: string, startBlue?: boolean) {
         this.pipeType = pipeType;
-        this.initRotation = initRotation;
+        this.initRotation = Math.floor(Math.random() * 4);
         this.isBlue = startBlue ?? false;
         this.startblue = startBlue;
     }
