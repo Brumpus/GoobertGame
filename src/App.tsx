@@ -13,12 +13,13 @@ import { BrowserRouter, useNavigate, useLocation } from "react-router";
 import { indexMusic, hubMusic } from "./components/audio";
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
+import { assetPath } from "./assetPath";
 
 export type Room = {
 	room: React.JSX.Element
 }
 export const rooms = {
-	menu: "",
+	menu: "/",
 
 	hub: "/hub",
 	tree: "/tree",
@@ -151,7 +152,7 @@ function init() {
 	topElement = React.createRef();
 	root.render(
 		<GoobertProvider>
-			<BrowserRouter>
+			<BrowserRouter basename={assetPath("")}>
 				<TopElement room={new URL(window.location.href).pathname} />
 			</BrowserRouter>
 		</GoobertProvider>
