@@ -65,7 +65,7 @@ const config = {
                 {from: "./src/bootstrap", to: "bootstrap"},
                 {from: "./src/icons-1.13.1/font", to: "icons-1.13.1/font"},
                 { from: "./src/react", to: "react" },
-                { from: "./src/404.html", to: "404.html" }
+                // { from: "./src/404.html", to: "404.html" }
             ]
         }),
         new HtmlWebpackPlugin({
