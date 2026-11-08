@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { createMutant, MutantType, type Mutant } from "./Mutant";
-import { getState, loadGoobert, type GoobertJson } from "./saveLoadGoobert";
+import { getState, loadGoobert } from "./saveLoadGoobert";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -200,7 +200,10 @@ export function GoobertProvider({ children }: any) {
         let goobert = await loadGoobert(goobertId);
         if(!goobert) return;
 
-        createGoobert(goobert.name, goobert.room, undefined, undefined, goobert.appearance, goobert.stats);
+        const stats: GoobertStats = {...goobert};
+        const appearance: GoobertAppearance = {...goobert};
+
+        createGoobert(goobert.name, goobert.room, undefined, undefined, appearance, stats);
     }
     (window as any).loadGoobert = createSavedGoobert;
     /**
@@ -212,9 +215,13 @@ export function GoobertProvider({ children }: any) {
         if(!data) return;
 
         let newGooberts = data.map(goobert => {
-            let newGoobert: Goobert = renderGoobert(goobert.name, goobert.room)
-            Object.assign(goobert, goobert.appearance);
-            Object.assign(goobert, goobert.stats);
+            let newGoobert: Goobert = renderGoobert(goobert.name, goobert.room);
+            // Populate saved properties
+            Object.assign(newGoobert, {...goobert});
+            // Randomize Position
+            newGoobert.x = Math.floor(Math.random() * window.innerWidth);
+            newGoobert.y = Math.floor(Math.random() * window.innerHeight)
+
             return newGoobert;
         });
         

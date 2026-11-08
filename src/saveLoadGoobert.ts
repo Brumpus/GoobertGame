@@ -2,15 +2,6 @@ import type { Goobert } from './Goobert';
 import useGooberts, { type GoobertAppearance, type GoobertStats } from './GoobertContext';
 
 
-export type GoobertJson = {
-  name: string;
-  room: string;
-
-  stats: GoobertStats;
-
-  appearance: GoobertAppearance;
-
-}
 export function saveGoobert(goobert: Goobert) {
   saveGoobertToFile("savedGooberts/" + goobert.id + ".json", goobert);
 }
@@ -33,7 +24,7 @@ export async function loadGoobert(goobertId: string) {
 
   const jsonData = localStorage.getItem(goobertId);
   if(jsonData == undefined) return;
-  const goobert: GoobertJson = await JSON.parse(jsonData);
+  const goobert: Goobert = await JSON.parse(jsonData);
   localStorage.removeItem(goobertId); // Remove from storage
 
   return goobert;
@@ -41,11 +32,11 @@ export async function loadGoobert(goobertId: string) {
 }
 (window as any).loadGoobert = loadGoobert;
 
-export async function getState(saveSlot: string): Promise<GoobertJson[] | undefined> {
+export async function getState(saveSlot: string): Promise<Goobert[] | undefined> {
   // Get JSON from localstorage
   const json = await localStorage.getItem(saveSlot);
   if(!json) return;
-  const data = JSON.parse(json) as GoobertJson[];
+  const data = JSON.parse(json) as Goobert[];
   
   // Return gooberts
   return data;
@@ -54,14 +45,7 @@ export async function getState(saveSlot: string): Promise<GoobertJson[] | undefi
 
 
 export async function saveState(gooberts: Goobert[], saveSlot: string) {
-  const stats: GoobertStats[] = [...gooberts] as const;
-  const appearance: GoobertAppearance[] = [...gooberts] as const;
-
-  // Convert gooberts into JSON format
-  const data: GoobertJson[] = gooberts.filter((goobert, i) => stats[i] && appearance[i]).map((goobert, i) => {
-    return {...goobert, stats: stats[i], appearance: appearance[i]} as GoobertJson;
-  });
-  const json = JSON.stringify(data);
+  const json = JSON.stringify(gooberts);
 
   // Save to localStorage
   localStorage.setItem(saveSlot, json);
@@ -69,10 +53,7 @@ export async function saveState(gooberts: Goobert[], saveSlot: string) {
 (window as any).saveState = saveState;
 
 async function saveGoobertToFile(filePath: string, goobert: Goobert) {
-  const stats: GoobertStats = {...goobert};
-  const appearance: GoobertAppearance = {...goobert};
-
-  const data: GoobertJson = {...goobert, stats, appearance};
+  const data: Goobert = {...goobert};
   const json = JSON.stringify(data);
 
   localStorage.setItem(goobert.id, json);
