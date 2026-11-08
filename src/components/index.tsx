@@ -14,7 +14,7 @@ import useGooberts from "../GoobertContext";
 
 export default function MainMenu(): React.JSX.Element {
     let [screen, setScreen] = useState("menu");
-    let { doorRefs } = useGooberts();
+    let { doorRefs, loadSlot, newGame } = useGooberts();
 
     // let showCredits = this.showCredits.bind(this); - commented out because idk what these do
     // let showMenu = this.showMenu.bind(this);
@@ -34,7 +34,7 @@ export default function MainMenu(): React.JSX.Element {
 
     return (
         <main className="main-menu">
-            {screen === "menu" ? (
+            {screen.includes("menu") ? (
                 <>
                     {/* Animated Gooberts logo */}
                     <div className="row">
@@ -54,7 +54,10 @@ export default function MainMenu(): React.JSX.Element {
                             <button 
                                 className="btn btn-continue menu-button w-100"
                                 onMouseEnter={() => indexHoverSound.play()}
-                                onClick={() => indexClickSound.play()}
+                                onClick={() => {
+                                    indexClickSound.play();
+                                    setScreen("menu-load")
+                                }}
                             >
                                 Continue Game
                                 {gooberts.filter((goobert) => goobert.room == rooms.menu).length > 0 && 
@@ -73,6 +76,8 @@ export default function MainMenu(): React.JSX.Element {
                                 onMouseEnter={() => indexHoverSound.play()}
                                 onClick={() => {
                                     indexClickSound.play();
+                                    
+                                    newGame();
                                     load(rooms.hub);
                                 }}
                             >
@@ -90,6 +95,33 @@ export default function MainMenu(): React.JSX.Element {
                     >
                         Credits
                     </button>
+                    {screen.includes("load") &&
+                        <div id="save-selector">
+                            <div id="close-selector" onClick={() => setScreen("menu")}>x</div>
+                            <div className="selector-option" onClick={() => {
+                                loadSlot("slot1");
+                                load(rooms.hub);
+                            }}>
+                                <hr />
+                                Save Slot 1
+                            </div>
+                            <div className="selector-option" onClick={() => {
+                                loadSlot("slot2");
+                                load(rooms.hub);
+                            }}>
+                                <hr />
+                                Save Slot 2
+                                <hr />
+                            </div>
+                            <div className="selector-option" onClick={() => {
+                                loadSlot("slot3");
+                                load(rooms.hub);
+                            }}>
+                                Save Slot 3
+                                <hr />
+                            </div>
+                        </div>
+                    }
                 </>
             ) : (
                 <Credits

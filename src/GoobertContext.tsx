@@ -46,6 +46,9 @@ interface GoobertContextType {
         stats?: GoobertStats
     ) => void;
 
+    loadSlot: (saveSlot: string) => void
+    newGame: () => void
+
     updatePosition: (
         id: string,
         x: number,
@@ -219,6 +222,10 @@ export function GoobertProvider({ children }: any) {
     }
     (window as any).loadSlot = loadSlot;
 
+    const newGame = () => {
+        setGooberts([]);
+    }
+
 
     // Update goobert position
     const updatePosition = (id: string, x: number, y: number) => {
@@ -267,6 +274,7 @@ export function GoobertProvider({ children }: any) {
             gooberts, mutants,
             
             createGoobert, updatePosition, updateRoom, updateStat, 
+            loadSlot, newGame,
             
             doorRefs}}>
             {children}

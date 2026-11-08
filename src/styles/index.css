@@ -234,3 +234,27 @@ body {
 .hint {
     font-size: small;
 }
+#save-selector {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: #ff5c8a;
+    border: 2px solid;
+    border-radius: 1em;
+    padding: 1em;
+    width: 25%;
+    transform: translate(-50%, -50%);
+
+    /* Keep above gooberts */
+    z-index: 10;
+}
+.selector-option {
+    height: fit-content;
+    cursor: pointer;
+}
+#close-selector {
+    position: absolute;
+    left: 0.5em;
+    top: 0;
+    cursor: pointer;
+}
