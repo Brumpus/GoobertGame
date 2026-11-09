@@ -126,6 +126,21 @@ img {
     width: 40%;
     height: auto;
     cursor: pointer;
+    image-rendering: pixelated;
+}
+
+.graveyard-arrow-container{
+    position: absolute;
+    right: 5%;
+    top: 5%;
+    z-index: 1;
+}
+
+#graveyard-arrow {
+    width: 20%;
+    height: auto;
+    cursor: pointer;
+    image-rendering: pixelated;
 }
 
 /* ==== TABLET HUB ==== */

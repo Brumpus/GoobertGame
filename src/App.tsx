@@ -27,6 +27,7 @@ export const rooms = {
 	shop: "/shop",
 	bedroom: "/bedroom",
 	dungeon: "/dungeon",
+	graveyard: "/graveyard",
 
 	snakeGame: "games/snake",
 	flappyGoobert: "games/flappy-goobert",
