@@ -15,7 +15,7 @@
     padding: 20px;
 }
 
-/* GOOBIE SHOP TITLE */
+/* Goobert SHOP TITLE */
 .shop-title {
     font-family: Impact, "Arial Black", sans-serif;
     font-size: clamp(28px, 5.5vw, 90px);
@@ -156,35 +156,6 @@
 	font-size: 20px;
 	font-weight: bold;
 	text-decoration: none;
-}
-
-/* BACK TO HUB BUTTON POSITION */
-.shop-controls {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 5;
-}
-
-/* BACK TO HUB BUTTON STYLE */
-.shop-exit {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-
-    background-color: #ffd43b;
-    color: black;
-
-    border: 3px solid black;
-    border-radius: 8px;
-
-    padding: 8px 12px;
-    cursor: pointer;
-}
-
-/* BACK TO HUB BUTTON HOVER */
-.shop-exit:hover {
-    background-color: #ffd53bd0;
 }
 
 /* MOBILE LAYOUT ADJUSTMENTS */

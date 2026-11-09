@@ -4,15 +4,17 @@ import React, { useState } from "react";
 import { indexClickSound, indexHoverSound } from "./audio";
 import Credits from "./credits";
 import { load, rooms } from "../App";
+import useGooberts from "../GoobertContext";
 
 /*
- * Goobies Main Menu
+ * Gooberts Main Menu
  * React switches between Menu and Credits without reloading.
  * All audio is handled by components/audio.js using Howler.js.
  */
 
 export default function MainMenu(): React.JSX.Element {
     let [screen, setScreen] = useState("menu");
+    let { doorRefs } = useGooberts();
 
     // let showCredits = this.showCredits.bind(this); - commented out because idk what these do
     // let showMenu = this.showMenu.bind(this);
@@ -28,17 +30,18 @@ export default function MainMenu(): React.JSX.Element {
         indexClickSound.play();
         setScreen("menu");
     }
+    let { gooberts } = useGooberts();
 
     return (
         <main className="main-menu">
             {screen === "menu" ? (
                 <>
-                    {/* Animated Goobies logo */}
+                    {/* Animated Gooberts logo */}
                     <div className="row">
                         <div className="col text-center">
                             <img
-                                src="images/index/Goobies_Logo_text.gif"
-                                alt="Goobies"
+                                src="images/index/Gooberts_Logo_text.gif"
+                                alt="Gooberts"
                                 id="game-title"
                                 className="img-fluid"
                             />
@@ -47,13 +50,16 @@ export default function MainMenu(): React.JSX.Element {
 
                     {/* Save system will be connected later. */}
                     <div className="row justify-content-center my-3">
-                        <div className="col-10 col-md-6 col-lg-3">
+                        <div className="col-10 col-md-6 col-lg-3" ref={doorRefs.menuHub}>
                             <button 
                                 className="btn btn-continue menu-button w-100"
                                 onMouseEnter={() => indexHoverSound.play()}
                                 onClick={() => indexClickSound.play()}
                             >
                                 Continue Game
+                                {gooberts.filter((goobert) => goobert.room == rooms.menu).length > 0 && 
+                                    <div className="hint"><br />Drag gooberts here to bring them back to the game!</div>
+                                }
                             </button>
                                 
                         </div>

@@ -7,6 +7,15 @@ import {
 import { gameGoobert } from "../components/game-room.tsx";
 import "./flappy-goobert.css";
 import { setPlayAgain, gameOver } from "../components/flappy-goobert.tsx";
+import { flappyGoobertFlapSound, flappyGoobertPointSound, gameOverSound } from "../components/audio.ts";
+
+// Callback used to restore Cleanliness through React context.
+let cleanlinessReward = null;
+
+// Allow the React component to register its reward function.
+export function setCleanlinessReward(callback) {
+    cleanlinessReward = callback;
+}
 
 export function initFlappyGoobert() {
     stopGame();
@@ -99,6 +108,8 @@ function flappyGameloop() {
             if (!pipe.counted && (pipe.x + pipe.width * gridSize) < bird.x) {
                 pipe.counted = true;
                 score += 1;
+                // Play a sound when Goobert earns a point.
+                flappyGoobertPointSound.play();
                 updateScoreDisplay();
             }
         }
@@ -162,11 +173,9 @@ function checkPipeIntersection() {
                 // Intersecting with a pipe
                 endFlappyRound();
             } else {
-                // Intersecting with water
-                if(gameGoobert) {
-                    gameGoobert.cleanliness = Math.min(gameGoobert.cleanliness + 0.2, 100); // Wash goobert
-                    // Update slider position
-                    document.getElementById('goobert-percentage').value = gameGoobert.cleanliness;
+                // Restore Cleanliness when Goobert touches water.
+                if (gameGoobert && cleanlinessReward) {
+                    cleanlinessReward(0.2);
                 }
             }
         }
@@ -174,10 +183,16 @@ function checkPipeIntersection() {
 }
 
 function endFlappyRound() {
+    // Prevent the death sound from playing multiple times.
+    if (gameOver) return;
+
+    // Play the death sound.
+    gameOverSound.play();
+
     stopGame();
 
-    for(let pipe of pipes) renderPipe(pipe);
-    if(bird.div) renderFlappy(bird.div, bird.x, bird.y);
+    for (let pipe of pipes) renderPipe(pipe);
+    if (bird.div) renderFlappy(bird.div, bird.x, bird.y);
 
     if (setPlayAgain) {
         setPlayAgain(true);
@@ -185,6 +200,7 @@ function endFlappyRound() {
         resetGame();
     }
 }
+
 function createBirdDiv() {
     let cell = document.createElement("div");
 
@@ -308,7 +324,12 @@ function handleKeyPress() {
     }
 }
 export function jump() {
+    if (gameOver) return;
+
     if(bird.velocity > 0) {
         bird.velocity = -bird.jumpPower
     }
+
+    // Play the flap sound when goobert jumps
+    flappyGoobertFlapSound.play();
 }

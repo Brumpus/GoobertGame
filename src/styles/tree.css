@@ -1,0 +1,487 @@
+
+/* ==== TREE ROOM ==== */
+.tree {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* ==== TREE BACKGROUND ==== */
+.tree-scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+
+    background-image: url("../images/tree/tree-background.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ==== GOOBERT PREVIEW ==== */
+.tree-goobert {
+    position: absolute;
+
+    /* Goobert Positioning */
+    left: 47%;
+    top: 70%;
+
+    width: 64px;
+    height: 64px;
+    transform: translate(-50%, -50%) scale(3);
+    image-rendering: pixelated;
+    z-index: 3;
+}
+
+.tree-sprite {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+}
+
+.tree-legs {
+    background-image: url("../images/goobert-parts/208-tamagotchi-legs.png");
+}
+
+.tree-body {
+    background-image: url("../images/goobert-parts/208-tamagotchi-bodies.png");
+}
+
+.tree-mouth {
+    background-image: url("../images/goobert-parts/208-tamagotchi-mouths.png");
+}
+
+.tree-eyes {
+    background-image: url("../images/goobert-parts/208-tamagotchi-eyes.png");
+}
+
+/* ==== CUSTOMIZATION FRUITS ==== */
+.tree-apples {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.tree-apple {
+    position: absolute;
+    width: clamp(60px, 8vw, 120px);
+    aspect-ratio: 1;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+/* Display individual fruits from fruit-buttons.png */
+.tree-fruit-sprite {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    /* Six 64x64 fruits arranged horizontally */
+    background-image: url("../images/tree/fruit-buttons.png");
+    background-repeat: no-repeat;
+    background-size: 600% 100%;
+
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.tree-apple:focus-visible {
+    outline: 3px solid white;
+    border-radius: 50%;
+}
+
+/* ==== INDIVIDUAL FRUIT POSITIONS ==== */
+
+/* Red Fruit Positioning */
+.tree-apple-bodyType {
+    left: 29%;
+    top: 18%;
+}
+
+/* Orange Fruit Positioning */
+.tree-apple-bodyColor {
+    left: 68%;
+    top: 50%;
+}
+
+/* Yellow Fruit Positioning */
+.tree-apple-legType {
+    left: 55%;
+    top: 50%;
+}
+
+/* Cyan Fruit Positioning */
+.tree-apple-legColor {
+    left: 48%;
+    top: 12%;
+}
+
+/* Blue Fruit Positioning */
+.tree-apple-eyeType {
+    left: 53%;
+    top: 25%;
+}
+
+/* Purple Fruit Positioning */
+.tree-apple-mouthType {
+    left: 66%;
+    top: 19%;
+}
+
+/* ==== ROOM CONTROLS ==== */
+.tree-controls {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    z-index: 10;
+}
+
+.tree-exit,
+.tree-randomize {
+    background-color: #ffd43b;
+    color: black;
+    border: 3px solid black;
+    border-radius: 5px;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tree-exit:hover,
+.tree-randomize:hover {
+    background-color: #ffe066;
+}
+
+/* ==== RANDOMIZE BUTTON ==== */
+.tree-randomize-controls {
+    position: absolute;
+    bottom: 25px;
+    left: 45%;
+    top: 86%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+/* Circular Randomize Button */
+.tree-randomize {
+    width: clamp(70px, 6vw, 120px);
+    height: clamp(70px, 6vw, 120px);
+    padding: 0;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Bootstrap Dice Icon */
+.tree-randomize i {
+    font-size: 30px;
+    line-height: 1;
+}
+
+/* ==== TABLET TREE ROOM ==== */
+@media (min-width: 769px) and (max-width: 1199px) {
+
+    .tree-apple {
+        width: clamp(65px, 9vw, 100px);
+    }
+
+    .tree-goobert {
+        transform: translate(-50%, -50%) scale(2.5);
+    }
+
+    /* Larger Randomize button for iPads */
+    .tree-randomize {
+        width: 90px;
+        height: 90px;
+        padding: 0;
+    }
+
+    /* Larger dice icon */
+    .tree-randomize i {
+        font-size: 42px;
+    }
+}
+
+/* ==== MOBILE TREE ROOM ==== */
+@media (max-width: 768px) {
+
+    /* Match the original background crop */
+    .tree-scene {
+        width: 150%;
+        height: 100%;
+    }
+
+    .tree-apple {
+        width: clamp(55px, 12vw, 85px);
+    }
+
+    .tree-goobert {
+        transform: translate(-50%, -50%) scale(1.8);
+    }
+
+    .tree-controls {
+        top: 15px;
+        left: 15px;
+    }
+
+    .tree-exit,
+    .tree-randomize {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .tree-randomize-controls {
+        bottom: 15px;
+    }
+
+    /* Maintain circular button on mobile */
+    .tree-randomize {
+        width: 55px;
+        height: 55px;
+        padding: 0;
+    }
+
+    .tree-randomize i {
+        font-size: 25px;
+    }
+}
+
+/* ==== CREATE GOOBERT BUTTON ==== */
+.tree-create-controls {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    z-index: 10;
+}
+
+.tree-create {
+    background-color: #ffd43b;
+    color: black;
+    border: 3px solid black;
+    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tree-create:hover {
+    background-color: #ffe066;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .tree-create-controls {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .tree-create {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ==== GOOBERT NAMING ==== */
+.tree-create-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.tree-name-input {
+    width: 190px;
+    max-width: 100%;
+    padding: 10px;
+    border: 3px solid black;
+    border-radius: 5px;
+    background: white;
+    color: black;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.tree-create:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==== MOBILE TREE CONTROLS ==== */
+@media (max-width: 768px) {
+
+    /* Name input and CREATE button on the bottom right */
+    .tree-create-controls {
+        position: absolute;
+        top: auto;
+        bottom: 15px;
+        right: 10px;
+        left: auto;
+
+        width: min(45vw, 170px);
+        gap: 5px;
+    }
+
+    /* Keep the name input inside its container */
+    .tree-name-input {
+        width: 100%;
+        min-width: 0;
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    /* Make the CREATE button fit */
+    .tree-create {
+        width: 100%;
+        padding: 7px 4px;
+        font-size: 11px;
+    }
+
+    /* Dice randomizer on the bottom left */
+    .tree-randomize-controls {
+        position: absolute;
+        top: auto;
+        bottom: 15px;
+        left: 15px;
+        right: auto;
+        transform: none;
+    }
+
+    .tree-randomize {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+    }
+
+    .tree-randomize i {
+        font-size: 24px;
+    }
+}
+
+/* ==== TREE SPRITE BUTTONS ==== */
+
+/* Randomize dice button */
+.tree-randomize {
+    width: clamp(48px, 6vw, 80px);
+    height: clamp(48px, 6vw, 80px);
+
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.tree-randomize:hover {
+    background: transparent;
+}
+
+/* Six dice faces, each 16x16 */
+.tree-dice-sprite {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../images/tree/randomize-button.png");
+    background-repeat: no-repeat;
+    background-size: 600% 100%;
+
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+/* SAVE button with original 4:1 proportions */
+.tree-create {
+    width: 128px;
+    height: 32px;
+
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tree-create:hover {
+    background: transparent;
+}
+
+.tree-save-sprite {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../images/tree/save-button.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+/* Keep disabled save button visibly inactive */
+.tree-create:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Keyboard accessibility */
+.tree-create:focus-visible,
+.tree-randomize:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
+}
+
+/* Mobile sprite button sizing */
+@media (max-width: 768px) {
+
+    .tree-randomize {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+    }
+
+    .tree-create {
+        width: 100%;
+        max-width: 128px;
+        aspect-ratio: 4 / 1;
+        height: auto;
+        padding: 0;
+    }
+
+    .tree-save-sprite {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 4 / 1;
+    }
+
+    .tree-save-sprite {
+        aspect-ratio: 4 / 1;
+    }
+}

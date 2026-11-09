@@ -15,6 +15,7 @@ const config = {
     output: {
         filename: "tamagotchi-bundle.js",
         path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
         clean: true
     },
     devServer: {
@@ -67,6 +68,7 @@ if (production) {
         new CopyPlugin({
             patterns: [
                 {from: "./src/images", to: "images"},
+                {from: "./src/audio", to: "audio"}
                 // {from: "./src/css", to: "css"},  // no longer needed after css/style loaders added
             ]
         }),

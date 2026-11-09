@@ -1,56 +1,55 @@
 "use strict";
-import React from "react";
-import { load, rooms, type Goobert, type createGoobert } from "../App";
-import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound } from "./audio";
+import React, { useState }from "react";
+import { load, rooms } from "../App";
+import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound, treeSound} from "./audio";
 import "../styles/hub.css";
+import useGooberts from "../GoobertContext";
 
 
-/* 
-Displays the test Goobert in the Hub.
-The different body parts are displayed using separate image elements.
-*/
-export const TestGoobert = (props: any) => {
-    return (
-        <div className="goobert-container" style={{scale: "3 3", left: "17em", top: "36em"}}>
-            <img id="goobert-legs" src="images/goobert-parts/Transparent-BG.png"/>
-            <img id="goobert-body" src="images/goobert-parts/Transparent-BG.png"/>
-            <img id="goobert-mouth" src="images/goobert-parts/Transparent-BG.png"/>
-            <img id="goobert-eyes" src="images/goobert-parts/Transparent-BG.png"/>
-        </div>
-    );
-}
 /* 
 Main Hub component where the player can customize Gooberts
 and navigate to different rooms.
 */
 export default function Hub(props: any): React.JSX.Element {
+    let { doorRefs } = useGooberts();
+
+    // Controls whether the exit confirmation popup is visible.
+    const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+
+
     return (
         <main id="main" className="hub">
 
-            {/* Tree used for Goobert Customization */}
-            <div className="tree-container">
+            {/* Click the tree to enter the customization room */}
+            <div
+                className="tree-container"
 
-                <img src="images/hub/gooberts_tree.png" 
-                    alt="GOOBERTS HUB" 
-                    className="pixelated-tree" 
-                    id="goobert-tree" />
+                // Play the sound when the mouse enters the tree.
+                onMouseEnter={() => {
+                    treeSound.play();
+                }}
 
-                {/* Clickable areas that change the Goobert's appearance */}
-                <div id="tree-body-area" onClick={changeBodyType}></div>
-                <div id="tree-legs-area" onClick={changeLegType}></div>
-                <div id="tree-mouth-area" onClick={changeMouth}></div>
-                <div id="tree-eyes-area" onClick={changeEyes}></div>
-                <div id="tree-body-color" onClick={changeBodyColor}></div>
-                <div id="tree-legs-color" onClick={changeLegColor}></div>
-
-                {/* Display the Goobert being customized */}
-                <TestGoobert createGoobert
+                // Play the sound when the tree is clicked.
+                onClick={() => {
+                    treeSound.stop();
+                    treeSound.play();
+                    load(rooms.tree);
+                }}
+                style={{ cursor: "pointer" }}
+            >
+                <img
+                    src="images/hub/gooberts_tree.png"
+                    alt="CUSTOMIZE GOOBERT"
+                    className="pixelated-tree"
+                    id="goobert-tree"
                 />
             </div>
 
             {/* Bedroom door */}
             <div className="sleep-door-container">
                 <img src="images/hub/DreamDoor.webp" alt="BEDROOM" id="sleep-door"
+                
+                ref={doorRefs.bedroom}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
@@ -64,6 +63,8 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Game Room door */}
             <div className="game-door-container">
                 <img src="images/hub/game-door.png" alt="GAME" id="game-door"
+
+                ref={doorRefs.gameRoom}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
@@ -77,6 +78,8 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Shop door */}
             <div className="shop-door-container">
                 <img src="images/hub/shop-door.png" alt="SHOP" id="shop-door"
+
+                ref={doorRefs.shop}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
@@ -90,19 +93,24 @@ export default function Hub(props: any): React.JSX.Element {
             {/* Return to main menu door */}
             <div className="leave-door-container">
                 <img src="images/hub/leave-door.png" alt="LEAVE" id="leave-door"
-                
+
+                ref={doorRefs.menu}
+
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => doorHoverSound.play()}
+
                 // Play the opening sound and enter
                 onClick={() => {
                     doorOpenSound.play();
                     load(rooms.menu);
-                }} />   
+                }} />
             </div>
 
             {/* Dungeon door */}
             <div className="dungeon-door-container">
                 <img src="images/doors/DungeonDoor.webp" alt="THE DUNGEON" id="dungeon-door" 
+
+                ref={doorRefs.dungeon}
                 
                 // Play the hover sound when mouse enters the door
                 onMouseEnter={() => dungeonHoverSound.play()}

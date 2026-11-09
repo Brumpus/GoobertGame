@@ -28,14 +28,24 @@ html, body {
 .game-room-exit {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    padding: 8px 14px;
     background-color: #ffd43b;
-    border: 3px solid black
+    color: black;
+    border: 3px solid black;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.game-room-exit:hover {
+    background-color: #ffd53b;
 }
 
 /* Hover state color change for the exit button */
 .game-room-exit:hover {
-    background-color: #ffd53bd0;
+    background-color: #ffd53b;
 }
 /* Game room exit icon using the arrow-left SVG */
 .game-room-exit-icon {
@@ -185,9 +195,38 @@ html, body {
         bottom: 68px;
     }
 }
-.goobert-icon > * {
-  position: relative;
+
+#goobert-list {
+    position: absolute;
+    max-width: 30em;
+    width: 100%;
+    height: fit-content;
+    background-color: white;
+    border-radius: 10px;
+    border: 5px solid black;
+    padding: 0.5em;
+    z-index: 100;
 }
-#goobertModal {
-    z-index: 2000;
+.list-element {
+    position: relative;
+    display: flex;
+    border-bottom: #000;
+    align-items: center;
+    justify-content: center;
+    height: 5em;
+    cursor: pointer;
+}
+.header {
+    cursor: default;
+    text-decoration: underline;
+}
+.close {
+    position: absolute;
+    right: 0em;
+    top: 0em;
+    background: red;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 50px;
+    cursor: pointer;
 }

@@ -74,32 +74,6 @@ html, body {
     height: auto;
 }
 
-/* EXIT TO HUB */
-.bedroom-controls {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 4;
-}
-
-.bedroom-exit-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    background-color: #ffd43b;
-    color: black;
-    border: 3px solid black;
-    border-radius: 5px;
-    font-size: 15px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.bedroom-exit-button:hover {
-    background-color: #ffd53b;
-}
-
 /* BEDS */
 .bedroom-beds {
     position: absolute;
@@ -200,4 +174,9 @@ html, body {
 
 html {
     overflow-x: hidden;
+}
+
+.bedroom {
+    overscroll-behavior: none;
+    touch-action: none;
 }

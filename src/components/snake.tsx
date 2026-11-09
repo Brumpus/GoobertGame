@@ -1,11 +1,12 @@
 "use strict";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { gameGoobert } from "./game-room";
 import { refreshGameBody, setBodySize, stopGame, body, width, height } from "../games/games-global";
 import { load, rooms } from "../App";
-import { initSnakeGame, setSnakeVelocity } from "../games/snake-game";
+import { initSnakeGame, setFullnessReward, setSnakeVelocity } from "../games/snake-game";
 import "../games/snake-stylesheet.css";
 import "../icons-1.13.1/font/bootstrap-icons.min.css";
+import useGooberts from "../GoobertContext";
 
 /*
 Main React component for the Snake minigame.
@@ -15,6 +16,7 @@ displaying controls, and returning to Game Room.
 export default function SnakeGame(): React.JSX.Element {
 
     let [selectedDifficulty, setSelectedDifficulty] = useState("none");
+    let { updateStat } = useGooberts();
 
     /*
     React calls this method when the player leaves Snake.
@@ -26,6 +28,19 @@ export default function SnakeGame(): React.JSX.Element {
             stopGame();
         }
     }
+
+    // Connect Flappy Goobert's rewards to React context.
+    useEffect(() => {
+        setFullnessReward((amount: number) => {
+            if (gameGoobert) {
+                updateStat(gameGoobert.id, "fullness", amount);
+            }
+        });
+
+        // Disconnect when leaving the game.
+        return () => setFullnessReward(null);
+    }, [updateStat]);
+
 
     /*
     Starts Snake using the selected board size and difficulty.
@@ -64,7 +79,7 @@ export default function SnakeGame(): React.JSX.Element {
                 </label>
                 <br />
                 <input type="range" min={0} max={100} value={gameGoobert.fullness} 
-                id="goobert-percentage" key={"SnakeFullness"} />
+                id="goobert-percentage" key={"SnakeFullness"} readOnly />
             </div>
             }
 
