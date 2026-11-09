@@ -17,7 +17,7 @@ import FeastFest from "./components/feast-fest";
 const PageController = () => { 
     return (
         <Routes>
-            <Route path="" element={<MainMenu />} />
+            <Route path="/" element={<MainMenu />} />
             <Route path="/hub" element={<Hub />} />
             <Route path="/tree" element={<Tree />} />
             <Route path="/shop" element={<Shop />} />

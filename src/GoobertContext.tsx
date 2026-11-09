@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { createMutant, MutantType, type Mutant } from "./Mutant";
+import { getState, loadGoobert } from "./saveLoadGoobert";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -45,6 +46,9 @@ interface GoobertContextType {
         stats?: GoobertStats
     ) => void;
 
+    loadSlot: (saveSlot: string) => void
+    newGame: () => void
+
     updatePosition: (
         id: string,
         x: number,
@@ -79,6 +83,7 @@ export function GoobertProvider({ children }: any) {
     // Allow gooberts to be globally accessible
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
+
     const [mutants, setMutants] = useState<Mutant[]>([]);
     (window as any).mutants = mutants;
 
@@ -189,8 +194,45 @@ export function GoobertProvider({ children }: any) {
 
         setGooberts(prev => [...prev, goobert]);
     };
-    
     (window as any).createGoobert = createGoobert;
+    // Get saved goobert from local storage and render it to the screen
+    const createSavedGoobert = async (goobertId: string) => {
+        let goobert = await loadGoobert(goobertId);
+        if(!goobert) return;
+
+        const stats: GoobertStats = {...goobert};
+        const appearance: GoobertAppearance = {...goobert};
+
+        createGoobert(goobert.name, goobert.room, undefined, undefined, appearance, stats);
+    }
+    (window as any).loadGoobert = createSavedGoobert;
+    /**
+     * Load a save slot. The exact location of the saved storage is determined by getState
+     * But the data rendering is handled by this function.
+    */
+    const loadSlot = async (saveSlot: string) => {
+        let data = await getState(saveSlot);
+        if(!data) return;
+
+        let newGooberts = data.map(goobert => {
+            let newGoobert: Goobert = renderGoobert(goobert.name, goobert.room);
+            // Populate saved properties
+            Object.assign(newGoobert, {...goobert});
+            // Randomize Position
+            newGoobert.x = Math.floor(Math.random() * window.innerWidth);
+            newGoobert.y = Math.floor(Math.random() * window.innerHeight)
+
+            return newGoobert;
+        });
+        
+        setGooberts(newGooberts);
+    }
+    (window as any).loadSlot = loadSlot;
+
+    const newGame = () => {
+        setGooberts([]);
+    }
+
 
     // Update goobert position
     const updatePosition = (id: string, x: number, y: number) => {
@@ -239,6 +281,7 @@ export function GoobertProvider({ children }: any) {
             gooberts, mutants,
             
             createGoobert, updatePosition, updateRoom, updateStat, 
+            loadSlot, newGame,
             
             doorRefs}}>
             {children}
@@ -251,7 +294,7 @@ export function renderGoobert(
 	location = rooms.hub,
 	x = (Math.random() * (window.innerWidth - 64) /* world width */),
 	y = ((Math.random() * (window.innerHeight - 550 - 64) /* world height */)) + 550,
-    isUi = false
+    isUi = false,
 ) {
 	let goobert = {
         name: name,

@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import CopyPlugin from "copy-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from "webpack";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,13 +10,15 @@ const __dirname = path.dirname(__filename);
 // this can be set on the call to webpack to branch logic based upon environment
 let production = process.env.NODE_ENV === "production";
 
+const appBase = production ? "/tamagotchi-release" : "";
+const publicPath = `${appBase}/`;
 const config = {
     mode: "development",
     entry: "./src/App.tsx",
     output: {
         filename: "tamagotchi-bundle.js",
         path: path.resolve(__dirname, "dist"),
-        publicPath: "/",
+        publicPath: publicPath,
         clean: true
     },
     devServer: {
@@ -37,12 +40,23 @@ const config = {
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                use: ["style-loader", "css-loader"] // loader pipeline (actually stack)
-                                                    // processes from right-to-left
+                use: [
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: true
+                        }
+                    }
+                ]
             }
         ]
     },
     plugins: [
+        new webpack.DefinePlugin({
+            __APP_BASE_PATH__: JSON.stringify(appBase)
+        }),
+
         new CopyPlugin({
             patterns: [
                 {from: "./src/images", to: "images"},
@@ -51,12 +65,15 @@ const config = {
                 {from: "./src/bootstrap", to: "bootstrap"},
                 {from: "./src/icons-1.13.1/font", to: "icons-1.13.1/font"},
                 { from: "./src/react", to: "react" },
+                // { from: "./src/404.html", to: "404.html" }
             ]
         }),
         new HtmlWebpackPlugin({
             template: "./src/index.html",
+            templateParameters: {
+                assetPath: (path) => `${appBase}/${path.replace(/^\/+/, "")}`
+            },
             filename: "index.html",
-            
         })
     ]
 }
@@ -64,19 +81,21 @@ const config = {
 // make changes to config based upon production build/deploy
 if (production) {
     config.mode = "production";
-    config.plugins = [
-        new CopyPlugin({
-            patterns: [
-                {from: "./src/images", to: "images"},
-                {from: "./src/audio", to: "audio"}
-                // {from: "./src/css", to: "css"},  // no longer needed after css/style loaders added
-            ]
-        }),
-        new HtmlWebpackPlugin({
-            template: "./src/index.html",
-            filename: "index.html"
-        })
-    ];
+
+    // config.plugins = [
+    //     new CopyPlugin({
+    //         patterns: [
+    //             {from: "./src/images", to: "images"},
+    //             {from: "./src/audio", to: "audio"}
+    //             // {from: "./src/css", to: "css"},  // no longer needed after css/style loaders added
+    //         ]
+    //     }),
+    //     new HtmlWebpackPlugin({
+    //         template: "./src/index.html",
+    //         filename: "index.html"
+    //     })
+    // ];
+    
 }
 
 export default config;

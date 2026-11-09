@@ -20,12 +20,13 @@ import { indexMusic, hubMusic } from "./components/audio";
 >>>>>>> b360c79b5426c60a36fd95c1a6e767fcf5892252
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
+import { assetPath } from "./assetPath";
 
 export type Room = {
 	room: React.JSX.Element
 }
 export const rooms = {
-	menu: "",
+	menu: "/",
 
 	snakeGame: <SnakeGame />,
 	flappyGoobert: <FlappyGoobert />,
@@ -161,7 +162,7 @@ function init() {
 	topElement = React.createRef();
 	root.render(
 		<GoobertProvider>
-			<BrowserRouter>
+			<BrowserRouter basename={assetPath("")}>
 				<TopElement room={new URL(window.location.href).pathname} />
 			</BrowserRouter>
 		</GoobertProvider>
