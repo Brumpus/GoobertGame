@@ -64,17 +64,6 @@ export default function GameRoom() {
                     onClick={() => {
                         arcadeClickSound.play();
 
-<<<<<<< HEAD
-                            // Open Snake.
-                            load(rooms.pipeGame);
-                        }}
-                    >
-                        <img
-                            src="images/game-room/snake-machine.png"
-                            alt="Play Snake"
-                        />
-                    </button>
-=======
                         // Load snake if no gooberts are available for selection
                         let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);
                         if(validGooberts.length < 2) {
@@ -85,7 +74,6 @@ export default function GameRoom() {
                             setGameSelector("Snake");
                             setGoobertSelector(rooms.snakeGame);
                         }
->>>>>>> b360c79b5426c60a36fd95c1a6e767fcf5892252
 
 
                     }}
@@ -123,28 +111,6 @@ export default function GameRoom() {
                     />
                 </button>
 
-<<<<<<< HEAD
-                    {/* Pipelined - Coming Soon */}
-                    <button
-                        type="button"
-                        className="machine-button"
-                        onMouseEnter={() => arcadeHoverSound.play()}
-                        onClick={() => {
-                            arcadeClickSound.play();
-
-                            // Select the first Goobie for rewards.
-                            gameGoobert = gooberts[0] || null;
-
-                            // Open Flappy Goobert.
-                            load(rooms.pipeGame);
-                        }}
-                    >
-                        <img
-                            src="images/game-room/pipelined-machine.png"
-                            alt="Pipelined - Coming Soon"
-                        />
-                    </button>
-=======
                 {/* Frogoobert */}
                 <button
                     type="button"
@@ -152,7 +118,6 @@ export default function GameRoom() {
                     onMouseEnter={() => arcadeHoverSound.play()}
                     onClick={() => {
                         arcadeClickSound.play();
->>>>>>> b360c79b5426c60a36fd95c1a6e767fcf5892252
 
                        // Load flappy goobert if no gooberts are available for selection
                         let validGooberts = gooberts.filter((goobert) => goobert.room == rooms.gameRoom);

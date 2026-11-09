@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-.pipe {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-=======
 body {
     justify-content: center;
     align-items: center;
@@ -30,5 +24,4 @@ body {
 .pipe-grid {
     justify-content: center;
      
->>>>>>> b360c79b5426c60a36fd95c1a6e767fcf5892252
 }

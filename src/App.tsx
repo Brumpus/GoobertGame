@@ -9,15 +9,8 @@ import Mutant from "./Mutant";
 
 import UIGoobertCard from "./components/ui-script";
 
-<<<<<<< HEAD
-import SnakeGame from "./components/snake";
-import FlappyGoobert from "./components/flappy-goobert";
-import PipeGame from "./components/pipeGame";
-import { BrowserRouter, useNavigate } from "react-router";
-=======
 import { BrowserRouter, useNavigate, useLocation } from "react-router";
 import { indexMusic, hubMusic } from "./components/audio";
->>>>>>> b360c79b5426c60a36fd95c1a6e767fcf5892252
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
 import { assetPath } from "./assetPath";
@@ -28,9 +21,6 @@ export type Room = {
 export const rooms = {
 	menu: "/",
 
-	snakeGame: <SnakeGame />,
-	flappyGoobert: <FlappyGoobert />,
-	pipeGame: <PipeGame />
 	hub: "/hub",
 	tree: "/tree",
 	gameRoom: "/game-room",
