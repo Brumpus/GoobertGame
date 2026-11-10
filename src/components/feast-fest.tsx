@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { load, rooms } from "../App";
 import { createFallingItem, type FallingItem } from "../games/feast-fest";
 import "../games/feast-fest.css";
-import { load, rooms } from "../App";
+import { gameGoobert } from "./game-room";
+import useGooberts from "../GoobertContext";
 
 /*
  * Feast Fest - Falling Food Minigame
@@ -19,9 +20,12 @@ import { load, rooms } from "../App";
  */
 export default function FeastFest(): React.JSX.Element {
 
+    const { updateStat } = useGooberts();
+
     // Game information displayed on the screen.
     const [items, setItems] = useState<FallingItem[]>([]);
     const [score, setScore] = useState(0);
+    const [fullness, setFullness] = useState(gameGoobert?.fullness ?? 0);
     const [gameOver, setGameOver] = useState(false);
     const [catcherX, setCatcherX] = useState(280);
 
@@ -51,6 +55,7 @@ export default function FeastFest(): React.JSX.Element {
             const catcherLeft = catcherXRef.current;
 
             let pointsEarned = 0;
+            let foodCaught = 0;
             let caughtTrash = false;
             const remainingItems: FallingItem[] = [];
 
@@ -77,8 +82,9 @@ export default function FeastFest(): React.JSX.Element {
                         // Catching trash ends the game.
                         caughtTrash = true;
                     } else {
-                        // Catching foods adds one point.
+                        // Catching foods adds one point and increases fullness.
                         pointsEarned += 1;
+                        foodCaught += 1;
                     }
                     continue;
                 }
@@ -107,6 +113,15 @@ export default function FeastFest(): React.JSX.Element {
                 );
             }
 
+            // Increase Goobert's Fullness when food is caught.
+            if (foodCaught > 0 && gameGoobert) {
+                updateStat(gameGoobert.id, "fullness", foodCaught);
+
+                setFullness(previousFullness =>
+                    Math.min(100, previousFullness + foodCaught)
+                );
+            }
+
             // Occasionally spawn a new item.
             if (!caughtTrash && Math.random() < 0.04) {
                 remainingItems.push(
@@ -129,7 +144,7 @@ export default function FeastFest(): React.JSX.Element {
         // Clean up the timer when the game stops.
         return () => window.clearInterval(gameTimer);
 
-    }, [gameOver]);
+    }, [gameOver, updateStat]);
 
     /*
      * Move the catcher using a mouse or finger.
@@ -195,6 +210,21 @@ export default function FeastFest(): React.JSX.Element {
             <div className="feast-score">
                 Score: {score}
             </div>
+
+            {/* Display Goobert's Fullness */}
+            {gameGoobert && (
+                <div className="feast-fullness-label">
+                    <label htmlFor="feast-fullness">Fullness</label>
+                    <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={fullness}
+                        id="feast-fullness"
+                        readOnly
+                    />
+                </div>
+            )}
 
             {/* Main game board */}
             <div
