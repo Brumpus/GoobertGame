@@ -23,6 +23,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
     
-    "allowJs": true // To prevent the need to completely refactor longer js files
+    "allowJs": true, // To prevent the need to completely refactor longer js files
   }
 }

@@ -29,6 +29,7 @@ const MAX_COLORS = 7;
 interface GoobertContextType {
     gooberts: Goobert[];
     mutants: Mutant[];
+    deadGooberts: Goobert[];
 
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
@@ -78,6 +79,11 @@ type doorRefs = {
 }
 const GoobertContext = createContext<GoobertContextType | null>(null);
 
+declare global{
+    interface window{
+        kill: (id: string) => void;
+    }
+}
 
 export function GoobertProvider({ children }: any) {
     // Allow gooberts to be globally accessible
@@ -86,6 +92,9 @@ export function GoobertProvider({ children }: any) {
 
     const [mutants, setMutants] = useState<Mutant[]>([]);
     (window as any).mutants = mutants;
+
+    const [deadGooberts, killGooberts] = useState<Goobert[]>([]);
+    (window as any).deadGooberts = deadGooberts;
 
     // ==== CENTRALIZED Goobert STAT UPDATES ====
 
@@ -233,6 +242,25 @@ export function GoobertProvider({ children }: any) {
         setGooberts([]);
     }
 
+    //KILL GOOBERTS DEAD!!!!!
+    
+
+    (window as any).kill = (id: string) => {
+        let newArray = [...gooberts];
+        //find the goobert in the living gooberts array
+        for(let i = 0; i <= newArray.length; i++) {
+            let deadGoobert = (newArray[i] as Goobert);
+            if(deadGoobert!.id == id) {
+                killGooberts([...deadGooberts, deadGoobert])
+                newArray.splice(i, 1);
+                break;
+            }
+        }
+        setGooberts(newArray)
+        //print so I know it's really dead
+        console.log(deadGooberts);
+    }
+
 
     // Update goobert position
     const updatePosition = (id: string, x: number, y: number) => {
@@ -278,7 +306,7 @@ export function GoobertProvider({ children }: any) {
     // Render goobert context provider
     return (
         <GoobertContext.Provider value={{
-            gooberts, mutants,
+            gooberts, mutants, deadGooberts,
             
             createGoobert, updatePosition, updateRoom, updateStat, 
             loadSlot, newGame,
