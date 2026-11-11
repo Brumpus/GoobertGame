@@ -121,6 +121,18 @@ export default function Hub(props: any): React.JSX.Element {
                 }} />
             </div>
 
+            {/*Graveyard Arrow*/}
+            <div className="graveyard-arrow-container">
+                <img src="images/bedroom/exitDoor.webp" alt="The spooky spooky graveyard" id="graveyard-arrow" 
+                
+                
+               // Play the opening sound and enter
+                onClick={() => {
+                    dungeonClickSound.play();
+                    load(rooms.graveyard);
+                }}  />
+            </div>
+
         </main>
     );
 }
