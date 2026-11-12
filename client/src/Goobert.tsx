@@ -105,6 +105,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         x: props.x,
         y: props.y
     });
+    let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
+    let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
 
     const { updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
 
@@ -388,7 +390,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
    useEffect(() => {
     if (props.isUi) return;
 
-    const timer = window.setInterval(() => {
+    const ai = window.setInterval(() => {
         // Skip wandering behavior if the Goobert is being dragged or waiting.
         if (draggingRef.current) {
             return;
@@ -425,7 +427,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             waitRef.current = 25 + Math.random() * 120;
         }
     }, 1000 / AI_FPS); 
-    return () => window.clearInterval(timer);
+    return () => window.clearInterval(ai);
    }, [props.isUi]);
 
     /*
@@ -610,7 +612,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 src={MOUTH_SPRITE_SHEET}
                 draggable={false}
                 style={{
-                    left: `${props.mouthExpression * -64}px`,
+                    left: `${mouthExpression * -64}px`,
                     top: `${props.mouthType * -64}px`
                 }}
             />
@@ -619,7 +621,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 src={EYES_SPRITE_SHEET}
                 draggable={false}
                 style={{
-                    left: `${props.eyeExpression * -64}px`,
+                    left: `${eyeExpression * -64}px`,
                     top: `${props.eyeType * -64}px`
                 }}
             />
