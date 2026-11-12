@@ -3,6 +3,7 @@ import { createFallingItem, type FallingItem } from "../games/feast-fest";
 import "../games/feast-fest.css";
 import { gameGoobert } from "./game-room";
 import useGooberts from "../GoobertContext";
+import { load, rooms } from "../App";
 
 /*
  * Feast Fest - Falling Food Minigame
