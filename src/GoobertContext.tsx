@@ -381,3 +381,7 @@ export default function useGooberts() {
   }
   return context;
 }
+
+export default function getDeceased() {
+    return deadGooberts[]
+}
