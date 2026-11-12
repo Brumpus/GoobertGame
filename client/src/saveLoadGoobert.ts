@@ -1,3 +1,4 @@
+import axios from 'axios';
 import type { Goobert } from './Goobert';
 
 export function saveGoobert(goobert: Goobert) {
@@ -27,25 +28,20 @@ export async function loadGoobert(goobertId: string) {
 (window as any).loadGoobert = loadGoobert;
 
 export async function getState(saveSlot: number): Promise<Goobert[] | undefined> {
-  console.log("Getting data...");
   const filePath = "http://localhost:3000";
-  const response = await fetch(`${filePath}/gooberts?slot=${saveSlot}`);
-
-  console.log("Response obtained! Response: " + response);
-
-  if (!response.ok) {
-    console.log("Failed to fetch. Aborting...");
-    return [];
-    // throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
+  const response = await axios.get(`${filePath}/gooberts?slot=${saveSlot}`, {
+    headers: {
+      Accept: "application/json"
+    }
+  });
   // Get JSON from localstorage
   // const json = await localStorage.getItem("saveSlot" + saveSlot);
+  
   // Get JSON from Server
-  const json = await response.json();
-  console.log("JSON " + json);
-  if(!json) return;
+  const json = await response.data;
   const data = JSON.parse(json) as Goobert[];
+
+  console.log(data);
 
   // Return gooberts
   return data;
