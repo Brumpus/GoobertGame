@@ -47,7 +47,7 @@ interface GoobertContextType {
         stats?: GoobertStats
     ) => void;
 
-    loadSlot: (saveSlot: string) => void
+    loadSlot: (saveSlot: number) => void
     newGame: () => void
 
     updatePosition: (
@@ -219,7 +219,7 @@ export function GoobertProvider({ children }: any) {
      * Load a save slot. The exact location of the saved storage is determined by getState
      * But the data rendering is handled by this function.
     */
-    const loadSlot = async (saveSlot: string) => {
+    const loadSlot = async (saveSlot: number) => {
         let data = await getState(saveSlot);
         if(!data) return;
 

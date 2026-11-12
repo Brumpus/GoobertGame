@@ -99,14 +99,14 @@ export default function MainMenu(): React.JSX.Element {
                         <div id="save-selector">
                             <div id="close-selector" onClick={() => setScreen("menu")}>x</div>
                             <div className="selector-option" onClick={() => {
-                                loadSlot("slot1");
+                                loadSlot(1);
                                 load(rooms.hub);
                             }}>
                                 <hr />
                                 Save Slot 1
                             </div>
                             <div className="selector-option" onClick={() => {
-                                loadSlot("slot2");
+                                loadSlot(2);
                                 load(rooms.hub);
                             }}>
                                 <hr />
@@ -114,7 +114,7 @@ export default function MainMenu(): React.JSX.Element {
                                 <hr />
                             </div>
                             <div className="selector-option" onClick={() => {
-                                loadSlot("slot3");
+                                loadSlot(3);
                                 load(rooms.hub);
                             }}>
                                 Save Slot 3

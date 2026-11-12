@@ -1,6 +1,4 @@
 import type { Goobert } from './Goobert';
-import useGooberts, { type GoobertAppearance, type GoobertStats } from './GoobertContext';
-
 
 export function saveGoobert(goobert: Goobert) {
   saveGoobertToFile("savedGooberts/" + goobert.id + ".json", goobert);
@@ -8,36 +6,47 @@ export function saveGoobert(goobert: Goobert) {
 (window as any).saveGoobert = saveGoobert;
 
 export async function loadGoobert(goobertId: string) {
-  // let { createGoobert } = useGooberts(); 
+  const filePath = ("http://localhost:3000/gooberts");
+  const response = await fetch(filePath);
 
-  // The below code will likely be used after websockets are introduced next week
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
 
-  // const filePath = (assetPath(`/savedGooberts/${goobertId}.json`));
-  // const response = await fetch(filePath);
+  const jsonData = await response.json();
+  const goobert: Goobert = JSON.parse(jsonData);
 
-  // if (!response.ok) {
-  //   throw new Error(`HTTP error! Status: ${response.status}`);
-  // }
-
-  // const jsonData = await response.json();
-  // const goobert: GoobertJson = JSON.parse(jsonData);
-
-  const jsonData = localStorage.getItem(goobertId);
-  if(jsonData == undefined) return;
-  const goobert: Goobert = await JSON.parse(jsonData);
-  localStorage.removeItem(goobertId); // Remove from storage
+  // const jsonData = localStorage.getItem(goobertId);
+  // if(jsonData == undefined) return;
+  // const goobert: Goobert = await JSON.parse(jsonData);
+  // localStorage.removeItem(goobertId); // Remove from storage
 
   return goobert;
   // createGoobert(goobert.name, goobert.room, undefined, undefined, goobert.appearance, goobert.stats);
 }
 (window as any).loadGoobert = loadGoobert;
 
-export async function getState(saveSlot: string): Promise<Goobert[] | undefined> {
+export async function getState(saveSlot: number): Promise<Goobert[] | undefined> {
+  console.log("Getting data...");
+  const filePath = "http://localhost:3000";
+  const response = await fetch(`${filePath}/gooberts?slot=${saveSlot}`);
+
+  console.log("Response obtained! Response: " + response);
+
+  if (!response.ok) {
+    console.log("Failed to fetch. Aborting...");
+    return [];
+    // throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
   // Get JSON from localstorage
-  const json = await localStorage.getItem(saveSlot);
+  // const json = await localStorage.getItem("saveSlot" + saveSlot);
+  // Get JSON from Server
+  const json = await response.json();
+  console.log("JSON " + json);
   if(!json) return;
   const data = JSON.parse(json) as Goobert[];
-  
+
   // Return gooberts
   return data;
 }

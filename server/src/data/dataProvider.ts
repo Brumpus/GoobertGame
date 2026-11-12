@@ -8,5 +8,13 @@ const states = {
 	saveSlot3: saveSlot3
 }
 export const getSaveState = async (state: number) => {
-	let slot = (states as any)["SaveSlot" + state];
+	let slot = (states as any)["saveSlot" + state];
+
+	return slot;
+}
+export const setSaveState = async (state: number) => {
+	// let slot = (states as any)["SaveSlot" + state];
+	// let data = JSON.parse(slot);
+
+	// return data;
 }
