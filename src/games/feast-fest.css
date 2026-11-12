@@ -117,6 +117,29 @@
     background-color: #ffcddd;
 }
 
+/* Goobert's Fullness meter */
+.feast-fullness-label {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+
+    padding: 10px;
+    width: 220px;
+    text-align: center;
+
+    color: white;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: 2px solid white;
+    border-radius: 12px;
+}
+
+.feast-fullness-label input {
+    width: 100%;
+    accent-color: #14a9ff;
+    pointer-events: none;
+}
+
 /*
  * Mobile Support
  *
