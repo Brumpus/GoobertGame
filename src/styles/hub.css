@@ -137,11 +137,21 @@ img {
 }
 
 #graveyard-arrow {
-    width: 20%;
-    height: auto;
+    filter: grayscale(100%);
+    height: 128px;
     cursor: pointer;
     image-rendering: pixelated;
 }
+
+/* #arrow-label {
+     font-family: 'Pixelify Sans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    border: black;
+
+    color: whitesmoke;
+    padding: 4px 8px;
+} */
 
 /* ==== TABLET HUB ==== */
 @media (min-width: 769px) and (max-width: 1199px) {

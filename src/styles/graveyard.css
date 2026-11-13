@@ -7,4 +7,38 @@
     height: 100vh;
     position: relative;
     overflow: hidden;
+    image-rendering: pixelated;
+    filter: grayscale(40%);
+}
+
+.Headstone {
+    image-rendering: pixelated;
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+}
+
+.etching {
+    image-rendering: pixelated;
+    filter: grayscale(100%);
+}
+
+.engraving {
+    transform: translateY(-32px);
+    font-family: 'Pixelify Sans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+
+    color: whitesmoke;
+    padding: 4px 8px;
+}
+
+.cemetery-row{
+    margin: 11px;
+}
+
+.cemetary-container{
+    position: absolute;
+    margin-top: 15em;
 }

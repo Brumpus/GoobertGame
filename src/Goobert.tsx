@@ -180,7 +180,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         const goobertRect = getGoobertRect(x, y);
 
         const doors = hub.querySelectorAll(
-            "#sleep-door, #game-door, #shop-door, #leave-door, #dungeon-door"
+            "#sleep-door, #game-door, #shop-door, #leave-door, #dungeon-door, #graveyard-arrow"
         );
 
         return Array.from(doors).some(door => {
@@ -491,7 +491,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         }
 
         if (!movedRef.current) {
-            console.log(`${props.name} says, "I've been poked!"`);
+            console.log(`${props.name} says, "I've been poked! and I'm in the ${props.room}"`);
             // Play the Goobert click sound
             goobertClickSound.play();
             props.onGoobertSelected();

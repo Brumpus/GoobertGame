@@ -3,6 +3,7 @@ import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { createMutant, MutantType, type Mutant } from "./Mutant";
 import { getState, loadGoobert } from "./saveLoadGoobert";
+import Graveyard from "./components/graveyard";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -70,12 +71,14 @@ type doorRefs = {
     shop: RefObject<HTMLImageElement | null>,
     menu: RefObject<HTMLImageElement | null>,
     dungeon: RefObject<HTMLImageElement | null>,
+    graveyard: RefObject<HTMLImageElement | null>,
 
     gameRoomHub: RefObject<HTMLImageElement | null>,
     bedroomHub: RefObject<HTMLImageElement | null>,
     shopHub: RefObject<HTMLImageElement | null>,
     menuHub: RefObject<HTMLDivElement | null>,
     dungeonHub: RefObject<HTMLImageElement | null>,
+    graveyardHub: RefObject<HTMLImageElement | null>,
 }
 const GoobertContext = createContext<GoobertContextType | null>(null);
 
@@ -250,6 +253,7 @@ export function GoobertProvider({ children }: any) {
         //find the goobert in the living gooberts array
         for(let i = 0; i <= newArray.length; i++) {
             let deadGoobert = (newArray[i] as Goobert);
+            updateRoom(deadGoobert.id, "/graveyard")
             if(deadGoobert!.id == id) {
                 killGooberts([...deadGooberts, deadGoobert])
                 newArray.splice(i, 1);
@@ -295,12 +299,14 @@ export function GoobertProvider({ children }: any) {
         shop: useRef<HTMLImageElement>(null),
         menu: useRef<HTMLImageElement>(null),
         dungeon: useRef<HTMLImageElement>(null),
+        graveyard: useRef<HTMLImageElement>(null),
 
         gameRoomHub: useRef<HTMLImageElement>(null),
         bedroomHub: useRef<HTMLImageElement>(null),
         shopHub: useRef<HTMLImageElement>(null),
         menuHub: useRef<HTMLDivElement>(null),
-        dungeonHub: useRef<HTMLImageElement>(null)
+        dungeonHub: useRef<HTMLImageElement>(null),
+        graveyardHub: useRef<HTMLImageElement>(null)
     }
 
     // Render goobert context provider
@@ -382,6 +388,7 @@ export default function useGooberts() {
   return context;
 }
 
-export default function getDeceased() {
-    return deadGooberts[]
+export function getDeceased(){
+    const {deadGooberts} = useGooberts(); 
+    return deadGooberts;
 }
