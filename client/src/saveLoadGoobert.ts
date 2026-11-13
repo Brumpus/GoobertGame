@@ -29,22 +29,32 @@ export async function loadGoobert(goobertId: string) {
 
 export async function getState(saveSlot: number): Promise<Goobert[] | undefined> {
   const filePath = "http://localhost:3000";
-  const response = await axios.get(`${filePath}/gooberts?slot=${saveSlot}`, {
+  try {
+    const response = await axios.get(`${filePath}/gooberts?slot=${saveSlot}`, {
     headers: {
       Accept: "application/json"
-    }
-  });
-  // Get JSON from localstorage
-  // const json = await localStorage.getItem("saveSlot" + saveSlot);
-  
-  // Get JSON from Server
-  const json = await response.data;
-  const data = JSON.parse(json) as Goobert[];
+      }
+    });
 
-  console.log(data);
+    // Get JSON from localstorage
+    // const json = await localStorage.getItem("saveSlot" + saveSlot);
+    
+    // Get JSON from Server
+    const json = await response.data;
+    const data = JSON.parse(json) as Goobert[];
 
-  // Return gooberts
-  return data;
+    // Return gooberts
+    return data;
+  } catch(error) {
+    // Server not running
+    console.log("failed to connect.");
+
+    const json = await localStorage.getItem("slot" + saveSlot);
+    if(!json) return;
+    const data = JSON.parse(json) as Goobert[];
+
+    return data;
+  }
 }
 (window as any).getState = getState;
 

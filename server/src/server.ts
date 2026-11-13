@@ -14,8 +14,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 })
 
 app.get("/gooberts", async (request: Request, response: Response) =>{
-    console.log("Request Received!");
-
     const slotString = request.query.slot;
     let slot: number = slotString as unknown as number;
 
