@@ -1,4 +1,4 @@
-package-lock.json
-node_modules
-dist
-ts
+*/package-lock.json
+*/node_modules
+*/dist
+client/ts

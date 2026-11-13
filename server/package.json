@@ -1,0 +1,19 @@
+{
+	"name": "cpsc-208-week13-demo-server",
+	"version": "1.0.0",
+	"author": "Vargus Fellwroth",
+	"license": "ISC",
+	"scripts": {
+		"compile": "tsc",
+		"serve": "node ./dist/server.js",
+		"compile-serve": "tsc && node ./dist/server.js",
+		"dev": "node ./node_modules/nodemon/bin/nodemon.js -e ts --exec \"npm run compile-serve\""
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.6",
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"express": "^5.3.0"
+	}
+}

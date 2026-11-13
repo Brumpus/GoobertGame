@@ -1,6 +1,5 @@
+import axios from 'axios';
 import type { Goobert } from './Goobert';
-import useGooberts, { type GoobertAppearance, type GoobertStats } from './GoobertContext';
-
 
 export function saveGoobert(goobert: Goobert) {
   saveGoobertToFile("savedGooberts/" + goobert.id + ".json", goobert);
@@ -8,36 +7,42 @@ export function saveGoobert(goobert: Goobert) {
 (window as any).saveGoobert = saveGoobert;
 
 export async function loadGoobert(goobertId: string) {
-  // let { createGoobert } = useGooberts(); 
+  const filePath = ("http://localhost:3000/gooberts");
+  const response = await fetch(filePath);
 
-  // The below code will likely be used after websockets are introduced next week
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
 
-  // const filePath = (assetPath(`/savedGooberts/${goobertId}.json`));
-  // const response = await fetch(filePath);
+  const jsonData = await response.json();
+  const goobert: Goobert = JSON.parse(jsonData);
 
-  // if (!response.ok) {
-  //   throw new Error(`HTTP error! Status: ${response.status}`);
-  // }
-
-  // const jsonData = await response.json();
-  // const goobert: GoobertJson = JSON.parse(jsonData);
-
-  const jsonData = localStorage.getItem(goobertId);
-  if(jsonData == undefined) return;
-  const goobert: Goobert = await JSON.parse(jsonData);
-  localStorage.removeItem(goobertId); // Remove from storage
+  // const jsonData = localStorage.getItem(goobertId);
+  // if(jsonData == undefined) return;
+  // const goobert: Goobert = await JSON.parse(jsonData);
+  // localStorage.removeItem(goobertId); // Remove from storage
 
   return goobert;
   // createGoobert(goobert.name, goobert.room, undefined, undefined, goobert.appearance, goobert.stats);
 }
 (window as any).loadGoobert = loadGoobert;
 
-export async function getState(saveSlot: string): Promise<Goobert[] | undefined> {
+export async function getState(saveSlot: number): Promise<Goobert[] | undefined> {
+  const filePath = "http://localhost:3000";
+  const response = await axios.get(`${filePath}/gooberts?slot=${saveSlot}`, {
+    headers: {
+      Accept: "application/json"
+    }
+  });
   // Get JSON from localstorage
-  const json = await localStorage.getItem(saveSlot);
-  if(!json) return;
-  const data = JSON.parse(json) as Goobert[];
+  // const json = await localStorage.getItem("saveSlot" + saveSlot);
   
+  // Get JSON from Server
+  const json = await response.data;
+  const data = JSON.parse(json) as Goobert[];
+
+  console.log(data);
+
   // Return gooberts
   return data;
 }
