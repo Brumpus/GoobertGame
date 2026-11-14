@@ -493,7 +493,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         }
 
         if (!movedRef.current) {
-            console.log(`${props.name} says, "I've been poked! and I'm in the ${props.room}"`);
+            console.log(`${props.id} says, "I've been poked! and I'm in the ${props.room}"`);
             // Play the Goobert click sound
             goobertClickSound.play();
             props.onGoobertSelected();
