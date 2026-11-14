@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"rootDir": "./src", /* Specify the base directory to resolve non-relative module names. */
+		"outDir": "./dist",
+		"module": "nodenext", /* Specify what module management is used. */
+		"target": "esnext", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+		"moduleResolution": "nodenext", /* used with WebPack */
+		"esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+		"jsx": "react" /* Specify what JSX code is generated. */,
+		"sourceMap": true /* Create source map files for emitted JavaScript files. */,
+		"removeComments": true /* Disable emitting comments. */,
+		"forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+		"strict": true /* Enable all strict type-checking options. */,
+		"skipLibCheck": true /* Skip type checking all .d.ts files. */,
+		"resolveJsonModule": true 
+	},
+	"include": ["src/**/*"]
+}

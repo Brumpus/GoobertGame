@@ -1,0 +1,28 @@
+.dash-page{min-height:100vh;background:#171020;color:#f7e9ff;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 10px 24px;font-family:monospace}.dash-header{display:flex;align-items:center;justify-content:space-between;width:min(100%,540px);gap:12px}.dash-header strong{font-size:clamp(18px,4vw,29px);color:#e9b7ff}.dash-header span{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dash-page button{background:#653d87;color:white;border:2px solid #bd85e4;border-radius:8px;padding:10px 16px;cursor:pointer;font-weight:bold}.dash-page button:focus-visible{outline:3px solid white;outline-offset:2px}.dash-page button:hover{background:#8657ad}.dash-meter{width:min(100%,420px)}.dash-meter-label{display:flex;justify-content:space-between;margin-bottom:5px}.dash-meter-track{height:17px;background:#493b54;border:2px solid #ab8cbf;border-radius:10px;overflow:hidden}.dash-meter-track>div{height:100%;background:linear-gradient(90deg,#58b77f,#b4f2ae);transition:width .12s}.dash-meter small{display:block;text-align:right;color:#d0b6d9;margin-top:3px}.dash-board{position:relative;width:min(100%,420px);aspect-ratio:420/620;max-height:67vh;overflow:hidden;border:4px solid #76518d;border-radius:12px;background:#251a32}.dash-board canvas{display:block;width:100%;height:100%}.dash-monster{position:absolute;left:50%;transform:translateX(-50%);width:27%;max-height:30%;object-fit:contain;object-position:top;pointer-events:none;image-rendering:pixelated}.dash-overlay{position:absolute;inset:0;z-index:3;background:#150e21dc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:20px}.dash-overlay h2{font-size:30px;color:#ddadfb}.dash-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}.dash-controls{width:min(100%,420px);display:flex;align-items:center;justify-content:space-between;gap:8px}.dash-controls button{touch-action:none;user-select:none;min-width:100px;min-height:56px}.dash-controls span{font-size:12px;text-align:center;color:#d0b6d9}.dash-message{text-align:center;margin:50px auto;max-width:400px}.dash-message button{margin-top:15px}@media(max-width:480px){.dash-board{max-height:65vh}.dash-header span{font-size:10px}.dash-controls button{min-width:95px}}
+
+/* Touch controls replace the on-screen keyboard hints. Desktop users use arrow keys or A/D. */
+.dash-controls { justify-content: space-between; touch-action:none; }
+.dash-controls button { flex: 1; max-width: 170px; min-height: 60px; font-size: 16px; touch-action:none; -webkit-user-select:none; user-select:none; }
+@media (hover:hover) and (pointer:fine) { .dash-controls { display:none; } }
+@media (max-width:480px) { .dash-page { padding-bottom:max(12px,env(safe-area-inset-bottom)); gap:8px; } .dash-board { max-height: min(60dvh, 620px); } .dash-header {gap:6px;} .dash-header strong {font-size: 17px;} .dash-page button {padding:10px;} }
+
+/*=====ANIMATED MONSTROSITY=====*/
+
+.dash-board {
+    position: relative;
+    overflow: hidden;
+}
+
+.dash-monster {
+    position: absolute;
+    left: 50%;
+    top: 68%;
+    width: 35%;
+    height: auto;
+    max-height: none;
+    z-index: 2;
+    transform: translateX(-50%);
+    object-fit: contain;
+    pointer-events: none;
+    image-rendering: pixelated;
+}
