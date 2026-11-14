@@ -14,6 +14,7 @@ import Frogoobert from "./components/frogoobert";
 import Pipelined from "./components/pipelined";
 import FeastFest from "./components/feast-fest";
 import Graveyard from "./components/graveyard";
+import DungeonDash from "./components/dungeon-dash";
 
 const PageController = () => { 
     return (
@@ -27,6 +28,7 @@ const PageController = () => {
             <Route path="/bedroom" element={<Bedroom />} />
             <Route path="/dungeon" element={<Dungeon />} />
             <Route path="/graveyard" element={<Graveyard />} />
+            <Route path="/games/dungeon-dash" element={<DungeonDash />} />
             
             <Route path="/games/flappy-goobert" element={<FlappyGoobert />} />
             <Route path="/games/snake" element={<SnakeGame />} />
