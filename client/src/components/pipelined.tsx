@@ -95,6 +95,13 @@ const pipesThree = [
     new Pipe("el")
 ];
 
+const pipesFour = [
+    new Pipe("eye"),
+    new Pipe("cross"),
+    new Pipe("el"),
+    new Pipe("tee")
+];
+
 export const PipeGame = () => {
     
     const [pipes, setPipes] = useState<PipeState[][]>([
@@ -121,7 +128,15 @@ export const PipeGame = () => {
             pipeType: pipe.pipeType,
             x: x,
             y: 2
-        }))
+        })),
+        pipesFour.map((pipe, x) => ({
+            rotation: pipe.initRotation,
+            isBlue: pipe.isBlue,
+            startblue: pipe.isBlue,
+            pipeType: pipe.pipeType,
+            x: x,
+            y: 3
+        })),
     ]);
 
     /**
@@ -257,6 +272,16 @@ export const PipeGame = () => {
             <div className="row">
                 {pipesThree.map((pipe, i) => <PipeObject
                     x={i} y={2} 
+                    {...pipe} key={i} 
+                    pipes = {pipes}
+                    setPipes = {setPipes}
+                    onRotate={rotatePipe}
+                />			
+                )}
+			</div>
+            <div className="row">
+                {pipesFour.map((pipe, i) => <PipeObject
+                    x={i} y={3} 
                     {...pipe} key={i} 
                     pipes = {pipes}
                     setPipes = {setPipes}

@@ -1,15 +1,51 @@
 .graveyard {
     min-height: 100vh;
-    background-image: linear-gradient(180deg, rgba(12, 12, 26, 0.58), rgba(10, 15, 16, 0.88)), url("../images/hub/gooberts_forest_background.jpg");
+    background-image: linear-gradient(180deg, rgba(12, 12, 26, 0.05), rgba(10, 15, 16, 0.35)), url("../images/hub/gooberts_forest_background.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
+    overflow: hidden;
+    image-rendering: pixelated;
+    filter: grayscale(40%);
     padding: 22px;
     overflow-x: hidden;
     color: #f1edf5;
     font-family: monospace;
 }
+
+
+.Headstone {
+    image-rendering: pixelated;
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+}
+
+.etching {
+    image-rendering: pixelated;
+    filter: drop-shadow(5px 15px 18px #070a0bc4) grayscale(50%) opacity(0.75);
+}
+
+.engraving {
+    transform: translateY(-40px);
+    font-family: 'Pixelify Sans', sans-serif;
+    font-size: 20px;
+    text-align: center;
+
+    color: rgb(25 23 27);
+    padding: 4px 8px;
+}
+
+.cemetery-row{
+    margin: 11px;
+}
+
+.cemetary-container{
+    position: absolute;
+    margin-top: 15em;
+}
+
 
 /*=====GRAVEYARD NAVIGATION=====*/
 
@@ -93,11 +129,16 @@
     text-shadow: 1px 1px #b9bcc1;
 }
 
+.graveyard-stone-display {
+    image-rendering: pixelated;
+    filter: drop-shadow(5px 15px 18px #070a0bc4);
+}
+
 .graveyard-rip { font-size: 22px; font-weight: 900; }
 .graveyard-name { font-size: 13px; font-weight: bold; overflow-wrap: anywhere; }
 
 .graveyard-empty { margin-top: 90px; }
 .graveyard-empty-stones { display: flex; justify-content: center; align-items: end; gap: clamp(12px, 5vw, 55px); }
-.graveyard-empty-stones .graveyard-stone:nth-child(2) { transform: translateY(-24px); }
-.graveyard-empty-stones .graveyard-stone { width: clamp(72px, 18vw, 130px); height: clamp(105px, 24vw, 140px); opacity: 0.8; }
+.graveyard-empty-stones .graveyard-stone-display:nth-child(2) { transform: translateY(-24px); }
+/* .graveyard-empty-stones .graveyard-stone { width: clamp(72px, 18vw, 130px); height: clamp(105px, 24vw, 140px); opacity: 0.8; } */
 .graveyard-empty p { margin: 48px auto 0; max-width: 430px; color: #e3dce6; font-size: 15px; }
