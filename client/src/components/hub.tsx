@@ -66,10 +66,11 @@ export default function Hub(props: any): React.JSX.Element {
                 {/*=====GRAVEYARD TRAIL ARROW=====*/}
                 <div className="graveyard-arrow-container">
                     <img
-                        src={assetPath("images/pixelarticons/arrow-left.svg")}
+                        src={assetPath("images/graveyard/graveyardArrow.webp")}
                         alt="Follow the trail to the Graveyard"
                         id="graveyard-arrow"
                         title="Follow the trail to the Graveyard"
+                        ref={doorRefs.graveyard}
                         onMouseEnter={(event) => {
                             event.stopPropagation();
                             graveyardHoverSound.play();
@@ -165,19 +166,6 @@ export default function Hub(props: any): React.JSX.Element {
                     dungeonClickSound.play();
                     load(rooms.dungeon);
                 }} />
-            </div>
-
-            {/*Graveyard Arrow*/}
-            <div className="graveyard-arrow-container">
-                <img src="images/graveyard/graveyardArrow.webp" alt="The spooky spooky graveyard" id="graveyard-arrow" 
-                
-                ref={doorRefs.graveyard}
-                
-               // Play the opening sound and enter
-                onClick={() => {
-                    dungeonClickSound.play();
-                    load(rooms.graveyard);
-                }}  />
             </div>
 
         </main>

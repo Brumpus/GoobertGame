@@ -12,24 +12,31 @@ export default function Graveyard() {
 
     interface Props {
         goobert: Goobert;
+        stoneType: number;
         
     }
-    const Headstone = ({goobert}:Props) => {
+    const Headstone = ({goobert, stoneType}:Props) => {
         const deadGoobert = goobert;
+        const [isVisible, setVisible] = useState(false);
 
         return(
         <div className="Headstone">
-            <img src="../images/graveyard/headstone.webp" />
+            <img src={`../images/graveyard/headstone${stoneType%3}.webp` } onClick={() => setVisible(!isVisible)}/>
             <div className="">
-                <GoobertElement
-                                {...deadGoobert}
-                                isUi={false}
-                                x={48}
-                                y={48}
-                                className="goobert-container icon etching"
-                            />
+                {isVisible && (
+                    <div className="">
+                        {/* <div>R.I.P. </div> */}
+                        <GoobertElement
+                                        {...deadGoobert}
+                                        isUi={false}
+                                        x={35}
+                                        y={-20}
+                                        className="goobert-container icon etching"
+                                    />
+                    </div>
+                )}
             </div>
-            <div className="engraving" onClick={() => {console.log(`Goobert is in:${goobert.room}`)}}>{goobert.name}</div>
+            <div className="engraving">{goobert.name}</div>
         </div>
     )     
     }
@@ -39,7 +46,7 @@ export default function Graveyard() {
             {/* EXIT TO HUB */}
                 <div className="exit-controls" ref={doorRefs.gameRoomHub}>
                     <button 
-                        className="exit-button " 
+                        className="graveyard-exit-button " 
                         // Play the door click sound before returning to the Hub.
                         onClick={() => {
                             doorOpenSound.play();
@@ -56,16 +63,16 @@ export default function Graveyard() {
                 {deceased.length === 0 ? (
                     <div className="graveyard-empty">
                         <div className="graveyard-empty-stones" aria-hidden="true">
-                            <div className="graveyard-stone" />
-                            <div className="graveyard-stone" />
-                            <div className="graveyard-stone" />
+                            <img className="graveyard-stone-display" src="../images/graveyard/headstone0.webp"/>
+                            <img className="graveyard-stone-display" src="../images/graveyard/headstone1.webp"/>
+                            <img className="graveyard-stone-display" src="../images/graveyard/headstone2.webp"/>
                         </div>
                         <p>No Gooberts have been laid to rest in this session.</p>
                     </div>
                 ) : (
                     <div className="cemetary-container">
                         <div className="cemetary-row">
-                            {deceased.map((goobert, i) => <Headstone goobert={goobert} key={i} />)}
+                            {deceased.map((goobert, i) => <Headstone goobert={goobert} stoneType={i} key={i} />)}
                         </div>
                     </div>
                     // <div className="graveyard-grid">

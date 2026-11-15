@@ -147,8 +147,7 @@ img {
     height: 80px; /* Increase arrow height */
     cursor: pointer;
     image-rendering: pixelated;
-    transform: rotate(90deg); /* Point upward */
-    filter: brightness(0) invert(1);
+    filter: grayscale(69%)
 }
 
 #graveyard-arrow:hover {
