@@ -10,7 +10,7 @@ import Mutant from "./Mutant";
 import UIGoobertCard from "./components/ui-script";
 
 import { BrowserRouter, useNavigate, useLocation } from "react-router";
-import { indexMusic, hubMusic } from "./components/audio";
+import { indexMusic, hubMusic, dungeonDashMusic, graveyardWind } from "./components/audio";
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
 import { assetPath } from "./assetPath";
@@ -34,6 +34,7 @@ export const rooms = {
 	frogoobert: "/games/frogoobert",
 	pipeGame: "/games/pipelined",
 	feastFest: "/games/feast-fest",
+	dungeonDash: "/games/dungeon-dash",
 
 }
 
@@ -44,7 +45,9 @@ type TopElementProps = {
 }
 const TopElement = (props: TopElementProps): React.JSX.Element => {
 	let {gooberts, mutants} = useGooberts();
-	const [room, setRoom] = useState(props.room);
+	// Use the current pathname so query parameters do not affect room matching.
+	const location = useLocation();
+	const room = location.pathname;
 	const [uiGoobert, setUiGoobert] = useState(props.uiGoobert);
 
 	const handleUiCloseButton = () => {
@@ -52,16 +55,24 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 	}
 
 // Keep background music synchronized with the current room.
-const location = useLocation();
 
 	useEffect(() => {
 		const playRoomMusic = () => {
 			const isMenu = location.pathname === "/" || location.pathname === "";
 
-			const selectedMusic = isMenu ? indexMusic : hubMusic;
-			const otherMusic = isMenu ? hubMusic : indexMusic;
+			const selectedMusic = isMenu
+                ? indexMusic
+                : location.pathname === rooms.dungeonDash
+                    ? dungeonDashMusic
+                    : location.pathname === rooms.graveyard
+                        ? graveyardWind
+                        : hubMusic;
 
-			otherMusic.stop();
+            [indexMusic, hubMusic, dungeonDashMusic, graveyardWind].forEach(track => {
+                if (track !== selectedMusic) {
+                    track.stop();
+                }
+            });
 
 			if (!selectedMusic.playing()) {
 				selectedMusic.play();
@@ -76,7 +87,7 @@ const location = useLocation();
 		document.addEventListener("click", handleInteraction, { once: true });
 
 		// If music has already started, switch tracks when navigating.
-		if (indexMusic.playing() || hubMusic.playing()) {
+		if (indexMusic.playing() || hubMusic.playing() || dungeonDashMusic.playing() || graveyardWind.playing()) {
 			playRoomMusic();
 		}
 
@@ -89,7 +100,7 @@ const location = useLocation();
 	const navigate = useNavigate();
 	load = (url: string) => {
 		navigate(url);
-		setRoom(url); // Let gooberts know which room they're on
+        // React Router updates the room using location.pathname.
 	}
 
 	return (
@@ -123,7 +134,7 @@ const location = useLocation();
 				{
 					// Filter gooberts to only display the ones on the current room
 					mutants.filter((mutant, i) => {
-						return mutant.room === room
+						return mutant.room === room && room !== rooms.dungeon
 					}).map((mutant, i) => {
 						// Create a goobert for each object stored in this room
 						return (

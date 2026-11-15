@@ -12,6 +12,7 @@ import React, {
 import useGooberts from "./GoobertContext";
 import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
+import { assetPath } from "./assetPath";
 
 import { 
     randomTarget,
@@ -21,10 +22,10 @@ import {
     type Bounds
  } from "./GoobertAI";
 
-const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
-const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
-const EYES_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-eyes.png';
-const MOUTH_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-mouths.png';
+const BODY_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-bodies.png");
+const LEG_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-legs.png");
+const EYES_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-eyes.png");
+const MOUTH_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-mouths.png");
 
 const SPRITE_SIZE = 64;
 const DOOR_DISTANCE = 20;

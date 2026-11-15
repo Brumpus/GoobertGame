@@ -49,11 +49,38 @@ export default function Graveyard() {
                         <span>BACK TO HUB</span>
                     </button>
                 </div>
-            <div className="cemetary-container">
-                <div className="cemetary-row">
-                    {deceased.map((goobert, i) => <Headstone goobert={goobert} key={i} />)}
-                </div>
-            </div>
+
+                <section className="graveyard-memorials" aria-label="Goobert memorials">
+                <h1>Goobert Graveyard</h1>
+
+                {deceased.length === 0 ? (
+                    <div className="graveyard-empty">
+                        <div className="graveyard-empty-stones" aria-hidden="true">
+                            <div className="graveyard-stone" />
+                            <div className="graveyard-stone" />
+                            <div className="graveyard-stone" />
+                        </div>
+                        <p>No Gooberts have been laid to rest in this session.</p>
+                    </div>
+                ) : (
+                    <div className="cemetary-container">
+                        <div className="cemetary-row">
+                            {deceased.map((goobert, i) => <Headstone goobert={goobert} key={i} />)}
+                        </div>
+                    </div>
+                    // <div className="graveyard-grid">
+                    //     {deadGooberts.map((goobert, index) => (
+                    //         <article className="graveyard-memorial" key={`${goobert.id}-${index}`}>
+                    //             <GoobertMemorial goobert={goobert} />
+                    //             <div className="graveyard-stone">
+                    //                 <span className="graveyard-rip">R.I.P.</span>
+                    //                 <span className="graveyard-name">{goobert.name}</span>
+                    //             </div>
+                    //         </article>
+                    //     ))}
+                    // </div>
+                )}
+            </section>
         </main>
-    )
+    );
 }
