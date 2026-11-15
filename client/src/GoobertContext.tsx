@@ -4,6 +4,7 @@ import { rooms } from "./App";
 import { createMutant, MutantType, type Mutant } from "./Mutant";
 import { getState, loadGoobert } from "./saveLoadGoobert";
 import Graveyard from "./components/graveyard";
+import { goobertDeathRattle } from "./components/audio";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -358,6 +359,7 @@ export function GoobertProvider({ children }: any) {
             if(deadGoobert!.id == id) {
                 killGooberts([...deadGooberts, deadGoobert])
                 newArray.splice(i, 1);
+                goobertDeathRattle.play();
                 break;
             }
         }

@@ -1,6 +1,6 @@
 import React, { useState, type MouseEventHandler } from "react"
 import "../styles/graveyard.css";
-import { doorOpenSound } from "./audio";
+import { doorOpenSound, goobertSpookSound } from "./audio";
 import { load, rooms } from "../App";
 import GoobertElement, {type Goobert} from "../Goobert";
 import useGooberts, { getDeceased } from "../GoobertContext";
@@ -21,7 +21,10 @@ export default function Graveyard() {
 
         return(
         <div className="Headstone">
-            <img src={`../images/graveyard/headstone${stoneType%3}.webp` } onClick={() => setVisible(!isVisible)}/>
+            <img src={`../images/graveyard/headstone${stoneType%3}.webp` } onClick={() => {
+                setVisible(!isVisible);
+                goobertSpookSound.play();
+            }}/>
             <div className="">
                 {isVisible && (
                     <div className="">
