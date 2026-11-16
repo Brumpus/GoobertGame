@@ -1,7 +1,7 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState, type RefObject } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
-import { createMutant, MutantType, type Mutant } from "./Mutant";
+import { MutantType } from "./Mutant";
 import { getState, loadGoobert } from "./saveLoadGoobert";
 import Graveyard from "./components/graveyard";
 import { goobertDeathRattle } from "./components/audio";
@@ -13,7 +13,7 @@ export type GoobertAppearance = {
     legColor: number;
     eyeType: number;
     mouthType: number;
-};
+}
 export type GoobertStats = {
     fullness: number;
     entertainment: number;
@@ -30,10 +30,10 @@ const MAX_COLORS = 7;
 
 interface GoobertContextType {
     gooberts: Goobert[];
-    mutants: Mutant[];
     deadGooberts: Goobert[];
     cureGoobert: (id: string) => void;
     summonGoobertsToHub: () => void;
+    captureGoobert: (id: string) => void;
 
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
@@ -105,27 +105,9 @@ function getMutationType(goobert: Goobert): MutantType {
 }
 
 export function GoobertProvider({ children }: any) {
-    // Allow gooberts to be globally accessible
+    // Allow gooberts and mutants to be globally accessible
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
-
-    /*=====MUTANTS FROM GOOBERT STATE=====*/
-
-    // A shadow-realm Goobert is a mutant. Deriving this list from Gooberts
-    // keeps mutation records consistent after a server save slot is loaded.
-    const mutants = useMemo<Mutant[]>(() => {
-        return gooberts
-            .filter(goobert => goobert.room === "shadow-realm")
-            .map(goobert => createMutant(
-                `${goobert.x}px`,
-                `${goobert.y}px`,
-                rooms.dungeon,
-                getMutationType(goobert),
-                goobert.id
-            ));
-    }, [gooberts]);
-
-    (window as any).mutants = mutants;
 
     const [deadGooberts, killGooberts] = useState<Goobert[]>([]);
     (window as any).deadGooberts = deadGooberts;
@@ -171,7 +153,7 @@ export function GoobertProvider({ children }: any) {
     useEffect(() => {
         const interval = window.setInterval(() => {
             setGooberts(previous => previous.map(goobert => {
-                if (goobert.room === "shadow-realm") {
+                if (goobert.isMutant || goobert.room === "shadow-realm") {
                     return goobert;
                 }
 
@@ -190,13 +172,35 @@ export function GoobertProvider({ children }: any) {
                     updated.entertainment <= 0
                 );
 
-                return depleted
-                    ? { ...updated, room: "shadow-realm" }
-                    : updated;
+                if (depleted && !goobert.isMutant) {
+                    return {
+                        ...updated,
+                        isMutant: true,
+                        mutantType: getMutationType(updated)
+                    };
+                }
+
+                return updated;
             }));
         }, 10000);
 
         return () => window.clearInterval(interval);
+    }, []);
+
+    /* ===== MUTANT CAPTURE ======*/
+    const captureGoobert = useCallback((id: string) => {
+        setGooberts(previous => previous.map(goobert => {
+            // Capture Gooberts that are not imprisoned
+            if (goobert.id !== id || goobert.isMutant || goobert.room === "shadow-realm") {
+                return goobert;
+            }
+            return {
+                ...goobert,
+                isMutant: true,
+                mutantType: getMutationType(goobert),
+                room: "shadow-realm"
+            };
+        }));
     }, []);
 
     /*=====DUNGEON DASH RESCUE=====*/
@@ -207,8 +211,12 @@ export function GoobertProvider({ children }: any) {
                 return goobert;
             }
 
+            // Remove mutant type because goobert is being cured
+            const { mutantType, ...normalGoobert } = goobert;
+
             return {
-                ...goobert,
+                ...normalGoobert,
+                isMutant: false,
                 room: rooms.hub,
                 x: 100 + Math.random() * 180,
                 y: 450,
@@ -281,7 +289,7 @@ export function GoobertProvider({ children }: any) {
                 console.log(`${candidate.name} has mutated and can be rescued in the Dungeon.`);
 
                 return previous.map(goobert => goobert.id === candidate.id
-                    ? { ...goobert, room: "shadow-realm", fullness: 0 }
+                    ? { ...goobert, room: "shadow-realm", fullness: 0, isMutant: true, mutantType: MutantType.HUNGRY }
                     : goobert
                 );
             });
@@ -423,10 +431,10 @@ export function GoobertProvider({ children }: any) {
     // Render goobert context provider
     return (
         <GoobertContext.Provider value={{
-            gooberts, mutants, deadGooberts,
+            gooberts, deadGooberts,
             
             createGoobert, updatePosition, updateRoom, updateStat,
-            getGoobertById, cureGoobert, summonGoobertsToHub,
+            getGoobertById, cureGoobert, captureGoobert, summonGoobertsToHub,
             loadSlot, newGame,
             
             doorRefs}}>
@@ -448,6 +456,10 @@ export function renderGoobert(
         y: y,
         room: location,
         id: name,
+
+        isMutant: false,
+        MutantType: undefined,
+
         isUi: isUi,
         className: "",
 

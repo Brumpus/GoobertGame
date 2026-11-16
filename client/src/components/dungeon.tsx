@@ -20,16 +20,16 @@ const mutationNames: Record<MutantType, string> = {
 /*=====DUNGEON COMPONENT=====*/
 
 export default function Dungeon() {
-    const { doorRefs, gooberts, mutants } = useGooberts();
+    const { doorRefs, gooberts } = useGooberts();
     const [selectorOpen, setSelectorOpen] = useState(false);
 
     // Only show genuine mutated Gooberts that still have an original character.
-    const availableMutants = mutants.filter(mutant =>
-        mutant.goobertId && gooberts.some(g => g.id === mutant.goobertId)
+    const availableMutants = gooberts.filter(goobert =>
+        goobert.isMutant && goobert.room === "shawdow-realm"
     );
 
     // The Dungeon renders its own prisoners; App.tsx does not duplicate them.
-    const dungeonMutants = availableMutants.filter(mutant => mutant.room === rooms.dungeon);
+    const dungeonMutants = availableMutants;
 
     const openSelector = () => {
         arcadeClickSound.play();
@@ -85,9 +85,11 @@ export default function Dungeon() {
 
                     {/*=====DUNGEON PRISONERS=====*/}
                     <div className="prisoners" aria-label="Mutated Gooberts in the Dungeon">
-                        {dungeonMutants.map((mutant, index) => (
-                            <div className="dungeon-prisoner" key={mutant.goobertId ?? index}>
-                                <Mutant {...mutant} x="0px" y="0px" />
+                        {dungeonMutants.map(goobert => (
+                            <div className="dungeon-prisoner" key={goobert.id}>
+                               {goobert.mutantType !== undefined && (
+                                   <Mutant type={goobert.mutantType} x="0px" y="0px" room={rooms.dungeon}/>
+                               )}
                             </div>
                         ))}
                     </div>
@@ -121,23 +123,23 @@ export default function Dungeon() {
                         <p>Select a mutated Goobert to cure.</p>
 
                         <div className="dash-selector-list">
-                            {availableMutants.map((mutant, index) => {
-                                const goobert = gooberts.find(g => g.id === mutant.goobertId)!;
-
-                                return (
-                                    <button
-                                        type="button"
-                                        key={mutant.goobertId ?? index}
-                                        onClick={() => startRescue(goobert.id)}
-                                    >
-                                        <span>
-                                            <strong>{goobert.name}</strong>
-                                            <small>{mutationNames[mutant.type]} mutation</small>
-                                        </span>
-                                        <span>Rescue</span>
-                                    </button>
-                                );
-                            })}
+                            {availableMutants.map(goobert => (
+                                <button
+                                    type="button"
+                                    key={goobert.id}
+                                    onClick={() => startRescue(goobert.id)}
+                                >
+                                    <span>
+                                        <strong>{goobert.name}</strong>
+                                        <small>
+                                            {goobert.mutantType !== undefined
+                                                ? mutationNames[goobert.mutantType]
+                                                : "Unknown"} mutation
+                                        </small>
+                                    </span>
+                                    <span>Rescue</span>
+                                </button>
+                            ))}
 
                             {availableMutants.length === 0 && (
                                 <p>No mutated Gooberts yet. Practice mode is available.</p>
