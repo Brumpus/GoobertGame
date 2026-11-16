@@ -16,7 +16,7 @@ export type GoobertAppearance = {
 }
 export type GoobertStats = {
     fullness: number;
-    dexterity: number;
+    entertainment: number;
     awakeness: number;
     cleanliness: number;
 }
@@ -38,9 +38,10 @@ interface GoobertContextType {
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
         id: string,
-        stat: "fullness" | "awakeness" | "cleanliness" | "dexterity",
+        stat: "fullness" | "awakeness" | "cleanliness" | "entertainment",
         amount: number
     ) => void;
+    getGoobertById: (id: string) => Goobert | undefined;
 
     createGoobert: (
         name: string,
@@ -97,7 +98,7 @@ function getMutationType(goobert: Goobert): MutantType {
     if (goobert.fullness <= 0) return MutantType.HUNGRY;
     if (goobert.awakeness <= 0) return MutantType.SLEEPLESS;
     if (goobert.cleanliness <= 0) return MutantType.DIRTY;
-    if (goobert.dexterity <= 0) return MutantType.BORED;
+    if (goobert.entertainment <= 0) return MutantType.BORED;
 
     // Saved shadow-realm Gooberts without a zero stat still need a sprite.
     return MutantType.HUNGRY;
@@ -118,7 +119,7 @@ export function GoobertProvider({ children }: any) {
     // useCallback prevents the function from being recreated on every render.
     const updateStat = useCallback((
         id: string,
-        stat: "fullness" | "awakeness" | "cleanliness" | "dexterity",
+        stat: "fullness" | "awakeness" | "cleanliness" | "entertainment",
         amount: number
     ) => {
         setGooberts(previous =>
@@ -138,6 +139,13 @@ export function GoobertProvider({ children }: any) {
         );
     }, []);
 
+    const getGoobertById = (id: string) => {
+        for(let goobert of gooberts) {
+            if(goobert.id == id) return goobert;
+        }
+        return undefined;
+    }
+
     /*=====AUTOMATIC STAT DEPLETION AND MUTATION=====*/
 
     // Maintain the upstream ten-second stat depletion interval.
@@ -154,14 +162,14 @@ export function GoobertProvider({ children }: any) {
                     fullness: Math.max(0, goobert.fullness - 1),
                     awakeness: Math.max(0, goobert.awakeness - 1),
                     cleanliness: Math.max(0, goobert.cleanliness - 1),
-                    dexterity: Math.max(0, goobert.dexterity - 1)
+                    entertainment: Math.max(0, goobert.entertainment - 1)
                 };
 
                 const depleted = (
                     updated.fullness <= 0 ||
                     updated.awakeness <= 0 ||
                     updated.cleanliness <= 0 ||
-                    updated.dexterity <= 0
+                    updated.entertainment <= 0
                 );
 
                 if (depleted && !goobert.isMutant) {
@@ -215,7 +223,7 @@ export function GoobertProvider({ children }: any) {
                 fullness: Math.max(50, goobert.fullness),
                 awakeness: Math.max(50, goobert.awakeness),
                 cleanliness: Math.max(50, goobert.cleanliness),
-                dexterity: Math.max(50, goobert.dexterity)
+                entertainment: Math.max(50, goobert.entertainment)
             };
         }));
     }, []);
@@ -426,7 +434,7 @@ export function GoobertProvider({ children }: any) {
             gooberts, deadGooberts,
             
             createGoobert, updatePosition, updateRoom, updateStat,
-            cureGoobert, captureGoobert, summonGoobertsToHub,
+            getGoobertById, cureGoobert, captureGoobert, summonGoobertsToHub,
             loadSlot, newGame,
             
             doorRefs}}>
@@ -457,7 +465,7 @@ export function renderGoobert(
 
         // Initialize stats with a random number between 30 and 70
         fullness: 30 + Math.floor(Math.random() * 41), // Eating, catch the food game
-        dexterity: 30 + Math.floor(Math.random() * 41), // Exercise, Snake & Frogoobert
+        entertainment: 30 + Math.floor(Math.random() * 41), // Exercise, Snake & Frogoobert
         awakeness: 30 + Math.floor(Math.random() * 41), // Sleeping
         cleanliness: 30 + Math.floor(Math.random() * 41), // Bathing, Flappy Goobert
 
@@ -479,9 +487,9 @@ export function renderGoobert(
             this.awakeness = 100;
         },
 
-        // Dexterity is earned through minigames.
+        // Entertainment is earned through minigames.
         entertain(quality: number) {
-            this.dexterity = Math.min(100, this.dexterity + quality);
+            this.entertainment = Math.min(100, this.entertainment + quality);
         },
 
         bathe(amt: number) {

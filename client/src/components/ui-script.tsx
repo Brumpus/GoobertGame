@@ -98,7 +98,7 @@ export default function UIGoobertCard({goobert, onUiClose}: UIProps): React.JSX.
             <div className="ui-statbar-container">
                 <img id="ui-statbar-fullness" style={{width:statBarWidth * (goobert.fullness / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-statbar-awakeness" style={{width:statBarWidth * (goobert.awakeness / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
-                <img id="ui-statbar-dexterity" style={{width:statBarWidth * (goobert.dexterity / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
+                <img id="ui-statbar-entertainment" style={{width:statBarWidth * (goobert.entertainment / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-statbar-cleanliness" style={{width:statBarWidth * (goobert.cleanliness / 100)}} src="images/goobert-parts/Transparent-BG.png"/>
             </div>
             
@@ -107,7 +107,7 @@ export default function UIGoobertCard({goobert, onUiClose}: UIProps): React.JSX.
             <div className="ui-icon-container">
                 <img id="ui-icon-fullness" src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-icon-awakeness" src="images/goobert-parts/Transparent-BG.png"/>
-                <img id="ui-icon-dexterity" src="images/goobert-parts/Transparent-BG.png"/>
+                <img id="ui-icon-entertainment" src="images/goobert-parts/Transparent-BG.png"/>
                 <img id="ui-icon-cleanliness" src="images/goobert-parts/Transparent-BG.png"/>
             </div>
             

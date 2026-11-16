@@ -9,7 +9,7 @@ import React, {
     type Ref
 } from "react";
 
-import useGooberts from "./GoobertContext";
+import useGooberts, { type GoobertStats } from "./GoobertContext";
 import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
 import { getMutantAsset, MutantType } from "./Mutant";
@@ -78,7 +78,7 @@ export type Goobert = {
     mutantType?: MutantType;
 
     fullness: number;
-    dexterity: number;
+    entertainment: number;
     awakeness: number;
     cleanliness: number;
 
@@ -123,13 +123,19 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
     let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
 
+    const [sleepTime, setSleepTime] = useState(0);
+
+
     const {
         gooberts, 
+        
         updatePosition, 
         updateRoom, 
         updateStat, 
         captureGoobert,
+        getGoobertById,
         doorRefs 
+    
     } = useGooberts();
 
     /*
@@ -371,7 +377,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     * within boundaries. The wandering behavior is paused when the player interacts 
     * with a Goobert.
     */
-   const getWanderBounds = (): Bounds => {
+    const getWanderBounds = (): Bounds => {
         const hub = document.querySelector(".hub");
         const isMobile = window.innerWidth <= 768;
 
@@ -399,12 +405,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             minY: 0,
             maxY: Math.max(0, innerHeight - SPRITE_SIZE)
         };
-   };
+    };
 
-   // targetRef stores the current wandering target, and waitRef controls the 
-   // waiting time before selecting a new target.
-   const targetRef = useRef<Point | null > (null);
-   const waitRef = useRef(20);
+    // targetRef stores the current wandering target, and waitRef controls the 
+    // waiting time before selecting a new target.
+    const targetRef = useRef<Point | null > (null);
+    const waitRef = useRef(20);
 
    // Target for the Mutant
    const chaseTargetRef = useRef<string | null> (null);
@@ -413,89 +419,97 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
    const goobertsRef = useRef(gooberts);
    goobertsRef.current = gooberts;
 
-   const latestMove = useRef({ move, getWanderBounds });
-   latestMove.current = { move, getWanderBounds };
+    const latestMove = useRef({ move, getWanderBounds });
+    latestMove.current = { move, getWanderBounds };
 
-   useEffect(() => {
-    if (props.isUi) return;
+    // =========== GOOBERT AI ===========
+    useEffect(() => {
+        if (props.isUi) return;
 
-    // Bored mutants don't wander!
-    if (props.isMutant && props.mutantType === MutantType.BORED) {
-        return;
-    }
-
-    const ai = window.setInterval(() => {
-
-        // Additional safeguard to prevent Bored mutants from wandering.
+        // Bored mutants don't wander!
         if (props.isMutant && props.mutantType === MutantType.BORED) {
             return;
+        }
+    
+        const ai = window.setInterval(() => {
+
+        if (props.isMutant) {
+            handleEmotion(props.id);
+
+            if(sleepTime > 0) { // Don't wander while sleeping
+                setEyeExpression(eyeEmotions.bored);
+                setSleepTime(sleepTime - 1);
+                return;
+            }
         }
 
         // Skip wandering behavior if the Goobert is being dragged or waiting.
         if (draggingRef.current) {
+            if (!props.isMutant) {
+                setEyeExpression(eyeEmotions.alarmed);
+            }
             return;
         }
 
+        // ====== MUTANT AI TO CHASE GOOBERTS =====
         if (props.isMutant && props.mutantType !== undefined) {
-
-            // Locate Goobert in same room
+            // Locate Gooberts 
             const targets = findGoobert(goobertsRef.current, props.id, props.room);
 
-            // Determine previous target Goober is available
+            // Determine previous target Goobert available to chase
             let target = targets.find(goobert => goobert.id === chaseTargetRef.current);
 
-            // No valid Goobert, randomly choose new 
+            // Randomly choose another Goober to chase
             if (!target) {
                 target = chooseGoobert(targets) ?? undefined;
                 chaseTargetRef.current = target?.id ?? null;
             }
 
-            // Target exists, moves to current position
+            // Mutant chases target Goobert
             if (target) {
                 const current = positionRef.current;
                 const speed = getMutantSpeed(props.mutantType);
                 const next = step(current, {x: target.x, y: target.y}, speed);
-
                 latestMove.current.move(next.x, next.y);
             }
             return;
         }
 
-        // Decrease the wait time before selecting a new wandering target.
-        if (waitRef.current > 0) {
-            waitRef.current -= 1;
-            return;
-        }
+            // Decrease the wait time before selecting a new wandering target.
+            if (waitRef.current > 0) {
+                waitRef.current -= 1;
+                return;
+            }
 
-        // If no target is set, generate a new random target within the wandering bounds.
-        if (targetRef.current === null) {
-            targetRef.current = randomTarget(latestMove.current.getWanderBounds());
-            return;
-        }
+            // If no target is set, generate a new random target within the wandering bounds.
+            if (targetRef.current === null) {
+                targetRef.current = randomTarget(latestMove.current.getWanderBounds());
+                return;
+            }
 
-        // Move the Goobert towards the current target. 
-        // If it has arrived, reset the target and set a new wait time.
-        const current = positionRef.current;
-        if (arrived(current, targetRef.current)) {
-            targetRef.current = null;
-            waitRef.current = 20 + Math.floor(Math.random() * 60);
-            return;
-        }
+            // Move the Goobert towards the current target. 
+            // If it has arrived, reset the target and set a new wait time.
+            const current = positionRef.current;
+            if (arrived(current, targetRef.current)) {
+                targetRef.current = null;
+                waitRef.current = 20 + Math.floor(Math.random() * 60);
+                return;
+            }
 
-        const next = step(current, targetRef.current, GOOBERT_VELOCITY);
-        const worked = latestMove.current.move(next.x, next.y);
+            const next = step(current, targetRef.current, GOOBERT_VELOCITY);
+            const worked = latestMove.current.move(next.x, next.y);
 
-        // If the move was unsuccessful due to boundaries, reset the target 
-        // and set a short wait time before trying again.
-        if (!worked) {
-            targetRef.current = null;
-            waitRef.current = 25 + Math.random() * 120;
-        }
-    }, 1000 / AI_FPS); 
-    return () => window.clearInterval(ai);
-   }, [props.isUi, props.isMutant, props.mutantType]);
+            // If the move was unsuccessful due to boundaries, reset the target 
+            // and set a short wait time before trying again.
+            if (!worked) {
+                targetRef.current = null;
+                waitRef.current = 25 + Math.random() * 120;
+            }
+        }, 1000 / AI_FPS); 
+        return () => window.clearInterval(ai);
+    }, [props.isUi, props.isMutant, props.mutantType]);
 
-   // Determines if Mutant has caught a Goobert
+   // ===== MUTANT CATCHES GOOBERT =====//
    useEffect(() => {
     if (props.isUi || !props.isMutant) {
         return;
@@ -519,6 +533,62 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     }, 1000 / AI_FPS);
     return () => window.clearInterval(catchInterval);
    }, [props.isUi, props.isMutant, props.id, props.room, captureGoobert]);
+
+
+// ====== GOOBERT EMOTIONS ======
+    // EYE EMOTIONS:
+    // 0 > Neutral; 1 > Judgemental/Bored; 2 > Bored/Sad/Tired;
+    // 3 > Sad; 4 > Angry; 5 > Excited; 6 > Alarmed
+    enum eyeEmotions {
+        neutral, judgemental, bored, sad, angry, excited, alarmed
+    }
+
+    // MOUTH EMOTIONS:
+    // 0 > Neutral; 1 > Slightly Open; 2 > Open;
+    // 3 > Sad; 4 > Angry; 5 > Happy
+    enum mouthEmotions {
+        neutral, partOpen, fullOpen, sad, angry, happy
+    }
+    const handleEmotion = (id: string) => {
+        const goobert = getGoobertById(id);
+        if(!goobert) return;
+
+        setEyeExpression(0); 
+        setMouthExpression(0);
+
+        if(
+            (goobert.awakeness + goobert.cleanliness + 
+             goobert.entertainment + goobert.fullness) / 4 > 60
+        ) {
+            // Fairly well taken care of
+            setMouthExpression(mouthEmotions.happy);
+        }
+
+        if(
+            (goobert.awakeness + goobert.cleanliness + 
+             goobert.entertainment + goobert.fullness) / 4 > 90
+        ) {
+            // Very well taken care of
+            setEyeExpression(eyeEmotions.excited);
+        }
+        
+        if(goobert.awakeness < 20) {
+            // Tired
+            setEyeExpression(eyeEmotions.bored)
+        }
+
+        if(
+            (goobert.awakeness + goobert.cleanliness + 
+             goobert.entertainment + goobert.fullness) / 4 < 20
+        ) {
+            // Neglected
+            setMouthExpression(mouthEmotions.sad);
+            setEyeExpression(eyeEmotions.sad);
+        }
+
+    }
+
+   // =========== GOOBERT DRAGGING ===========
 
     /*
     * Starts dragging when the player presses a Goobert.
@@ -655,9 +725,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
     } 
     const goToBed = () =>   {
-        // TODO: make sleeping more interesting
-        console.log("bed time!");
-        updateStat(props.id, "awakeness", 10000000000);   
+        console.log("bed time!", sleepTime);
+        setSleepTime(AI_FPS * 30); // 30 seconds
+        updateStat(props.id, "awakeness", 100);   
     }
 
     
