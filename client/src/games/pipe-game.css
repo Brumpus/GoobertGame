@@ -4,7 +4,7 @@ body {
 }
 
 .game-container {
-    background-color: aliceblue;
+    background-image: url("../images/games/bathroomBackground.webp");
     width: fit-content;
     padding: 20px;
     border: 6px solid black;
@@ -24,4 +24,36 @@ body {
 .pipe-grid {
     justify-content: center;
      
+}
+
+.shower-goobert{
+    position: relative;
+    filter: drop-shadow(5px 15px 18px #070a0bc4);
+}
+
+.shower-water {
+    position: relative;
+    opacity: 0.7;
+    z-index: 200;
+    height: 256px;
+    width: 64px;
+    left: -32px;
+    bottom: -128px;
+}
+
+.shower-head {
+    position: relative;
+    width: 64px;
+    top: -32px;
+    right: -32px;
+    filter: drop-shadow(5px 15px 18px #070a0bc4);
+}
+
+.shower {
+    position: relative;
+    background-image: url(../images/games/showerBackground.webp);
+}
+
+.shower-floor {
+
 }
