@@ -106,7 +106,7 @@ of each other.*/
    inherit this.
    ----------------------------------- */
 
-#ui-statbar-fullness, #ui-statbar-awakeness, #ui-statbar-dexterity, #ui-statbar-cleanliness {
+#ui-statbar-fullness, #ui-statbar-awakeness, #ui-statbar-entertainment, #ui-statbar-cleanliness {
     position: absolute;
     left: 1.65em;
     width: 46px;
@@ -123,7 +123,7 @@ of each other.*/
     top: 102px;
     background-position-x: -46px;
 }
-#ui-statbar-dexterity {
+#ui-statbar-entertainment {
     top: 121px;
     background-position-x: -92px;
 }
@@ -146,7 +146,7 @@ of each other.*/
    -22px is a flexing arm
    ---------------------------------------- */
 
-#ui-icon-fullness, #ui-icon-awakeness, #ui-icon-dexterity, #ui-icon-cleanliness {
+#ui-icon-fullness, #ui-icon-awakeness, #ui-icon-entertainment, #ui-icon-cleanliness {
     position: absolute;
     left: 0.55em;
     width: 11px;
@@ -164,7 +164,7 @@ of each other.*/
     top: 102px;
     background-position-x: -33px;
 }
-#ui-icon-dexterity {
+#ui-icon-entertainment {
     top: 121px;
     background-position-x: -44px;
 }

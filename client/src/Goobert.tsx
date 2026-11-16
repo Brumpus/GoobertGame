@@ -9,7 +9,7 @@ import React, {
     type Ref
 } from "react";
 
-import useGooberts from "./GoobertContext";
+import useGooberts, { type GoobertStats } from "./GoobertContext";
 import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
 import { assetPath } from "./assetPath";
@@ -64,7 +64,7 @@ export type Goobert = {
     id: string;
 
     fullness: number;
-    dexterity: number;
+    entertainment: number;
     awakeness: number;
     cleanliness: number;
 
@@ -109,7 +109,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
     let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
 
-    const { updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
+
+
+    const { 
+        updatePosition, updateRoom, updateStat, getGoobertById,
+        doorRefs 
+    } = useGooberts();
 
     /*
     * Synchronizes the Goobert's displayed position with GoobertContext.
@@ -350,7 +355,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     * within boundaries. The wandering behavior is paused when the player interacts 
     * with a Goobert.
     */
-   const getWanderBounds = (): Bounds => {
+    const getWanderBounds = (): Bounds => {
         const hub = document.querySelector(".hub");
         const isMobile = window.innerWidth <= 768;
 
@@ -378,58 +383,98 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             minY: 0,
             maxY: Math.max(0, innerHeight - SPRITE_SIZE)
         };
-   };
+    };
 
-   // targetRef stores the current wandering target, and waitRef controls the 
-   // waiting time before selecting a new target.
-   const targetRef = useRef<Point | null > (null);
-   const waitRef = useRef(20);
+    // targetRef stores the current wandering target, and waitRef controls the 
+    // waiting time before selecting a new target.
+    const targetRef = useRef<Point | null > (null);
+    const waitRef = useRef(20);
 
-   const latestMove = useRef({ move, getWanderBounds });
-   latestMove.current = { move, getWanderBounds };
+    const latestMove = useRef({ move, getWanderBounds });
+    latestMove.current = { move, getWanderBounds };
 
-   useEffect(() => {
-    if (props.isUi) return;
+    // =========== GOOBERT AI ===========
+    useEffect(() => {
+        if (props.isUi) return;
+        const ai = window.setInterval(() => {
+            handleEmotion(props.id);
 
-    const ai = window.setInterval(() => {
-        // Skip wandering behavior if the Goobert is being dragged or waiting.
-        if (draggingRef.current) {
-            return;
+            // Skip wandering behavior if the Goobert is being dragged or waiting.
+            if (draggingRef.current) {
+                setEyeExpression(eyeEmotions.alarmed);
+                return;
+            }
+
+            // Decrease the wait time before selecting a new wandering target.
+            if (waitRef.current > 0) {
+                waitRef.current -= 1;
+                return;
+            }
+
+            // If no target is set, generate a new random target within the wandering bounds.
+            if (targetRef.current === null) {
+                targetRef.current = randomTarget(latestMove.current.getWanderBounds());
+                return;
+            }
+
+            // Move the Goobert towards the current target. 
+            // If it has arrived, reset the target and set a new wait time.
+            const current = positionRef.current;
+            if (arrived(current, targetRef.current)) {
+                targetRef.current = null;
+                waitRef.current = 20 + Math.floor(Math.random() * 60);
+                return;
+            }
+
+            const next = step(current, targetRef.current, GOOBERT_VELOCITY);
+            const worked = latestMove.current.move(next.x, next.y);
+
+            // If the move was unsuccessful due to boundaries, reset the target 
+            // and set a short wait time before trying again.
+            if (!worked) {
+                targetRef.current = null;
+                waitRef.current = 25 + Math.random() * 120;
+            }
+        }, 1000 / AI_FPS); 
+        return () => window.clearInterval(ai);
+    }, [props.isUi]);
+
+    // EYE EMOTIONS:
+    // 0 > Neutral; 1 > Judgemental/Bored; 2 > Bored/Sad/Tired;
+    // 3 > Sad; 4 > Angry; 5 > Excited; 6 > Alarmed
+    enum eyeEmotions {
+        neutral, judgemental, bored, sad, angry, excited, alarmed
+    }
+
+    // MOUTH EMOTIONS:
+    // 0 > Neutral; 1 > Slightly Open; 2 > Open;
+    // 3 > Sad; 4 > Angry; 5 > Happy
+    enum mouthEmotions {
+        neutral, partOpen, fullOpen, sad, angry, happy
+    }
+    const handleEmotion = (id: string) => {
+        const goobert = getGoobertById(id);
+        if(!goobert) return;
+
+        setEyeExpression(0); 
+        setMouthExpression(0);
+
+        if(goobert.entertainment > 90) {
+            setMouthExpression(mouthEmotions.happy);
         }
 
-        // Decrease the wait time before selecting a new wandering target.
-        if (waitRef.current > 0) {
-            waitRef.current -= 1;
-            return;
+        if(
+            (goobert.awakeness + goobert.cleanliness + 
+             goobert.entertainment + goobert.fullness) / 4 > 90
+        ) {
+            // Well taken care of
+            setEyeExpression(eyeEmotions.excited);
         }
+    }
 
-        // If no target is set, generate a new random target within the wandering bounds.
-        if (targetRef.current === null) {
-            targetRef.current = randomTarget(latestMove.current.getWanderBounds());
-            return;
-        }
 
-        // Move the Goobert towards the current target. 
-        // If it has arrived, reset the target and set a new wait time.
-        const current = positionRef.current;
-        if (arrived(current, targetRef.current)) {
-            targetRef.current = null;
-            waitRef.current = 20 + Math.floor(Math.random() * 60);
-            return;
-        }
 
-        const next = step(current, targetRef.current, GOOBERT_VELOCITY);
-        const worked = latestMove.current.move(next.x, next.y);
-
-        // If the move was unsuccessful due to boundaries, reset the target 
-        // and set a short wait time before trying again.
-        if (!worked) {
-            targetRef.current = null;
-            waitRef.current = 25 + Math.random() * 120;
-        }
-    }, 1000 / AI_FPS); 
-    return () => window.clearInterval(ai);
-   }, [props.isUi]);
+   // =========== GOOBERT DRAGGING ===========
 
     /*
     * Starts dragging when the player presses a Goobert.

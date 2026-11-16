@@ -38,7 +38,10 @@ wss.on("connection", (observer: WebSocket) => {
     const pid = "pid" + new Date().getTime();
 
     observer.send(encodeMessage("connect", pid));
-    
+    observer.on("message", (message) => {
+        const data = message;
+        
+    })
     
 });
 const encodeMessage = (type: string, data: any) => {
