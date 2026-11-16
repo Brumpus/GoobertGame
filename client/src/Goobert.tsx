@@ -397,12 +397,14 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     // =========== GOOBERT AI ===========
     useEffect(() => {
         if (props.isUi) return;
+
         const ai = window.setInterval(() => {
             handleEmotion(props.id);
 
             if(sleepTime > 0) { // Don't wander while sleeping
                 setEyeExpression(eyeEmotions.bored);
                 setSleepTime(sleepTime - 1);
+                updateStat(props.id, "awakeness", 100);
                 return;
             }
 
@@ -444,7 +446,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             }
         }, 1000 / AI_FPS); 
         return () => window.clearInterval(ai);
-    }, [props.isUi]);
+    }, [props.isUi, sleepTime]);
 
     // EYE EMOTIONS:
     // 0 > Neutral; 1 > Judgemental/Bored; 2 > Bored/Sad/Tired;
@@ -508,6 +510,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     * pointer moves outside the Goobert's sprite.
     */
     const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+        if (sleepTime > 0) {
+            console.log("Why are you poking a sleeping goobert, you monster");
+            goobertClickSound.play();
+            props.onGoobertSelected();
+            return;
+        }
         if (props.isUi) return;
 
         event.preventDefault();

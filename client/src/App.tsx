@@ -45,7 +45,7 @@ type TopElementProps = {
 	uiGoobert?: Goobert
 }
 const TopElement = (props: TopElementProps): React.JSX.Element => {
-	let {gooberts, mutants} = useGooberts();
+	let {gooberts, mutants, loadSlot} = useGooberts();
 	// Use the current pathname so query parameters do not affect room matching.
 	const location = useLocation();
 	const room = location.pathname;
@@ -55,8 +55,13 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 		setUiGoobert(undefined);
 	}
 
-// Keep background music synchronized with the current room.
+	// Load most recently loaded save slot on page reload
+	useEffect(() => {
+		let slot = localStorage.getItem("currentSlot");
+		if(slot) loadSlot(parseInt(slot));
+	}, []);
 
+	// Keep background music synchronized with the current room.
 	useEffect(() => {
 		const playRoomMusic = () => {
 			const isMenu = location.pathname === "/" || location.pathname === "";

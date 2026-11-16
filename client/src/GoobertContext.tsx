@@ -347,6 +347,9 @@ export function GoobertProvider({ children }: any) {
         
         setGooberts(newGooberts);
         killGooberts([]);
+
+        // Set most recently loaded slot to activate on page reload
+        localStorage.setItem("currentSlot", saveSlot.toString());
     }
     (window as any).loadSlot = loadSlot;
 
