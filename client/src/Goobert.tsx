@@ -109,6 +109,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
     let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
 
+    const [sleepTime, setSleepTime] = useState(0);
 
 
     const { 
@@ -399,6 +400,12 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         const ai = window.setInterval(() => {
             handleEmotion(props.id);
 
+            if(sleepTime > 0) { // Don't wander while sleeping
+                setEyeExpression(eyeEmotions.bored);
+                setSleepTime(sleepTime - 1);
+                return;
+            }
+
             // Skip wandering behavior if the Goobert is being dragged or waiting.
             if (draggingRef.current) {
                 setEyeExpression(eyeEmotions.alarmed);
@@ -459,7 +466,11 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         setEyeExpression(0); 
         setMouthExpression(0);
 
-        if(goobert.entertainment > 90) {
+        if(
+            (goobert.awakeness + goobert.cleanliness + 
+             goobert.entertainment + goobert.fullness) / 4 > 60
+        ) {
+            // Fairly well taken care of
             setMouthExpression(mouthEmotions.happy);
         }
 
@@ -467,9 +478,24 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             (goobert.awakeness + goobert.cleanliness + 
              goobert.entertainment + goobert.fullness) / 4 > 90
         ) {
-            // Well taken care of
+            // Very well taken care of
             setEyeExpression(eyeEmotions.excited);
         }
+        
+        if(goobert.awakeness < 20) {
+            // Tired
+            setEyeExpression(eyeEmotions.bored)
+        }
+
+        if(
+            (goobert.awakeness + goobert.cleanliness + 
+             goobert.entertainment + goobert.fullness) / 4 < 20
+        ) {
+            // Neglected
+            setMouthExpression(mouthEmotions.sad);
+            setEyeExpression(eyeEmotions.sad);
+        }
+
     }
 
 
@@ -611,9 +637,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
     } 
     const goToBed = () =>   {
-        // TODO: make sleeping more interesting
-        console.log("bed time!");
-        updateStat(props.id, "awakeness", 10000000000);   
+        console.log("bed time!", sleepTime);
+        setSleepTime(AI_FPS * 30); // 30 seconds
+        updateStat(props.id, "awakeness", 100);   
     }
 
     
