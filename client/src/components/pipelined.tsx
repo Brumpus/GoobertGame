@@ -237,8 +237,8 @@ export default function Pipelined() {
     // Use the same selected Goobert object and 0-100 stat meter as other arcade games.
     const rewardGoobert = (amount: number) => {
         if (!gameGoobert) return;
-        gameGoobert.dexterity = Math.min(100, Math.max(0, gameGoobert.cleanliness + amount));
-        setCleanliness(gameGoobert.dexterity);
+        gameGoobert.entertainment = Math.min(100, Math.max(0, gameGoobert.cleanliness + amount));
+        setCleanliness(gameGoobert.entertainment);
         updateStat(gameGoobert.id, "cleanliness", amount);
     };
     /**
