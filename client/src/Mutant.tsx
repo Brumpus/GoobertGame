@@ -1,10 +1,11 @@
+import { assetPath } from "./assetPath";
 
 import React from "react";
 
-const SLEEP_MUTANT_ASSET = 'images/goobert-parts/mutant-tired.gif';
-const DIRTY_MUTANT_ASSET = 'images/goobert-parts/mutant-dirty.gif';
-const BORED_MUTANT_ASSET = 'images/goobert-parts/mutant-bored.png';
-const HUNGRY_MUTANT_ASSET = 'images/goobert-parts/mutant-hungry.gif';
+const SLEEP_MUTANT_ASSET = assetPath("images/goobert-parts/mutant-tired.gif");
+const DIRTY_MUTANT_ASSET = assetPath("images/goobert-parts/mutant-dirty.gif");
+const BORED_MUTANT_ASSET = assetPath("images/goobert-parts/mutant-bored.png");
+const HUNGRY_MUTANT_ASSET = assetPath("images/goobert-parts/mutant-hungry.gif");
 
 export enum MutantType {SLEEPLESS, DIRTY, BORED, HUNGRY}
 

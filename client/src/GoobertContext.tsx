@@ -3,6 +3,8 @@ import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { MutantType } from "./Mutant";
 import { getState, loadGoobert } from "./saveLoadGoobert";
+import Graveyard from "./components/graveyard";
+import { goobertDeathRattle } from "./components/audio";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -29,6 +31,9 @@ const MAX_COLORS = 7;
 interface GoobertContextType {
     gooberts: Goobert[];
     deadGooberts: Goobert[];
+    cureGoobert: (id: string) => void;
+    summonGoobertsToHub: () => void;
+    captureGoobert: (id: string) => void;
 
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
@@ -69,12 +74,14 @@ type doorRefs = {
     shop: RefObject<HTMLImageElement | null>,
     menu: RefObject<HTMLImageElement | null>,
     dungeon: RefObject<HTMLImageElement | null>,
+    graveyard: RefObject<HTMLImageElement | null>,
 
     gameRoomHub: RefObject<HTMLImageElement | null>,
     bedroomHub: RefObject<HTMLImageElement | null>,
     shopHub: RefObject<HTMLImageElement | null>,
     menuHub: RefObject<HTMLDivElement | null>,
     dungeonHub: RefObject<HTMLImageElement | null>,
+    graveyardHub: RefObject<HTMLImageElement | null>,
 }
 const GoobertContext = createContext<GoobertContextType | null>(null);
 
@@ -82,6 +89,18 @@ declare global{
     interface window{
         kill: (id: string) => void;
     }
+}
+
+/*=====MUTATION TYPES=====*/
+
+function getMutationType(goobert: Goobert): MutantType {
+    if (goobert.fullness <= 0) return MutantType.HUNGRY;
+    if (goobert.awakeness <= 0) return MutantType.SLEEPLESS;
+    if (goobert.cleanliness <= 0) return MutantType.DIRTY;
+    if (goobert.dexterity <= 0) return MutantType.BORED;
+
+    // Saved shadow-realm Gooberts without a zero stat still need a sprite.
+    return MutantType.HUNGRY;
 }
 
 export function GoobertProvider({ children }: any) {
@@ -119,62 +138,158 @@ export function GoobertProvider({ children }: any) {
         );
     }, []);
 
-    // ==== AUTOMATIC Goobert STAT DEPLETION ====
+    /*=====AUTOMATIC STAT DEPLETION AND MUTATION=====*/
 
-    // Decrease stats every 5 seconds for testing.
+    // Maintain the upstream ten-second stat depletion interval.
+    // Mutated Gooberts do not lose additional stats while imprisoned.
     useEffect(() => {
         const interval = window.setInterval(() => {
+            setGooberts(previous => previous.map(goobert => {
+                if (goobert.isMutant || goobert.room === "shadow-realm") {
+                    return goobert;
+                }
 
-            // Update gooberts to reduce stats, then convert things to mutants
-            setGooberts((previous) => {
-                const updatedGooberts = previous.map(goobert => ({
+                const updated = {
                     ...goobert,
                     fullness: Math.max(0, goobert.fullness - 1),
                     awakeness: Math.max(0, goobert.awakeness - 1),
                     cleanliness: Math.max(0, goobert.cleanliness - 1),
                     dexterity: Math.max(0, goobert.dexterity - 1)
-                }))
+                };
 
-                // Loop through each goobert
-                let list = [...updatedGooberts];
+                const depleted = (
+                    updated.fullness <= 0 ||
+                    updated.awakeness <= 0 ||
+                    updated.cleanliness <= 0 ||
+                    updated.dexterity <= 0
+                );
 
-                // Filter keys for ones that are <= 0
-                const keys = ["fullness", "awakeness", "cleanliness", "dexterity"] as const;
-                for(let goobert of list) {
-                    // Turn to mutant if a stat is <= 0 and the goobert is not in the shadow realm
-                    let mutateStats = keys.filter(
-                        (key) => goobert[key] <= 0 && !goobert.isMutant && goobert.room != "shadow-realm");
-
-                    if(mutateStats.length > 0) {
-                        // Goobert has stat <= 0; make it a mutant
-                        let type: MutantType;
-                        switch (mutateStats[0]) {
-                            case "fullness":
-                                type = MutantType.HUNGRY;
-                                break;
-                            case "awakeness":
-                                type = MutantType.SLEEPLESS;
-                                break;
-                            case "cleanliness":
-                                type = MutantType.DIRTY;
-                                break;
-                            case "dexterity":
-                                type = MutantType.BORED;
-                                break;
-                            default:
-                                type = MutantType.HUNGRY;       
-                        }
-                        goobert.isMutant = true;
-                        goobert.mutantType = type;
-                    }
+                if (depleted && !goobert.isMutant) {
+                    return {
+                        ...updated,
+                        isMutant: true,
+                        mutantType: getMutationType(updated)
+                    };
                 }
 
-                // set gooberts to updated list after reducing stats and converting to mutants
-                return (list);
-            });
+                return updated;
+            }));
         }, 10000);
 
         return () => window.clearInterval(interval);
+    }, []);
+
+    /* ===== MUTANT CAPTURE ======*/
+    const captureGoobert = useCallback((id: string) => {
+        setGooberts(previous => previous.map(goobert => {
+            // Capture Gooberts that are not imprisoned
+            if (goobert.id !== id || goobert.isMutant || goobert.room === "shadow-realm") {
+                return goobert;
+            }
+            return {
+                ...goobert,
+                isMutant: true,
+                mutantType: getMutationType(goobert),
+                room: "shadow-realm"
+            };
+        }));
+    }, []);
+
+    /*=====DUNGEON DASH RESCUE=====*/
+
+    const cureGoobert = useCallback((id: string) => {
+        setGooberts(previous => previous.map(goobert => {
+            if (goobert.id !== id || goobert.room !== "shadow-realm") {
+                return goobert;
+            }
+
+            // Remove mutant type because goobert is being cured
+            const { mutantType, ...normalGoobert } = goobert;
+
+            return {
+                ...normalGoobert,
+                isMutant: false,
+                room: rooms.hub,
+                x: 100 + Math.random() * 180,
+                y: 450,
+                fullness: Math.max(50, goobert.fullness),
+                awakeness: Math.max(50, goobert.awakeness),
+                cleanliness: Math.max(50, goobert.cleanliness),
+                dexterity: Math.max(50, goobert.dexterity)
+            };
+        }));
+    }, []);
+
+    /*=====HUB SUMMONING BELL=====*/
+
+    const summonGoobertsToHub = useCallback(() => {
+        const hub = document.querySelector<HTMLElement>(".hub");
+        const width = hub?.clientWidth ?? window.innerWidth;
+        const height = hub?.clientHeight ?? window.innerHeight;
+
+        setGooberts(previous => {
+            const available = previous.filter(goobert =>
+                goobert.room !== "shadow-realm"
+            );
+
+            const columns = Math.max(1, Math.min(8, Math.floor((width - 24) / 76)));
+            const positions = new Map<string, { x: number; y: number }>();
+
+            available.forEach((goobert, index) => {
+                const row = Math.floor(index / columns);
+                const column = index % columns;
+                const countInRow = Math.min(columns, available.length - row * columns);
+                const spacing = Math.min(76, Math.max(66, (width - 24) / countInRow));
+                const rowWidth = countInRow * spacing;
+
+                positions.set(goobert.id, {
+                    x: Math.max(0, Math.min(
+                        width - 64,
+                        (width - rowWidth) / 2 + column * spacing + (spacing - 64) / 2
+                    )),
+                    y: Math.max(0, height - 95 - row * 72)
+                });
+            });
+
+            return previous.map(goobert => {
+                const position = positions.get(goobert.id);
+                return position
+                    ? { ...goobert, room: rooms.hub, ...position }
+                    : goobert;
+            });
+        });
+    }, []);
+
+    /*=====LOCAL DUNGEON DASH TESTING=====*/
+
+    useEffect(() => {
+        if (!["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+            return;
+        }
+
+        (window as any).testDungeonMutation = () => {
+            setGooberts(previous => {
+                const candidate = previous.find(goobert =>
+                    goobert.room !== "shadow-realm"
+                );
+
+                if (!candidate) {
+                    console.warn("Create or load a Goobert before testing a mutation.");
+                    return previous;
+                }
+
+                console.log(`${candidate.name} has mutated and can be rescued in the Dungeon.`);
+
+                return previous.map(goobert => goobert.id === candidate.id
+                    ? { ...goobert, room: "shadow-realm", fullness: 0, isMutant: true, mutantType: MutantType.HUNGRY }
+                    : goobert
+                );
+            });
+        };
+
+        return () => {
+            delete (window as any).testDungeonMutation;
+        };
     }, []);
 
     // Allow gooberts to be created from anywhere
@@ -231,11 +346,13 @@ export function GoobertProvider({ children }: any) {
         });
         
         setGooberts(newGooberts);
+        killGooberts([]);
     }
     (window as any).loadSlot = loadSlot;
 
     const newGame = () => {
         setGooberts([]);
+        killGooberts([]);
     }
 
     //KILL GOOBERTS DEAD!!!!!
@@ -244,11 +361,13 @@ export function GoobertProvider({ children }: any) {
     (window as any).kill = (id: string) => {
         let newArray = [...gooberts];
         //find the goobert in the living gooberts array
-        for(let i = 0; i <= newArray.length; i++) {
+        for(let i = 0; i < newArray.length; i++) {
             let deadGoobert = (newArray[i] as Goobert);
+            updateRoom(deadGoobert.id, "/graveyard")
             if(deadGoobert!.id == id) {
                 killGooberts([...deadGooberts, deadGoobert])
                 newArray.splice(i, 1);
+                goobertDeathRattle.play();
                 break;
             }
         }
@@ -291,12 +410,14 @@ export function GoobertProvider({ children }: any) {
         shop: useRef<HTMLImageElement>(null),
         menu: useRef<HTMLImageElement>(null),
         dungeon: useRef<HTMLImageElement>(null),
+        graveyard: useRef<HTMLImageElement>(null),
 
         gameRoomHub: useRef<HTMLImageElement>(null),
         bedroomHub: useRef<HTMLImageElement>(null),
         shopHub: useRef<HTMLImageElement>(null),
         menuHub: useRef<HTMLDivElement>(null),
-        dungeonHub: useRef<HTMLImageElement>(null)
+        dungeonHub: useRef<HTMLImageElement>(null),
+        graveyardHub: useRef<HTMLImageElement>(null)
     }
 
     // Render goobert context provider
@@ -304,7 +425,8 @@ export function GoobertProvider({ children }: any) {
         <GoobertContext.Provider value={{
             gooberts, deadGooberts,
             
-            createGoobert, updatePosition, updateRoom, updateStat, 
+            createGoobert, updatePosition, updateRoom, updateStat,
+            cureGoobert, captureGoobert, summonGoobertsToHub,
             loadSlot, newGame,
             
             doorRefs}}>
@@ -380,4 +502,9 @@ export default function useGooberts() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+}
+
+export function getDeceased(){
+    const {deadGooberts} = useGooberts(); 
+    return deadGooberts;
 }

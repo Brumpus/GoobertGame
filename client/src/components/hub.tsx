@@ -1,9 +1,10 @@
 "use strict";
 import React, { useState }from "react";
 import { load, rooms } from "../App";
-import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound, treeSound} from "./audio";
+import { doorHoverSound, doorOpenSound, dungeonClickSound, dungeonHoverSound, treeSound, bellRingSound, graveyardHoverSound } from "./audio";
 import "../styles/hub.css";
 import useGooberts from "../GoobertContext";
+import { assetPath } from "../assetPath";
 
 
 /* 
@@ -11,7 +12,7 @@ Main Hub component where the player can customize Gooberts
 and navigate to different rooms.
 */
 export default function Hub(props: any): React.JSX.Element {
-    let { doorRefs } = useGooberts();
+    let { doorRefs, summonGoobertsToHub } = useGooberts();
 
     // Controls whether the exit confirmation popup is visible.
     const [showExitConfirmation, setShowExitConfirmation] = useState(false);
@@ -19,6 +20,24 @@ export default function Hub(props: any): React.JSX.Element {
 
     return (
         <main id="main" className="hub">
+
+            {/*=====SUMMONING BELL=====*/}
+            <button
+                type="button"
+                className="hub-bell-button"
+                aria-label="Call all Gooberts to the Hub"
+                title="Call all Gooberts to the Hub"
+                onClick={() => {
+                    bellRingSound.play();
+                    summonGoobertsToHub();
+                }}
+            >
+                <img
+                    src={assetPath("images/hub/bell.png")}
+                    alt=""
+                    className="hub-bell-image"
+                />
+            </button>
 
             {/* Click the tree to enter the customization room */}
             <div
@@ -38,16 +57,44 @@ export default function Hub(props: any): React.JSX.Element {
                 style={{ cursor: "pointer" }}
             >
                 <img
-                    src="images/hub/gooberts_tree.png"
+                    src={assetPath("images/hub/gooberts_tree.png")}
                     alt="CUSTOMIZE GOOBERT"
                     className="pixelated-tree"
                     id="goobert-tree"
                 />
+
+                {/*=====GRAVEYARD TRAIL ARROW=====*/}
+                <div className="graveyard-arrow-container">
+                    <img
+                        src={assetPath("images/graveyard/graveyardArrow.webp")}
+                        alt="Follow the trail to the Graveyard"
+                        id="graveyard-arrow"
+                        title="Follow the trail to the Graveyard"
+                        ref={doorRefs.graveyard}
+                        onMouseEnter={(event) => {
+                            event.stopPropagation();
+                            graveyardHoverSound.play();
+                        }}
+                        onClick={(event) => {
+                            // Prevent the surrounding tree from opening customization.
+                            event.stopPropagation();
+
+                            // Restart the sound, then play it a second time when it ends.
+                            graveyardHoverSound.stop();
+                            graveyardHoverSound.once("end", () => {
+                                graveyardHoverSound.play();
+                            });
+                            graveyardHoverSound.play();
+
+                            load(rooms.graveyard);
+                        }}
+                    />
+                </div>
             </div>
 
             {/* Bedroom door */}
             <div className="sleep-door-container">
-                <img src="images/hub/DreamDoor.webp" alt="BEDROOM" id="sleep-door"
+                <img src={assetPath("images/hub/DreamDoor.webp")} alt="BEDROOM" id="sleep-door"
                 
                 ref={doorRefs.bedroom}
                 
@@ -62,7 +109,7 @@ export default function Hub(props: any): React.JSX.Element {
 
             {/* Game Room door */}
             <div className="game-door-container">
-                <img src="images/hub/game-door.png" alt="GAME" id="game-door"
+                <img src={assetPath("images/hub/game-door.png")} alt="GAME" id="game-door"
 
                 ref={doorRefs.gameRoom}
                 
@@ -77,7 +124,7 @@ export default function Hub(props: any): React.JSX.Element {
 
             {/* Shop door */}
             <div className="shop-door-container">
-                <img src="images/hub/shop-door.png" alt="SHOP" id="shop-door"
+                <img src={assetPath("images/hub/shop-door.png")} alt="SHOP" id="shop-door"
 
                 ref={doorRefs.shop}
                 
@@ -92,7 +139,7 @@ export default function Hub(props: any): React.JSX.Element {
 
             {/* Return to main menu door */}
             <div className="leave-door-container">
-                <img src="images/hub/leave-door.png" alt="LEAVE" id="leave-door"
+                <img src={assetPath("images/hub/leave-door.png")} alt="LEAVE" id="leave-door"
 
                 ref={doorRefs.menu}
 
@@ -108,7 +155,7 @@ export default function Hub(props: any): React.JSX.Element {
 
             {/* Dungeon door */}
             <div className="dungeon-door-container">
-                <img src="images/doors/DungeonDoor.webp" alt="THE DUNGEON" id="dungeon-door" 
+                <img src={assetPath("images/doors/DungeonDoor.webp")} alt="THE DUNGEON" id="dungeon-door"
 
                 ref={doorRefs.dungeon}
                 
@@ -119,18 +166,6 @@ export default function Hub(props: any): React.JSX.Element {
                     dungeonClickSound.play();
                     load(rooms.dungeon);
                 }} />
-            </div>
-
-            {/*Graveyard Arrow*/}
-            <div className="graveyard-arrow-container">
-                <img src="images/bedroom/exitDoor.webp" alt="The spooky spooky graveyard" id="graveyard-arrow" 
-                
-                
-               // Play the opening sound and enter
-                onClick={() => {
-                    dungeonClickSound.play();
-                    load(rooms.graveyard);
-                }}  />
             </div>
 
         </main>

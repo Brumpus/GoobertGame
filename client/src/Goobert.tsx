@@ -13,6 +13,7 @@ import useGooberts from "./GoobertContext";
 import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
 import { getMutantAsset, MutantType } from "./Mutant";
+import { assetPath } from "./assetPath";
 
 import { 
     randomTarget,
@@ -29,10 +30,10 @@ import {
     catchGoobert
 } from "./MutantAI";
 
-const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
-const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
-const EYES_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-eyes.png';
-const MOUTH_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-mouths.png';
+const BODY_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-bodies.png");
+const LEG_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-legs.png");
+const EYES_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-eyes.png");
+const MOUTH_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-mouths.png");
 
 const SPRITE_SIZE = 64;
 const DOOR_DISTANCE = 20;
@@ -122,7 +123,14 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
     let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
 
-    const {gooberts, updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
+    const {
+        gooberts, 
+        updatePosition, 
+        updateRoom, 
+        updateStat, 
+        captureGoobert,
+        doorRefs 
+    } = useGooberts();
 
     /*
     * Synchronizes the Goobert's displayed position with GoobertContext.
@@ -196,7 +204,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         const goobertRect = getGoobertRect(x, y);
 
         const doors = hub.querySelectorAll(
-            "#sleep-door, #game-door, #shop-door, #leave-door, #dungeon-door"
+            "#sleep-door, #game-door, #shop-door, #leave-door, #dungeon-door, #graveyard-arrow"
         );
 
         return Array.from(doors).some(door => {
@@ -503,11 +511,14 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
             if(catchGoobert(mutant.x, mutant.y, target.x, target.y)) {
                 console.log("Mutant caught Goobert:", props.id, target.id);
+
+                // CAUGHT GOOBERT TO SHADOW REALM 
+                captureGoobert(target.id);
             }
         }
     }, 1000 / AI_FPS);
     return () => window.clearInterval(catchInterval);
-   }, [props.isUi, props.isMutant, props.id, props.room]);
+   }, [props.isUi, props.isMutant, props.id, props.room, captureGoobert]);
 
     /*
     * Starts dragging when the player presses a Goobert.
@@ -572,7 +583,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         }
 
         if (!movedRef.current) {
-            console.log(`${props.name} says, "I've been poked!"`);
+            console.log(`${props.id} says, "I've been poked! and I'm in the ${props.room}"`);
             // Play the Goobert click sound
             goobertClickSound.play();
             props.onGoobertSelected();

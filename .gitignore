@@ -3,3 +3,5 @@
 */dist
 client/ts
 node_modules
+
+package-lock.json
