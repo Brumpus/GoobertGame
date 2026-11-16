@@ -160,6 +160,20 @@ export const goobertCreateSound = new Howl({
     volume: 0.5
 });
 
+//---------------------//
+// Goobert Ghost SFX //
+//---------------------//
+
+//sound played when clicking a headstone
+export const goobertSpookSound = new Howl({
+    src: [assetPath("audio/sfx/goobert-spook.mp3")],
+    volume: 0.5
+})
+
+export const goobertDeathRattle = new Howl({
+    src: [assetPath("audio/sfx/goobert-death.mp3")],
+    volume: 0.5
+})
 /*=====DUNGEON DASH MUSIC=====*/
 
 export const dungeonDashMusic = new Howl({

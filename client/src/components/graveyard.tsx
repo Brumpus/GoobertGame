@@ -1,87 +1,94 @@
-import React from "react";
-
+import React, { useState, type MouseEventHandler } from "react"
 import "../styles/graveyard.css";
-import { doorOpenSound } from "./audio";
+import { doorOpenSound, goobertSpookSound } from "./audio";
 import { load, rooms } from "../App";
-import useGooberts from "../GoobertContext";
-import type { Goobert } from "../Goobert";
-import { assetPath } from "../assetPath";
-
-/*=====GOOBERT MEMORIAL PORTRAIT=====*/
-
-const spriteSheets = {
-    legs: assetPath("images/goobert-parts/208-tamagotchi-legs.png"),
-    body: assetPath("images/goobert-parts/208-tamagotchi-bodies.png"),
-    mouth: assetPath("images/goobert-parts/208-tamagotchi-mouths.png"),
-    eyes: assetPath("images/goobert-parts/208-tamagotchi-eyes.png")
-};
-
-function GoobertMemorial({ goobert }: { goobert: Goobert }) {
-    const parts = [
-        { key: "legs", col: goobert.legColor, row: goobert.legType },
-        { key: "body", col: goobert.bodyColor, row: goobert.bodyType },
-        { key: "mouth", col: goobert.mouthExpression ?? 0, row: goobert.mouthType },
-        { key: "eyes", col: goobert.eyeExpression ?? 0, row: goobert.eyeType }
-    ] as const;
-
-    return (
-        <div className="graveyard-portrait" aria-label={`${goobert.name}'s portrait`}>
-            {parts.map(part => (
-                <div
-                    key={part.key}
-                    className="graveyard-portrait-layer"
-                    style={{
-                        backgroundImage: `url("${spriteSheets[part.key]}")`,
-                        backgroundPosition: `${-part.col * 64}px ${-part.row * 64}px`
-                    }}
-                />
-            ))}
-        </div>
-    );
-}
-
-/*=====GRAVEYARD=====*/
+import GoobertElement, {type Goobert} from "../Goobert";
+import useGooberts, { getDeceased } from "../GoobertContext";
+import UIGoobertCard from "./ui-script";
 
 export default function Graveyard() {
-    const { deadGooberts } = useGooberts();
+    let { doorRefs } = useGooberts();
+    const deceased = getDeceased();//hmmmm... how do I get the array of dead gooberts here
 
-    return (
+    interface Props {
+        goobert: Goobert;
+        stoneType: number;
+        
+    }
+    const Headstone = ({goobert, stoneType}:Props) => {
+        const deadGoobert = goobert;
+        const [isVisible, setVisible] = useState(false);
+
+        return(
+        <div className="Headstone">
+            <img src={`../images/graveyard/headstone${stoneType%3}.webp` } onClick={() => {
+                setVisible(!isVisible);
+                goobertSpookSound.play();
+            }}/>
+            <div className="">
+                {isVisible && (
+                    <div className="">
+                        {/* <div>R.I.P. </div> */}
+                        <GoobertElement
+                                        {...deadGoobert}
+                                        isUi={false}
+                                        x={35}
+                                        y={-20}
+                                        className="goobert-container icon etching"
+                                    />
+                    </div>
+                )}
+            </div>
+            <div className="engraving">{goobert.name}</div>
+        </div>
+    )     
+    }
+
+    return(
         <main className="graveyard">
-            <button
-                type="button"
-                className="graveyard-exit-button"
-                onClick={() => {
-                    doorOpenSound.play();
-                    load(rooms.hub);
-                }}
-            >
-                Back to Hub
-            </button>
+            {/* EXIT TO HUB */}
+                <div className="exit-controls" ref={doorRefs.gameRoomHub}>
+                    <button 
+                        className="graveyard-exit-button " 
+                        // Play the door click sound before returning to the Hub.
+                        onClick={() => {
+                            doorOpenSound.play();
+                            load(rooms.hub);
+                        }}>
 
-            <section className="graveyard-memorials" aria-label="Goobert memorials">
+                        <span>BACK TO HUB</span>
+                    </button>
+                </div>
+
+                <section className="graveyard-memorials" aria-label="Goobert memorials">
                 <h1>Goobert Graveyard</h1>
 
-                {deadGooberts.length === 0 ? (
+                {deceased.length === 0 ? (
                     <div className="graveyard-empty">
                         <div className="graveyard-empty-stones" aria-hidden="true">
-                            <div className="graveyard-stone" />
-                            <div className="graveyard-stone" />
-                            <div className="graveyard-stone" />
+                            <img className="graveyard-stone-display" src="../images/graveyard/headstone0.webp"/>
+                            <img className="graveyard-stone-display" src="../images/graveyard/headstone1.webp"/>
+                            <img className="graveyard-stone-display" src="../images/graveyard/headstone2.webp"/>
                         </div>
                         <p>No Gooberts have been laid to rest in this session.</p>
                     </div>
                 ) : (
-                    <div className="graveyard-grid">
-                        {deadGooberts.map((goobert, index) => (
-                            <article className="graveyard-memorial" key={`${goobert.id}-${index}`}>
-                                <GoobertMemorial goobert={goobert} />
-                                <div className="graveyard-stone">
-                                    <span className="graveyard-rip">R.I.P.</span>
-                                    <span className="graveyard-name">{goobert.name}</span>
-                                </div>
-                            </article>
-                        ))}
+                    <div className="cemetary-container">
+                        <div className="cemetary-row">
+                            {deceased.map((goobert, i) => <Headstone goobert={goobert} stoneType={i} key={i} />)}
+                        </div>
                     </div>
+                    // <div className="graveyard-grid">
+                    //     {deadGooberts.map((goobert, index) => (
+                    //         <article className="graveyard-memorial" key={`${goobert.id}-${index}`}>
+                    //             <GoobertMemorial goobert={goobert} />
+                    //             <div className="graveyard-stone">
+                    //                 <span className="graveyard-rip">R.I.P.</span>
+                    //                 <span className="graveyard-name">{goobert.name}</span>
+                    //             </div>
+                    //         </article>
+                    //     ))}
+                    // </div>
                 )}
             </section>
         </main>
