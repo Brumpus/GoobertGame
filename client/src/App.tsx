@@ -14,6 +14,7 @@ import { indexMusic, hubMusic, dungeonDashMusic, graveyardWind } from "./compone
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
 import { assetPath } from "./assetPath";
+import { ServerProvider } from "./ServerContext";
 
 export type Room = {
 	room: React.JSX.Element
@@ -163,11 +164,13 @@ const root = createRoot(
 function init() {
 	topElement = React.createRef();
 	root.render(
-		<GoobertProvider>
-			<BrowserRouter basename={assetPath("")}>
-				<TopElement room={new URL(window.location.href).pathname} />
-			</BrowserRouter>
-		</GoobertProvider>
+		<ServerProvider>
+			<GoobertProvider>
+				<BrowserRouter basename={assetPath("")}>
+					<TopElement room={new URL(window.location.href).pathname} />
+				</BrowserRouter>
+			</GoobertProvider>
+		</ServerProvider>
 	);
 }
 

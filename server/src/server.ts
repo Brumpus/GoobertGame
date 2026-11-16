@@ -1,7 +1,13 @@
 import express, { Express, NextFunction, Request, Response } from "express";
+import http from "http";
+import { WebSocket, WebSocketServer } from "ws";
 import { getSaveState, setSaveState } from "./data/dataProvider";
 
+const PORT = process.env.PORT || 3000;
+
 const app: Express = express();
+const server = http.createServer(app);
+const wss = new WebSocketServer({server});
 
 app.use(express.json());
 
@@ -12,10 +18,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
     next();
 })
-
 app.get("/gooberts", async (request: Request, response: Response) =>{
-    console.log("Request Received!");
-
     const slotString = request.query.slot;
     let slot: number = slotString as unknown as number;
 
@@ -29,6 +32,30 @@ app.post("/gooberts", async (request: Request, response: Response) =>{
 });
 
 
-console.log("Listening on port 3000!");
+wss.on("connection", (observer: WebSocket) => {
+    console.log("User connected!");
+    
+    const pid = "pid" + new Date().getTime();
 
-app.listen(3000);
+    observer.send(encodeMessage("connect", pid));
+    
+    
+});
+const encodeMessage = (type: string, data: any) => {
+    return JSON.stringify({type: type, content: data});
+}
+
+const parseMessage = (messageType: string, data: any) => {
+    switch (messageType) {
+        case "":
+
+        break;
+
+        default:
+            break;
+    }
+}
+
+server.listen(PORT, () => {
+    console.log(`HTTP & WS server running on http://localhost:${PORT}`);
+});
