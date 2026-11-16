@@ -12,6 +12,7 @@ import React, {
 import useGooberts from "./GoobertContext";
 import { goobertClickSound } from "./components/audio";
 import { rooms } from "./App";
+import { getMutantAsset, MutantType } from "./Mutant";
 
 import { 
     randomTarget,
@@ -20,6 +21,13 @@ import {
     type Point,
     type Bounds
  } from "./GoobertAI";
+
+import {
+    findGoobert,
+    chooseGoobert,
+    getMutantSpeed,
+    catchGoobert
+} from "./MutantAI";
 
 const BODY_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-bodies.png';
 const LEG_SPRITE_SHEET = 'images/goobert-parts/208-tamagotchi-legs.png';
@@ -41,6 +49,9 @@ type GoobertProps = {
     id: string;
     isUi: boolean;
 
+    isMutant: boolean;
+    mutantType?: MutantType;
+
     bodyType: number;
     bodyColor: number;
     legColor: number;
@@ -61,6 +72,9 @@ export type Goobert = {
     y: number;
     room: string;
     id: string;
+
+    isMutant: boolean;
+    mutantType?: MutantType;
 
     fullness: number;
     dexterity: number;
@@ -108,7 +122,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
     let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
 
-    const { updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
+    const {gooberts, updatePosition, updateRoom, updateStat, doorRefs } = useGooberts();
 
     /*
     * Synchronizes the Goobert's displayed position with GoobertContext.
@@ -384,15 +398,58 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
    const targetRef = useRef<Point | null > (null);
    const waitRef = useRef(20);
 
+   // Target for the Mutant
+   const chaseTargetRef = useRef<string | null> (null);
+
+   // (Latest) Goobert positions
+   const goobertsRef = useRef(gooberts);
+   goobertsRef.current = gooberts;
+
    const latestMove = useRef({ move, getWanderBounds });
    latestMove.current = { move, getWanderBounds };
 
    useEffect(() => {
     if (props.isUi) return;
 
+    // Bored mutants don't wander!
+    if (props.isMutant && props.mutantType === MutantType.BORED) {
+        return;
+    }
+
     const ai = window.setInterval(() => {
+
+        // Additional safeguard to prevent Bored mutants from wandering.
+        if (props.isMutant && props.mutantType === MutantType.BORED) {
+            return;
+        }
+
         // Skip wandering behavior if the Goobert is being dragged or waiting.
         if (draggingRef.current) {
+            return;
+        }
+
+        if (props.isMutant && props.mutantType !== undefined) {
+
+            // Locate Goobert in same room
+            const targets = findGoobert(goobertsRef.current, props.id, props.room);
+
+            // Determine previous target Goober is available
+            let target = targets.find(goobert => goobert.id === chaseTargetRef.current);
+
+            // No valid Goobert, randomly choose new 
+            if (!target) {
+                target = chooseGoobert(targets) ?? undefined;
+                chaseTargetRef.current = target?.id ?? null;
+            }
+
+            // Target exists, moves to current position
+            if (target) {
+                const current = positionRef.current;
+                const speed = getMutantSpeed(props.mutantType);
+                const next = step(current, {x: target.x, y: target.y}, speed);
+
+                latestMove.current.move(next.x, next.y);
+            }
             return;
         }
 
@@ -428,7 +485,29 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         }
     }, 1000 / AI_FPS); 
     return () => window.clearInterval(ai);
-   }, [props.isUi]);
+   }, [props.isUi, props.isMutant, props.mutantType]);
+
+   // Determines if Mutant has caught a Goobert
+   useEffect(() => {
+    if (props.isUi || !props.isMutant) {
+        return;
+    }
+
+    const catchInterval = window.setInterval(() => {
+        // Find Gooberts in same room
+        const targets = findGoobert(goobertsRef.current, props.id, props.room);
+
+        // Check Gooberts are near Mutant
+        for (const target of targets) {
+            const mutant = positionRef.current;
+
+            if(catchGoobert(mutant.x, mutant.y, target.x, target.y)) {
+                console.log("Mutant caught Goobert:", props.id, target.id);
+            }
+        }
+    }, 1000 / AI_FPS);
+    return () => window.clearInterval(catchInterval);
+   }, [props.isUi, props.isMutant, props.id, props.room]);
 
     /*
     * Starts dragging when the player presses a Goobert.
@@ -590,7 +669,14 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 touchAction: "none"
             }}
         >
-            <img
+            {props.isMutant && props.mutantType !== undefined ? (
+                <img
+                    src={getMutantAsset(props.mutantType)}
+                    draggable={false}
+                />
+            ) : (
+                <>
+                    <img
                 src={LEG_SPRITE_SHEET}
                 draggable={false}
                 style={{
@@ -625,6 +711,10 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                     top: `${props.eyeType * -64}px`
                 }}
             />
+                </>
+                 /*  <> // React Fragment - allows to group existing Goobert
+                 //             images together without creating another HTML element*/
+            )}
         </div>
     );
 }

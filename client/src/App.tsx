@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
 
 import GoobertElement, { type Goobert } from "./Goobert";
-import Mutant from "./Mutant";
 
 import UIGoobertCard from "./components/ui-script";
 
@@ -43,7 +42,7 @@ type TopElementProps = {
 	uiGoobert?: Goobert
 }
 const TopElement = (props: TopElementProps): React.JSX.Element => {
-	let {gooberts, mutants} = useGooberts();
+	let {gooberts} = useGooberts();
 	const [room, setRoom] = useState(props.room);
 	const [uiGoobert, setUiGoobert] = useState(props.uiGoobert);
 
@@ -97,6 +96,7 @@ const location = useLocation();
 			{/* Display the currently selected room (Hub, Bedroom, etc...) */}
 			<PageController />
 
+			{/* Removed Mutant array, New Goobert rendering handles Gooberts and Mutants */}
 			<div id="gooberts">
 				{
 					// Filter gooberts to only display the ones on the current room
@@ -119,23 +119,6 @@ const location = useLocation();
 					})
 				}
 			</div>
-			<div id="mutants">
-				{
-					// Filter gooberts to only display the ones on the current room
-					mutants.filter((mutant, i) => {
-						return mutant.room === room
-					}).map((mutant, i) => {
-						// Create a goobert for each object stored in this room
-						return (
-							<Mutant
-								key={mutant.goobertId + "-mutant"}
-								{...mutant}
-							/>
-						);
-					})
-				}
-			</div>
-
 			{
 				// A goobert card will be rendered if a ui goobert exists and if it is in the current room
 				uiGoobert && uiGoobert.room === room &&

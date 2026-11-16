@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState, type RefObject } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
-import { createMutant, MutantType, type Mutant } from "./Mutant";
+import { MutantType } from "./Mutant";
 import { getState, loadGoobert } from "./saveLoadGoobert";
 
 export type GoobertAppearance = {
@@ -11,7 +11,7 @@ export type GoobertAppearance = {
     legColor: number;
     eyeType: number;
     mouthType: number;
-};
+}
 export type GoobertStats = {
     fullness: number;
     dexterity: number;
@@ -28,7 +28,6 @@ const MAX_COLORS = 7;
 
 interface GoobertContextType {
     gooberts: Goobert[];
-    mutants: Mutant[];
     deadGooberts: Goobert[];
 
     // Stats that minigames and rooms are allowed to update.
@@ -86,12 +85,9 @@ declare global{
 }
 
 export function GoobertProvider({ children }: any) {
-    // Allow gooberts to be globally accessible
+    // Allow gooberts and mutants to be globally accessible
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
-
-    const [mutants, setMutants] = useState<Mutant[]>([]);
-    (window as any).mutants = mutants;
 
     const [deadGooberts, killGooberts] = useState<Goobert[]>([]);
     (window as any).deadGooberts = deadGooberts;
@@ -146,7 +142,8 @@ export function GoobertProvider({ children }: any) {
                 const keys = ["fullness", "awakeness", "cleanliness", "dexterity"] as const;
                 for(let goobert of list) {
                     // Turn to mutant if a stat is <= 0 and the goobert is not in the shadow realm
-                    let mutateStats = keys.filter((key) => goobert[key] <= 0 && goobert.room != "shadow-realm");
+                    let mutateStats = keys.filter(
+                        (key) => goobert[key] <= 0 && !goobert.isMutant && goobert.room != "shadow-realm");
 
                     if(mutateStats.length > 0) {
                         // Goobert has stat <= 0; make it a mutant
@@ -167,9 +164,8 @@ export function GoobertProvider({ children }: any) {
                             default:
                                 type = MutantType.HUNGRY;       
                         }
-                        let room = goobert.room;
-                        setMutants(prev => [...prev, createMutant(goobert.x + "px", goobert.y + "px", room, type, goobert.id)]);
-                        goobert.room = "shadow-realm";
+                        goobert.isMutant = true;
+                        goobert.mutantType = type;
                     }
                 }
 
@@ -306,7 +302,7 @@ export function GoobertProvider({ children }: any) {
     // Render goobert context provider
     return (
         <GoobertContext.Provider value={{
-            gooberts, mutants, deadGooberts,
+            gooberts, deadGooberts,
             
             createGoobert, updatePosition, updateRoom, updateStat, 
             loadSlot, newGame,
@@ -330,6 +326,10 @@ export function renderGoobert(
         y: y,
         room: location,
         id: name,
+
+        isMutant: false,
+        MutantType: undefined,
+
         isUi: isUi,
         className: "",
 
