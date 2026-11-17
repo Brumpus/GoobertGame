@@ -22,10 +22,32 @@ import {
     type Bounds
  } from "./GoobertAI";
 
+import { AccessoriesBack, AccessoriesFront } from "./Accessories";
+
 const BODY_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-bodies.png");
 const LEG_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-legs.png");
 const EYES_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-eyes.png");
 const MOUTH_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-mouths.png");
+
+/* ACCESSORY TESTING, FEEL FREE TO REMOVE */
+/*        Max listed start at 0           */
+/* ______________________________________ */
+
+const MAX_HAT_TYPES = 10; //includes blank at 0
+const MAX_HAT_STYLES = 7;
+const MAX_MASK_TYPES = 15; //includes blank at 0
+const MAX_MASK_STYLES = 4;
+const MAX_EXTRA_TYPES = 14; //includes blank at 0
+const MAX_EXTRA_STYLES = 4;
+
+let hatType = 5;
+let hatStyle = 7;
+let maskType = 12;
+let maskStyle = 2;
+let extraType = 8;
+let extraStyle = 3;
+
+/* ______________________________________ */
 
 const SPRITE_SIZE = 64;
 const DOOR_DISTANCE = 20;
@@ -50,6 +72,13 @@ type GoobertProps = {
     mouthType: number;
     mouthExpression: number;
     eyeExpression: number;
+
+    // hatType: number;
+    // hatStyle: number;
+    // maskType: number;
+    // maskStyle: number;
+    // extraType: number;
+    // extraStyle: number;
 
     onGoobertSelected: Function;
     className?: string;
@@ -77,6 +106,13 @@ export type Goobert = {
     eyeExpression: number;
     mouthExpression: number;
 
+    // hatType: number;
+    // hatStyle: number;
+    // maskType: number;
+    // maskStyle: number;
+    // extraType: number;
+    // extraStyle: number;
+
     eat: Function;
     sleep: Function;
     entertain: Function;
@@ -95,6 +131,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         x: props.x,
         y: props.y
     });
+
 
     const positionRef = useRef(position);
     const draggingRef = useRef(false);
@@ -591,6 +628,17 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 touchAction: "none"
             }}
         >
+            <AccessoriesBack 
+                x={props.x}
+                y={props.y}
+                hatType={hatType}
+                hatStyle={hatStyle}
+                maskType={maskType}
+                maskStyle={maskStyle}
+                extraType={extraType}
+                extraStyle={extraStyle}
+            />
+            
             <img
                 src={LEG_SPRITE_SHEET}
                 draggable={false}
@@ -626,6 +674,18 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                     top: `${props.eyeType * -64}px`
                 }}
             />
+
+            <AccessoriesFront 
+                x={props.x}
+                y={props.y}
+                hatType={hatType}
+                hatStyle={hatStyle}
+                maskType={maskType}
+                maskStyle={maskStyle}  
+                extraType={extraType}
+                extraStyle={extraStyle}              
+            /> 
+            
         </div>
     );
 }

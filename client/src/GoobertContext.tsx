@@ -17,7 +17,15 @@ export type GoobertStats = {
     dexterity: number;
     awakeness: number;
     cleanliness: number;
-}
+};
+// export type GoobertAccessories = {
+//     hatType: number;
+//     hatStyle: number;
+//     maskType: number;
+//     maskStyle: number;
+//     extraType: number;
+//     extraStyle: number;
+// };
 
 // How many of each type of asset exist
 const MAX_EYE_TYPES = 10;
@@ -46,7 +54,8 @@ interface GoobertContextType {
         x?: number,
         y?: number,
         appearance?: GoobertAppearance,
-        stats?: GoobertStats
+        stats?: GoobertStats,
+        // accessories?: GoobertAccessories
     ) => void;
 
     loadSlot: (saveSlot: number) => void
