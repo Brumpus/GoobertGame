@@ -70,7 +70,7 @@ export default function Frogoobert(): React.JSX.Element {
     const [score, setScore] = useState(0);
     const [bestScore, setBestScore] = useState(0);
     const [gameOver, setGameOver] = useState(false);
-    const [dexterity, setDexterity] = useState(gameGoobert?.dexterity ?? 0);
+    const [entertainment, setEntertainment] = useState(gameGoobert?.entertainment ?? 0);
 
     const { updateStat } = useGooberts();
 
@@ -108,9 +108,9 @@ export default function Frogoobert(): React.JSX.Element {
     // Use the same selected Goobert object and 0-100 stat meter as other arcade games.
     const rewardGoobert = (amount: number) => {
         if (!gameGoobert) return;
-        gameGoobert.dexterity = Math.min(100, Math.max(0, gameGoobert.dexterity + amount));
-        setDexterity(gameGoobert.dexterity);
-        updateStat(gameGoobert.id, "dexterity", amount);
+        gameGoobert.entertainment = Math.min(100, Math.max(0, gameGoobert.entertainment + amount));
+        setEntertainment(gameGoobert.entertainment);
+        updateStat(gameGoobert.id, "entertainment", amount);
     };
 
     const movePlayer = (dx: number, dy: number) => {
@@ -222,10 +222,10 @@ export default function Frogoobert(): React.JSX.Element {
 
             {appearance && (
                 <div className="frogoobert-meter">
-                    <label htmlFor="frogoobert-dexterity">Dexterity</label>
-                    <input id="frogoobert-dexterity" type="range" min={0} max={100}
-                        value={dexterity} readOnly aria-label="Goobert's Dexterity" />
-                    <span>{Math.round(dexterity)}%</span>
+                    <label htmlFor="frogoobert-entertainment">entertainment</label>
+                    <input id="frogoobert-entertainment" type="range" min={0} max={100}
+                        value={entertainment} readOnly aria-label="Goobert's entertainment" />
+                    <span>{Math.round(entertainment)}%</span>
                 </div>
             )}
 

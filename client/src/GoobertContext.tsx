@@ -1,8 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState, type RefObject } from "react";
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
-import { createMutant, MutantType, type Mutant } from "./Mutant";
+import { MutantType } from "./Mutant";
 import { getState, loadGoobert } from "./saveLoadGoobert";
+import Graveyard from "./components/graveyard";
+import { goobertDeathRattle } from "./components/audio";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -11,10 +13,10 @@ export type GoobertAppearance = {
     legColor: number;
     eyeType: number;
     mouthType: number;
-};
+}
 export type GoobertStats = {
     fullness: number;
-    dexterity: number;
+    entertainment: number;
     awakeness: number;
     cleanliness: number;
 };
@@ -36,17 +38,18 @@ const MAX_COLORS = 7;
 
 interface GoobertContextType {
     gooberts: Goobert[];
-    mutants: Mutant[];
     deadGooberts: Goobert[];
     cureGoobert: (id: string) => void;
     summonGoobertsToHub: () => void;
+    captureGoobert: (id: string) => void;
 
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
         id: string,
-        stat: "fullness" | "awakeness" | "cleanliness" | "dexterity",
+        stat: "fullness" | "awakeness" | "cleanliness" | "entertainment",
         amount: number
     ) => void;
+    getGoobertById: (id: string) => Goobert | undefined;
 
     createGoobert: (
         name: string,
@@ -81,12 +84,14 @@ type doorRefs = {
     shop: RefObject<HTMLImageElement | null>,
     menu: RefObject<HTMLImageElement | null>,
     dungeon: RefObject<HTMLImageElement | null>,
+    graveyard: RefObject<HTMLImageElement | null>,
 
     gameRoomHub: RefObject<HTMLImageElement | null>,
     bedroomHub: RefObject<HTMLImageElement | null>,
     shopHub: RefObject<HTMLImageElement | null>,
     menuHub: RefObject<HTMLDivElement | null>,
     dungeonHub: RefObject<HTMLImageElement | null>,
+    graveyardHub: RefObject<HTMLImageElement | null>,
 }
 const GoobertContext = createContext<GoobertContextType | null>(null);
 
@@ -102,34 +107,16 @@ function getMutationType(goobert: Goobert): MutantType {
     if (goobert.fullness <= 0) return MutantType.HUNGRY;
     if (goobert.awakeness <= 0) return MutantType.SLEEPLESS;
     if (goobert.cleanliness <= 0) return MutantType.DIRTY;
-    if (goobert.dexterity <= 0) return MutantType.BORED;
+    if (goobert.entertainment <= 0) return MutantType.BORED;
 
     // Saved shadow-realm Gooberts without a zero stat still need a sprite.
     return MutantType.HUNGRY;
 }
 
 export function GoobertProvider({ children }: any) {
-    // Allow gooberts to be globally accessible
+    // Allow gooberts and mutants to be globally accessible
     const [gooberts, setGooberts] = useState<Goobert[]>([]);
     (window as any).gooberts = gooberts;
-
-    /*=====MUTANTS FROM GOOBERT STATE=====*/
-
-    // A shadow-realm Goobert is a mutant. Deriving this list from Gooberts
-    // keeps mutation records consistent after a server save slot is loaded.
-    const mutants = useMemo<Mutant[]>(() => {
-        return gooberts
-            .filter(goobert => goobert.room === "shadow-realm")
-            .map(goobert => createMutant(
-                `${goobert.x}px`,
-                `${goobert.y}px`,
-                rooms.dungeon,
-                getMutationType(goobert),
-                goobert.id
-            ));
-    }, [gooberts]);
-
-    (window as any).mutants = mutants;
 
     const [deadGooberts, killGooberts] = useState<Goobert[]>([]);
     (window as any).deadGooberts = deadGooberts;
@@ -141,7 +128,7 @@ export function GoobertProvider({ children }: any) {
     // useCallback prevents the function from being recreated on every render.
     const updateStat = useCallback((
         id: string,
-        stat: "fullness" | "awakeness" | "cleanliness" | "dexterity",
+        stat: "fullness" | "awakeness" | "cleanliness" | "entertainment",
         amount: number
     ) => {
         setGooberts(previous =>
@@ -161,6 +148,13 @@ export function GoobertProvider({ children }: any) {
         );
     }, []);
 
+    const getGoobertById = (id: string) => {
+        for(let goobert of gooberts) {
+            if(goobert.id == id) return goobert;
+        }
+        return undefined;
+    }
+
     /*=====AUTOMATIC STAT DEPLETION AND MUTATION=====*/
 
     // Maintain the upstream ten-second stat depletion interval.
@@ -168,7 +162,7 @@ export function GoobertProvider({ children }: any) {
     useEffect(() => {
         const interval = window.setInterval(() => {
             setGooberts(previous => previous.map(goobert => {
-                if (goobert.room === "shadow-realm") {
+                if (goobert.isMutant || goobert.room === "shadow-realm") {
                     return goobert;
                 }
 
@@ -177,23 +171,45 @@ export function GoobertProvider({ children }: any) {
                     fullness: Math.max(0, goobert.fullness - 1),
                     awakeness: Math.max(0, goobert.awakeness - 1),
                     cleanliness: Math.max(0, goobert.cleanliness - 1),
-                    dexterity: Math.max(0, goobert.dexterity - 1)
+                    entertainment: Math.max(0, goobert.entertainment - 1)
                 };
 
                 const depleted = (
                     updated.fullness <= 0 ||
                     updated.awakeness <= 0 ||
                     updated.cleanliness <= 0 ||
-                    updated.dexterity <= 0
+                    updated.entertainment <= 0
                 );
 
-                return depleted
-                    ? { ...updated, room: "shadow-realm" }
-                    : updated;
+                if (depleted && !goobert.isMutant) {
+                    return {
+                        ...updated,
+                        isMutant: true,
+                        mutantType: getMutationType(updated)
+                    };
+                }
+
+                return updated;
             }));
         }, 10000);
 
         return () => window.clearInterval(interval);
+    }, []);
+
+    /* ===== MUTANT CAPTURE ======*/
+    const captureGoobert = useCallback((id: string) => {
+        setGooberts(previous => previous.map(goobert => {
+            // Capture Gooberts that are not imprisoned
+            if (goobert.id !== id || goobert.isMutant || goobert.room === "shadow-realm") {
+                return goobert;
+            }
+            return {
+                ...goobert,
+                isMutant: true,
+                mutantType: getMutationType(goobert),
+                room: "shadow-realm"
+            };
+        }));
     }, []);
 
     /*=====DUNGEON DASH RESCUE=====*/
@@ -204,15 +220,19 @@ export function GoobertProvider({ children }: any) {
                 return goobert;
             }
 
+            // Remove mutant type because goobert is being cured
+            const { mutantType, ...normalGoobert } = goobert;
+
             return {
-                ...goobert,
+                ...normalGoobert,
+                isMutant: false,
                 room: rooms.hub,
                 x: 100 + Math.random() * 180,
                 y: 450,
                 fullness: Math.max(50, goobert.fullness),
                 awakeness: Math.max(50, goobert.awakeness),
                 cleanliness: Math.max(50, goobert.cleanliness),
-                dexterity: Math.max(50, goobert.dexterity)
+                entertainment: Math.max(50, goobert.entertainment)
             };
         }));
     }, []);
@@ -278,7 +298,7 @@ export function GoobertProvider({ children }: any) {
                 console.log(`${candidate.name} has mutated and can be rescued in the Dungeon.`);
 
                 return previous.map(goobert => goobert.id === candidate.id
-                    ? { ...goobert, room: "shadow-realm", fullness: 0 }
+                    ? { ...goobert, room: "shadow-realm", fullness: 0, isMutant: true, mutantType: MutantType.HUNGRY }
                     : goobert
                 );
             });
@@ -360,9 +380,11 @@ export function GoobertProvider({ children }: any) {
         //find the goobert in the living gooberts array
         for(let i = 0; i < newArray.length; i++) {
             let deadGoobert = (newArray[i] as Goobert);
+            updateRoom(deadGoobert.id, "/graveyard")
             if(deadGoobert!.id == id) {
                 killGooberts([...deadGooberts, deadGoobert])
                 newArray.splice(i, 1);
+                goobertDeathRattle.play();
                 break;
             }
         }
@@ -405,21 +427,23 @@ export function GoobertProvider({ children }: any) {
         shop: useRef<HTMLImageElement>(null),
         menu: useRef<HTMLImageElement>(null),
         dungeon: useRef<HTMLImageElement>(null),
+        graveyard: useRef<HTMLImageElement>(null),
 
         gameRoomHub: useRef<HTMLImageElement>(null),
         bedroomHub: useRef<HTMLImageElement>(null),
         shopHub: useRef<HTMLImageElement>(null),
         menuHub: useRef<HTMLDivElement>(null),
-        dungeonHub: useRef<HTMLImageElement>(null)
+        dungeonHub: useRef<HTMLImageElement>(null),
+        graveyardHub: useRef<HTMLImageElement>(null)
     }
 
     // Render goobert context provider
     return (
         <GoobertContext.Provider value={{
-            gooberts, mutants, deadGooberts,
+            gooberts, deadGooberts,
             
             createGoobert, updatePosition, updateRoom, updateStat,
-            cureGoobert, summonGoobertsToHub,
+            getGoobertById, cureGoobert, captureGoobert, summonGoobertsToHub,
             loadSlot, newGame,
             
             doorRefs}}>
@@ -441,12 +465,16 @@ export function renderGoobert(
         y: y,
         room: location,
         id: name,
+
+        isMutant: false,
+        MutantType: undefined,
+
         isUi: isUi,
         className: "",
 
         // Initialize stats with a random number between 30 and 70
         fullness: 30 + Math.floor(Math.random() * 41), // Eating, catch the food game
-        dexterity: 30 + Math.floor(Math.random() * 41), // Exercise, Snake & Frogoobert
+        entertainment: 30 + Math.floor(Math.random() * 41), // Exercise, Snake & Frogoobert
         awakeness: 30 + Math.floor(Math.random() * 41), // Sleeping
         cleanliness: 30 + Math.floor(Math.random() * 41), // Bathing, Flappy Goobert
 
@@ -468,9 +496,9 @@ export function renderGoobert(
             this.awakeness = 100;
         },
 
-        // Dexterity is earned through minigames.
+        // Entertainment is earned through minigames.
         entertain(quality: number) {
-            this.dexterity = Math.min(100, this.dexterity + quality);
+            this.entertainment = Math.min(100, this.entertainment + quality);
         },
 
         bathe(amt: number) {
@@ -491,4 +519,9 @@ export default function useGooberts() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+}
+
+export function getDeceased(){
+    const {deadGooberts} = useGooberts(); 
+    return deadGooberts;
 }

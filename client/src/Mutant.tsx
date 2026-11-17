@@ -9,6 +9,21 @@ const HUNGRY_MUTANT_ASSET = assetPath("images/goobert-parts/mutant-hungry.gif");
 
 export enum MutantType {SLEEPLESS, DIRTY, BORED, HUNGRY}
 
+export function getMutantAsset(type: MutantType): string {
+    switch (type) {
+        case MutantType.SLEEPLESS:
+            return SLEEP_MUTANT_ASSET;
+        case MutantType.DIRTY:
+            return DIRTY_MUTANT_ASSET;
+        case MutantType.BORED:
+            return BORED_MUTANT_ASSET;
+        case MutantType.HUNGRY:
+            return HUNGRY_MUTANT_ASSET;
+        default:
+            return 'images/backgrounds/AnnoyingTexture.webp';
+    }
+}
+
 export type Mutant = {
     //goobert: Goobert,
     type: MutantType,
@@ -29,31 +44,15 @@ export function createMutant(x: string, y: string, room: string, type: MutantTyp
 
 
 export default function Mutant({/*goobert,*/ type, x, y}: Mutant): React.JSX.Element {
-    //let [x, setX] = useState(goobert.x);
-    //let [y, setY] = useState(goobert.y);
-    let setType = () => {
-        switch (type) {
-            case MutantType.SLEEPLESS:
-                return SLEEP_MUTANT_ASSET;
-            case MutantType.DIRTY:
-                return DIRTY_MUTANT_ASSET;
-            case MutantType.BORED:
-                return BORED_MUTANT_ASSET;
-            case MutantType.HUNGRY:
-                return HUNGRY_MUTANT_ASSET;
-            default:
-                return assetPath("images/backgrounds/AnnoyingTexture.webp");
-        }
-    }
-
+   
     return (
         <div className="mutant-container" style={
             {    
                 left: x,
                 top: y
-            }}>
-            <img src={setType()}/>
-        </div>
-            
-    )
+            }}
+        >
+            <img src={getMutantAsset(type)}/>
+        </div>   
+    );
 }

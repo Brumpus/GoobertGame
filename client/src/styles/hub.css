@@ -147,13 +147,22 @@ img {
     height: 80px; /* Increase arrow height */
     cursor: pointer;
     image-rendering: pixelated;
-    transform: rotate(90deg); /* Point upward */
-    filter: brightness(0) invert(1);
+    filter: grayscale(69%)
 }
 
 #graveyard-arrow:hover {
     opacity: 0.7;
 }
+
+/* #arrow-label {
+     font-family: 'Pixelify Sans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    border: black;
+
+    color: whitesmoke;
+    padding: 4px 8px;
+} */
 
 /* ==== TABLET HUB ==== */
 @media (min-width: 769px) and (max-width: 1199px) {

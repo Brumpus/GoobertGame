@@ -188,15 +188,16 @@ function drawGoobert(
 /*=====DUNGEON DASH COMPONENT=====*/
 
 export default function DungeonDash() {
-    const { gooberts, mutants, cureGoobert } = useGooberts();
+    const { gooberts, cureGoobert } = useGooberts();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
 
     const selectedId = params.get("id");
     const practice = params.get("practice") === "1";
 
-    const eligible = !!selectedId && mutants.some(
-        (mutant) => mutant.goobertId === selectedId
+    const eligible = !!selectedId && gooberts.some(
+        (goobert) => goobert.id === selectedId && 
+                    goobert.isMutant && goobert.room === "shadow-realm"
     );
 
     const actualGoobert = gooberts.find(
