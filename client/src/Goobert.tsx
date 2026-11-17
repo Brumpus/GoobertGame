@@ -171,8 +171,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         updatePosition, 
         updateRoom, 
         updateStat, 
-        captureGoobert,
         getGoobertById,
+        kill,
         doorRefs 
     
     } = useGooberts();
@@ -472,7 +472,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     
         const ai = window.setInterval(() => {
 
-        if (props.isMutant) {
+        if (!props.isMutant) {
             handleEmotion(props.id);
 
             if(sleepTime > 0) { // Don't wander while sleeping
@@ -499,9 +499,10 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             // Determine previous target Goobert available to chase
             let target = targets.find(goobert => goobert.id === chaseTargetRef.current);
 
-            // Randomly choose another Goober to chase
+            // Randomly choose another Goobert to chase
             if (!target) {
                 target = chooseGoobert(targets) ?? undefined;
+                chaseTargetRef.current = target?.id ?? null;
                 chaseTargetRef.current = target?.id ?? null;
             }
 
@@ -566,13 +567,14 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             if(catchGoobert(mutant.x, mutant.y, target.x, target.y)) {
                 console.log("Mutant caught Goobert:", props.id, target.id);
 
+                kill(target.id)
                 // CAUGHT GOOBERT TO SHADOW REALM 
-                captureGoobert(target.id);
+                // captureGoobert(target.id);
             }
         }
     }, 1000 / AI_FPS);
     return () => window.clearInterval(catchInterval);
-   }, [props.isUi, props.isMutant, props.id, props.room, captureGoobert]);
+   }, [props.isUi, props.isMutant, props.id, props.room, kill]);
 
 
 // ====== GOOBERT EMOTIONS ======
@@ -622,6 +624,11 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
              goobert.entertainment + goobert.fullness) / 4 < 20
         ) {
             // Neglected
+            setMouthExpression(mouthEmotions.angry);
+            setEyeExpression(eyeEmotions.angry);
+        }
+
+        if(goobert.room == rooms.graveyard) {
             setMouthExpression(mouthEmotions.sad);
             setEyeExpression(eyeEmotions.sad);
         }

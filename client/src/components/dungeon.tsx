@@ -25,7 +25,7 @@ export default function Dungeon() {
 
     // Only show genuine mutated Gooberts that still have an original character.
     const availableMutants = gooberts.filter(goobert =>
-        goobert.isMutant && goobert.room === "shawdow-realm"
+        goobert.isMutant && goobert.room === rooms.dungeon
     );
 
     // The Dungeon renders its own prisoners; App.tsx does not duplicate them.
@@ -84,7 +84,7 @@ export default function Dungeon() {
                     </div>
 
                     {/*=====DUNGEON PRISONERS=====*/}
-                    <div className="prisoners" aria-label="Mutated Gooberts in the Dungeon">
+                    {/* <div className="prisoners" aria-label="Mutated Gooberts in the Dungeon">
                         {dungeonMutants.map(goobert => (
                             <div className="dungeon-prisoner" key={goobert.id}>
                                {goobert.mutantType !== undefined && (
@@ -92,7 +92,7 @@ export default function Dungeon() {
                                )}
                             </div>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="dungeonFloor">

@@ -41,7 +41,7 @@ interface GoobertContextType {
     deadGooberts: Goobert[];
     cureGoobert: (id: string) => void;
     summonGoobertsToHub: () => void;
-    captureGoobert: (id: string) => void;
+    // captureGoobert: (id: string) => void;
 
     // Stats that minigames and rooms are allowed to update.
     updateStat: (
@@ -73,6 +73,10 @@ interface GoobertContextType {
     updateRoom: (
         id: string,
         x: string
+    ) => void;
+
+    kill: (
+        id: string
     ) => void;
 
 
@@ -109,7 +113,8 @@ function getMutationType(goobert: Goobert): MutantType {
     if (goobert.cleanliness <= 0) return MutantType.DIRTY;
     if (goobert.entertainment <= 0) return MutantType.BORED;
 
-    // Saved shadow-realm Gooberts without a zero stat still need a sprite.
+    // Saved mutant Gooberts without a zero stat still need a sprite.
+    // This should be impossible but it gets TS to stop complaining
     return MutantType.HUNGRY;
 }
 
@@ -162,7 +167,7 @@ export function GoobertProvider({ children }: any) {
     useEffect(() => {
         const interval = window.setInterval(() => {
             setGooberts(previous => previous.map(goobert => {
-                if (goobert.isMutant || goobert.room === "shadow-realm") {
+                if (goobert.isMutant) {
                     return goobert;
                 }
 
@@ -196,27 +201,19 @@ export function GoobertProvider({ children }: any) {
         return () => window.clearInterval(interval);
     }, []);
 
-    /* ===== MUTANT CAPTURE ======*/
-    const captureGoobert = useCallback((id: string) => {
-        setGooberts(previous => previous.map(goobert => {
-            // Capture Gooberts that are not imprisoned
-            if (goobert.id !== id || goobert.isMutant || goobert.room === "shadow-realm") {
-                return goobert;
-            }
-            return {
+    (window as any).mutate = (id: string, depletedStat: "fullness" | "cleanliness" | "awakeness" | "entertainment") => {
+        setGooberts((prev) => 
+            prev.map(goobert => goobert.id == id ? {
                 ...goobert,
-                isMutant: true,
-                mutantType: getMutationType(goobert),
-                room: "shadow-realm"
-            };
-        }));
-    }, []);
-
+                [depletedStat]: 0
+            } : goobert)
+        );
+    }
     /*=====DUNGEON DASH RESCUE=====*/
 
     const cureGoobert = useCallback((id: string) => {
         setGooberts(previous => previous.map(goobert => {
-            if (goobert.id !== id || goobert.room !== "shadow-realm") {
+            if (goobert.id !== id || !goobert.isMutant) {
                 return goobert;
             }
 
@@ -246,7 +243,7 @@ export function GoobertProvider({ children }: any) {
 
         setGooberts(previous => {
             const available = previous.filter(goobert =>
-                goobert.room !== "shadow-realm"
+                !goobert.isMutant
             );
 
             const columns = Math.max(1, Math.min(8, Math.floor((width - 24) / 76)));
@@ -287,7 +284,7 @@ export function GoobertProvider({ children }: any) {
         (window as any).testDungeonMutation = () => {
             setGooberts(previous => {
                 const candidate = previous.find(goobert =>
-                    goobert.room !== "shadow-realm"
+                    !goobert.isMutant
                 );
 
                 if (!candidate) {
@@ -298,7 +295,7 @@ export function GoobertProvider({ children }: any) {
                 console.log(`${candidate.name} has mutated and can be rescued in the Dungeon.`);
 
                 return previous.map(goobert => goobert.id === candidate.id
-                    ? { ...goobert, room: "shadow-realm", fullness: 0, isMutant: true, mutantType: MutantType.HUNGRY }
+                    ? { ...goobert, fullness: 0, isMutant: true, mutantType: MutantType.HUNGRY }
                     : goobert
                 );
             });
@@ -373,18 +370,19 @@ export function GoobertProvider({ children }: any) {
     const newGame = () => {
         setGooberts([]);
         killGooberts([]);
+
+        localStorage.removeItem("saveSlot")
     }
 
     //KILL GOOBERTS DEAD!!!!!
     
-
-    (window as any).kill = (id: string) => {
+    const kill = (id: string) => {
         let newArray = [...gooberts];
         //find the goobert in the living gooberts array
         for(let i = 0; i < newArray.length; i++) {
             let deadGoobert = (newArray[i] as Goobert);
-            updateRoom(deadGoobert.id, "/graveyard")
             if(deadGoobert!.id == id) {
+                updateRoom(deadGoobert.id, "/graveyard")
                 killGooberts([...deadGooberts, deadGoobert])
                 newArray.splice(i, 1);
                 goobertDeathRattle.play();
@@ -395,6 +393,7 @@ export function GoobertProvider({ children }: any) {
         //print so I know it's really dead
         console.log(deadGooberts);
     }
+    (window as any).kill = kill;
 
 
     // Update goobert position
@@ -446,8 +445,8 @@ export function GoobertProvider({ children }: any) {
             gooberts, deadGooberts,
             
             createGoobert, updatePosition, updateRoom, updateStat,
-            getGoobertById, cureGoobert, captureGoobert, summonGoobertsToHub,
-            loadSlot, newGame,
+            getGoobertById, cureGoobert, summonGoobertsToHub,
+            loadSlot, newGame, kill,
             
             doorRefs}}>
             {children}
