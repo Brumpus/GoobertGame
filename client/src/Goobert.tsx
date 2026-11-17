@@ -37,9 +37,11 @@ const LEG_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-legs.png
 const EYES_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-eyes.png");
 const MOUTH_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-mouths.png");
 
-/* ACCESSORY TESTING, FEEL FREE TO REMOVE */
-/*        Max listed start at 0           */
-/* ______________________________________ */
+/* ACCESSORY TESTING, FEEL FREE TO REMOVE 
+    Max listed start at 0           
+    Change values to look at different stuff
+    Every Goobert will match right now
+   ______________________________________ */
 
 const MAX_HAT_TYPES = 10; //includes blank at 0
 const MAX_HAT_STYLES = 7;
@@ -48,12 +50,12 @@ const MAX_MASK_STYLES = 4;
 const MAX_EXTRA_TYPES = 14; //includes blank at 0
 const MAX_EXTRA_STYLES = 4;
 
-let hatType = 5;
-let hatStyle = 7;
-let maskType = 12;
-let maskStyle = 2;
-let extraType = 8;
-let extraStyle = 3;
+let hatType = 0;
+let hatStyle = 0;
+let maskType = 0;
+let maskStyle = 0;
+let extraType = 0;
+let extraStyle = 0;
 
 /* ______________________________________ */
 
@@ -794,7 +796,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 />
             ) : (
                 <>
-                    <img
             <AccessoriesBack 
                 x={props.x}
                 y={props.y}
@@ -805,6 +806,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 extraType={extraType}
                 extraStyle={extraStyle}
             />
+            <img/>
             
             <img
                 src={LEG_SPRITE_SHEET}
