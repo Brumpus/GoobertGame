@@ -5,6 +5,7 @@ import MainMenu from "./components";
 import Hub from "./components/hub";
 import Tree from "./components/tree";
 import Shop from "./components/shop";
+import DressingRoom from "./components/dressing-room";
 import GameRoom from "./components/game-room";
 import Bedroom from "./components/bedroom";
 import Dungeon from "./components/dungeon";
@@ -23,6 +24,7 @@ const PageController = () => {
             <Route path="/hub" element={<Hub />} />
             <Route path="/tree" element={<Tree />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/dressing-room" element={<DressingRoom />} />
             <Route path="/game-room" element={<GameRoom />} />
             <Route path="/games" element={<GameRoom />} />
             <Route path="/bedroom" element={<Bedroom />} />

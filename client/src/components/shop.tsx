@@ -1,13 +1,22 @@
 "use strict";
 import "../styles/shop.css";
-import React from "react";
+import React, { useState } from "react";
 import { doorOpenSound } from "./audio";
 import { load, rooms } from "../App";
 import useGooberts from "../GoobertContext";
+import GoobertElement from "../Goobert";
 
 
 export default function Shop() {
-    let { doorRefs } = useGooberts();
+    let { doorRefs, gooberts } = useGooberts();
+
+    // Keep track of the selected accesory category
+    const [selectedCategory, setSelectedCategory] = useState("");
+
+    // Get the Gooberts currently inside the shop.
+    const shopGooberts = gooberts.filter((goobert) => {
+        return goobert.room === rooms.shop;
+    });
 
     return(
         <main id="main" className="shop">
@@ -29,45 +38,87 @@ export default function Shop() {
             <div className="row">
                 <div className="col text-center">
 
-                    <h1 className="shop-title">Goobert SHOP</h1>
+                    {/* SHOP STOREFRONT SIGN */}
+                    <div className="shop-sign">
+                        <p className="shop-welcome">
+                            ✦ WELCOME TO ✦
+                        </p>
+
+                        <h1 className="shop-title">
+                            The Goobertique
+                        </h1>
+                    </div>
 
                     {/* SHOP DESCRIPTION */}
                     <p className="shop-description">
-                        Customize your Goobert!
+                        A little style. A lot of personality.
                     </p>
                     
                 </div>
             </div>
 
-            {/* SHOP CATEGORY BUTTONS */}
-            {/* NOTE: HATS, GLASSES, AND ACCESSORIES ARE PLACEHOLDER
-                CATEGORY NAMES UNTIL THE TEAM DECIDES WHAT THE SHOP WILL SELL. */}
-            <div className="shop-buttons">
-                
-                {/* HATS BUTTON */}
+            {/* CUSTOMIZE GOOBERT BUTTON */}
+            <div
+                className="shop-buttons"
+                style={{ display: selectedCategory === "" ? "flex" : "none" }}
+            >
                 <button
-                    className="shop-button hats-button"
-                    onClick={() => openShop("HATS")}
+                    className="shop-button customize-button"
+                    onClick={() => setSelectedCategory("HEADWEAR")}
                 >
-                    HATS
-                </button>
-
-                {/* GLASSES BUTTON */}
-                <button
-                    className="shop-button glasses-button"
-                    onClick={() => openShop("GLASSES")} 
-                >
-                    GLASSES
-                </button>
-
-                {/* ACCESSORIES BUTTON */}
-                <button
-                    className="shop-button accessories-button"
-                    onClick={() => openShop("ACCESSORIES")}
-                >
-                    ACCESSORIES
+                    CUSTOMIZE YOUR GOOBERT
                 </button>
             </div>
+
+            {/* GOOBERT SELECTION SCREEN */}
+            {selectedCategory !== "" && (
+                <div className="shop-goobert-selector">
+                    <p className="selector-welcome">
+                        ✦ TIME FOR A MAKEOVER ✦
+                    </p>
+
+                    <h2>Choose Your Goobert!</h2>
+
+                    <p className="selector-description">
+                        Who are we styling today?
+                    </p>
+
+                    {/* MESSAGE IF NO GOOBERTS ARE IN THE SHOP */}
+                    {shopGooberts.length === 0 && (
+                        <p className="selector-description">
+                            No Gooberts here yet! Bring one to the shop
+                            to give them a makeover.
+                        </p>
+                    )}
+
+                    <div className="shop-goobert-grid">
+                        {shopGooberts.map((goobert) => (
+                            <button
+                                type="button"
+                                key={goobert.id}
+                                onClick={() => load(
+                                    `${rooms.dressingRoom}?id=${encodeURIComponent(goobert.id)}&category=${selectedCategory}`
+                                )}
+                            >
+                                <GoobertElement
+                                    {...goobert}
+                                    isUi={true}
+                                    x={0}
+                                    y={0}
+                                />
+                                <span>{goobert.name}</span>
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setSelectedCategory("")}
+                    >
+                        BACK
+                    </button>
+                </div>
+            )}
 
             {/* SHOP POPUP */}
             <div className="accessories-popup" id="accessoriesPopup">

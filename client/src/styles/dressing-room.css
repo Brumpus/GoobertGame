@@ -1,0 +1,233 @@
+/* WHOLE DRESSING ROOM */
+.dressing-room {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* DISPLAY GOOBERT */
+.dressing-goobert {
+    position: absolute;
+    top: 55%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+}
+
+/* ENLARGE THE GOOBERT */
+.dressing-goobert .goobert-container {
+    position: relative;
+    transform: scale(4);
+    image-rendering: pixelated;
+}
+
+/* MOBILE GOOBERT POSITION */
+@media (max-width: 640px) {
+    .dressing-goobert {
+        top: 40%;
+        left: 50%;
+    }
+}
+
+/* BACK AND SAVE BUTTON POSITION */
+.dressing-controls {
+    position: absolute;
+    top: 18%;
+    left: 30%;
+    transform: translateX(-50%);
+
+    display: flex;
+    gap: 15px;
+}
+
+/* BACK AND SAVE BUTTON DESIGN */
+.dressing-controls button {
+    padding: 10px 25px;
+    font-family: "Courier New", monospace;
+    font-size: 18px;
+    font-weight: bold;
+
+    border: 4px solid #302050;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 #302050;
+    cursor: pointer;
+}
+
+/* BACK BUTTON */
+.dressing-controls button:first-child {
+    background-color: #B69CFF;
+    color: #302050;
+}
+
+/* SAVE BUTTON */
+.dressing-controls button:last-child {
+    background-color: #BDF574;
+    color: #302050;
+}
+
+/* MOBILE BUTTON POSITION */
+@media (max-width: 640px) {
+    .dressing-controls {
+        top: 15%;
+        left: 50%;
+    }
+}
+
+/* ACCESSORY CATEGORY BUTTON POSITION */
+.dressing-categories {
+    position: absolute;
+    top: 18%;
+    right: 5%;
+
+    display: flex;
+    gap: 10px;
+}
+
+/* ACCESSORY CATEGORY BUTTON DESIGN */
+.dressing-categories button {
+    padding: 12px 15px;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #302050;
+
+    border: 4px solid #302050;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 #302050;
+    cursor: pointer;
+}
+
+/* HEADWEAR - BUBBLEGUM PINK */
+.headwear-button {
+    background-color: #FF96C5;
+}
+
+/* FACEWEAR - COTTON CANDY BLUE */
+.facewear-button {
+    background-color: #85DFFF;
+}
+
+/* ACCESSORIES - PEACHY ORANGE */
+.accessory-button {
+    background-color: #FFD078;
+}
+
+/* MOBILE CATEGORY BUTTONS */
+@media (max-width: 640px) {
+    .dressing-categories {
+        top: 65%;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        gap: 6px;
+    }
+
+    .dressing-categories button {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+/* DRESSING ROOM TITLE */
+.dressing-room h1 {
+    position: absolute;
+    top: 3%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: max-content;
+    max-width: 90%;
+    padding: 10px 25px;
+
+    font-family: "Courier New", monospace;
+    font-size: clamp(20px, 3vw, 36px);
+    font-weight: bold;
+    text-align: center;
+    color: #864a9d;
+
+    background-color: #fff0dc;
+    border: 4px solid #402b5e;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 #402b5e;
+}
+
+/* HIGHLIGHT SELECTED CATEGORY */
+.dressing-categories button.selected {
+    outline: 4px solid #fff0dc;
+    outline-offset: 3px;
+    transform: translateY(-4px);
+}
+
+/* TYPE AND STYLE CONTROLS */
+.dressing-options {
+    position: absolute;
+    top: 45%;
+    right: 8%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* EACH TYPE OR STYLE ROW */
+.dressing-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    width: 280px;
+    padding: 12px;
+
+    background-color: #fff0dc;
+    border: 4px solid #402b5e;
+    border-radius: 8px;
+    box-shadow: 5px 5px 0 #402b5e;
+
+    font-family: "Courier New", monospace;
+    font-size: 20px;
+    font-weight: bold;
+    color: #402b5e;
+}
+
+/* ARROW BUTTONS */
+.dressing-option button {
+    padding: 10px 15px;
+    background-color: #ffa68c;
+    border: 3px solid #402b5e;
+    border-radius: 5px;
+
+    font-size: 18px;
+    color: #402b5e;
+    cursor: pointer;
+}
+
+/* STYLE ARROWS */
+.dressing-option:nth-child(2) button {
+    background-color: #a6e8d5;
+}
+
+/* MOBILE TYPE AND STYLE CONTROLS */
+@media (max-width: 640px) {
+    .dressing-options {
+        top: 75%;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+
+        width: 90%;
+        gap: 12px;
+    }
+
+    .dressing-option {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        font-size: 16px;
+    }
+
+    .dressing-option button {
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+}
