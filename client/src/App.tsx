@@ -25,6 +25,7 @@ export const rooms = {
 	tree: "/tree",
 	gameRoom: "/game-room",
 	shop: "/shop",
+	dressingRoom: "/dressing-room",
 	bedroom: "/bedroom",
 	dungeon: "/dungeon",
 	graveyard: "/graveyard",
