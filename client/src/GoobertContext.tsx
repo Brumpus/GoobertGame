@@ -2,9 +2,10 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { MutantType } from "./Mutant";
-import { getState, loadGoobert } from "./saveLoadGoobert";
+import { getState, saveGoobertToDatabase } from "./saveLoadGoobert";
 import Graveyard from "./components/graveyard";
 import { goobertDeathRattle } from "./components/audio";
+import useServer from "./ServerContext";
 
 export type GoobertAppearance = {
     bodyType: number;
@@ -58,6 +59,8 @@ interface GoobertContextType {
         y?: number,
         appearance?: GoobertAppearance,
         stats?: GoobertStats,
+
+        fromServer?: boolean
         // accessories?: GoobertAccessories
     ) => void;
 
@@ -125,6 +128,8 @@ export function GoobertProvider({ children }: any) {
 
     const [deadGooberts, killGooberts] = useState<Goobert[]>([]);
     (window as any).deadGooberts = deadGooberts;
+
+    const { pid } = useServer();
 
     // ==== CENTRALIZED Goobert STAT UPDATES ====
 
@@ -291,9 +296,6 @@ export function GoobertProvider({ children }: any) {
                     console.warn("Create or load a Goobert before testing a mutation.");
                     return previous;
                 }
-
-                console.log(`${candidate.name} has mutated and can be rescued in the Dungeon.`);
-
                 return previous.map(goobert => goobert.id === candidate.id
                     ? { ...goobert, fullness: 0, isMutant: true, mutantType: MutantType.HUNGRY }
                     : goobert
@@ -313,7 +315,8 @@ export function GoobertProvider({ children }: any) {
         x?: number,
         y?: number,
         appearance?: GoobertAppearance,
-        stats?: GoobertStats
+        stats?: GoobertStats,
+        fromServer?: boolean
     ) => {
         const goobert = renderGoobert(name, location, x, y);
 
@@ -326,26 +329,20 @@ export function GoobertProvider({ children }: any) {
 
         goobert.id = name + gooberts.length;
 
+        if(!fromServer && localStorage.getItem("currentSlot")) {
+            const saveSlot = localStorage.getItem("currentSlot");
+            saveGoobertToDatabase(pid, parseInt(saveSlot!), goobert);
+        }
+
         setGooberts(prev => [...prev, goobert]);
     };
     (window as any).createGoobert = createGoobert;
-    // Get saved goobert from local storage and render it to the screen
-    const createSavedGoobert = async (goobertId: string) => {
-        let goobert = await loadGoobert(goobertId);
-        if(!goobert) return;
-
-        const stats: GoobertStats = {...goobert};
-        const appearance: GoobertAppearance = {...goobert};
-
-        createGoobert(goobert.name, goobert.room, undefined, undefined, appearance, stats);
-    }
-    (window as any).loadGoobert = createSavedGoobert;
     /**
      * Load a save slot. The exact location of the saved storage is determined by getState
      * But the data rendering is handled by this function.
     */
     const loadSlot = async (saveSlot: number) => {
-        let data = await getState(saveSlot);
+        let data = await getState(pid, saveSlot);
         if(!data) return;
 
         let newGooberts = data.map(goobert => {
@@ -390,8 +387,6 @@ export function GoobertProvider({ children }: any) {
             }
         }
         setGooberts(newArray)
-        //print so I know it's really dead
-        console.log(deadGooberts);
     }
     (window as any).kill = kill;
 

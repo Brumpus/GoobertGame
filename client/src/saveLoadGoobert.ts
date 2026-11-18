@@ -1,36 +1,38 @@
 import axios from 'axios';
-import type { Goobert } from './Goobert';
+import type { Goobert, GoobertProps } from './Goobert';
+import { body } from './games/games-global';
 
-export function saveGoobert(goobert: Goobert) {
-  saveGoobertToFile("savedGooberts/" + goobert.id + ".json", goobert);
+type RequestBody = {
+	pid: string;
+	saveSlot: number;
+	data: any;
 }
-(window as any).saveGoobert = saveGoobert;
+export type GoobertData = {
+    name: string;
+    room: string;
+    id: string;
 
-export async function loadGoobert(goobertId: string) {
-  const filePath = ("http://localhost:3000/gooberts");
-  const response = await fetch(filePath);
+    isMutant: boolean;
+    mutantType: number;
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
+    fullness: number;
+    entertainment: number;
+    awakeness: number;
+    cleanliness: number;
 
-  const jsonData = await response.json();
-  const goobert: Goobert = JSON.parse(jsonData);
+    appearance: string;
+};
 
-  // const jsonData = localStorage.getItem(goobertId);
-  // if(jsonData == undefined) return;
-  // const goobert: Goobert = await JSON.parse(jsonData);
-  // localStorage.removeItem(goobertId); // Remove from storage
+let pid = localStorage.getItem("pid");
+const filePath = "http://localhost:3000";
 
-  return goobert;
-  // createGoobert(goobert.name, goobert.room, undefined, undefined, goobert.appearance, goobert.stats);
-}
-(window as any).loadGoobert = loadGoobert;
-
-export async function getState(saveSlot: number): Promise<Goobert[] | undefined> {
-  const filePath = "http://localhost:3000";
+export async function getState(pid: string, saveSlot: number): Promise<GoobertProps[] | undefined> {
   try {
-    const response = await axios.get(`${filePath}/gooberts?slot=${saveSlot}`, {
+    const params = new URLSearchParams({
+      pid: pid,
+      slot: saveSlot.toString()
+    })
+    const response = await axios.get(`${filePath}/gooberts?${params.toString()}`, {
     headers: {
       Accept: "application/json"
       }
@@ -40,18 +42,42 @@ export async function getState(saveSlot: number): Promise<Goobert[] | undefined>
     // const json = await localStorage.getItem("saveSlot" + saveSlot);
     
     // Get JSON from Server
-    const json = await response.data;
-    const data = JSON.parse(json) as Goobert[];
+    console.log(response);
+    const data = await response.data as GoobertData[];
+    // const data = JSON.parse(json) as GoobertData[];
+    const gooberts: GoobertProps[] = data.map((goobert) => {
+      const appearanceArray = goobert.appearance.split("_");
+      const appearanceProps = {
+        bodyType: parseInt(appearanceArray[0]!),
+        bodyColor: parseInt(appearanceArray[1]!),
+        legType: parseInt(appearanceArray[2]!),
+        legColor: parseInt(appearanceArray[3]!),
+        eyeType: parseInt(appearanceArray[4]!),
+        eyeExpression: parseInt(appearanceArray[5]!),
+        mouthType: parseInt(appearanceArray[6]!),
+        mouthExpression: parseInt(appearanceArray[7]!)
+      };
+      delete (goobert as any).appearance;
+
+      return {
+        ...goobert,
+        isUi: false,
+        fromServer: true,
+
+        ...appearanceProps
+      }
+    })
 
     // Return gooberts
-    return data;
+    return gooberts;
   } catch(error) {
     // Server not running
     console.log("failed to connect.");
+    console.log(error);
 
     const json = await localStorage.getItem("slot" + saveSlot);
     if(!json) return;
-    const data = JSON.parse(json) as Goobert[];
+    const data = JSON.parse(json) as GoobertProps[];
 
     return data;
   }
@@ -59,7 +85,7 @@ export async function getState(saveSlot: number): Promise<Goobert[] | undefined>
 (window as any).getState = getState;
 
 
-export async function saveState(gooberts: Goobert[], saveSlot: string) {
+export async function saveState(pid: string, gooberts: Goobert[], saveSlot: string) {
   const json = JSON.stringify(gooberts);
 
   // Save to localStorage
@@ -67,19 +93,55 @@ export async function saveState(gooberts: Goobert[], saveSlot: string) {
 }
 (window as any).saveState = saveState;
 
-async function saveGoobertToFile(filePath: string, goobert: Goobert) {
-  const data: Goobert = {...goobert};
-  const json = JSON.stringify(data);
+export async function saveGoobertToDatabase(pid: string, saveSlot: number, goobert: Goobert) {
+  const appearance = `
+    ${goobert.bodyType}_
+    ${goobert.bodyColor}_
+    ${goobert.legType}_
+    ${goobert.legColor}_
+    ${goobert.eyeType}_
+    ${goobert.eyeExpression}_
+    ${goobert.mouthType}_
+    ${goobert.mouthExpression}
+  `.replace(/\s+/g, '');
+    const data: GoobertData = {
+      name: goobert.name,
+      room: goobert.room,
+      id: goobert.id,
 
-  localStorage.setItem(goobert.id, json);
+      isMutant: goobert.isMutant, 
+      mutantType: goobert.mutantType ?? -1, 
 
-  // try {
-  //   // null and 2 formats the JSON with 2-space indentation for readability
-  //   const jsonString = JSON.stringify(data, null, 2); 
-    
-  //   await writeFile(filePath, jsonString, 'utf8');
-  //   console.log(`Successfully saved data to ${filePath}`);
-  // } catch (error) {
-  //   console.error('Error writing JSON to file:', error);
-  // }
+      fullness: goobert.fullness, 
+      entertainment: goobert.entertainment,
+      awakeness: goobert.awakeness, 
+      cleanliness: goobert.cleanliness,
+
+      appearance: appearance
+    };
+    const request: RequestBody = {
+      pid: pid,
+      saveSlot: saveSlot,
+      data: data
+    }
+    const json = JSON.stringify(request);
+  try {    
+    const response = await axios.post(`${filePath}/gooberts`, {
+    headers: {
+      Accept: "application/json"
+      },
+      body: json
+    });
+
+  } catch(error) {
+    // Server not running
+    console.log("failed to connect.");
+    console.log(error);
+
+    const json = await localStorage.getItem("slot" + saveSlot);
+    if(!json) return;
+    const data = JSON.parse(json) as GoobertProps[];
+
+    return data;
+  }
 }

@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
+import type { Goobert } from "./Goobert";
+import { saveGoobertToDatabase } from "./saveLoadGoobert";
 
 type ServerContextType = {
-    pid: string
+    pid: string;
+
+    saveGoobert: (goobert: Goobert) => void;
 }
 const ServerContext = createContext< ServerContextType | null>(null);
 
@@ -65,9 +69,16 @@ export function ServerProvider({ children }: any) {
         }
     };
 
+    const saveGoobert = (goobert: Goobert) => {
+        const saveSlot = localStorage.getItem("currentSlot");
+        if(!saveSlot) return;
+        saveGoobertToDatabase(pid, parseInt(saveSlot), goobert)
+    }
+
     return (
         <ServerContext.Provider value={{
-            pid
+            pid,
+            saveGoobert 
         }} >
             {children}
         </ServerContext.Provider>

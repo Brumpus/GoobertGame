@@ -1,20 +1,36 @@
-import saveSlot1 from "./SaveSlot1.json";
-import saveSlot2 from "./SaveSlot2.json";
-import saveSlot3 from "./SaveSlot3.json";
+import {  get, post, put, remove } from "./manipulate";
 
-const states = {
-	saveSlot1: saveSlot1,
-	saveSlot2: saveSlot2,
-	saveSlot3: saveSlot3
+type RequestBody = {
+	pid: string;
+	saveSlot: number;
+	data: any;
 }
-export const getSaveState = async (state: number) => {
-	let slot = (states as any)["saveSlot" + state];
-
-	return slot;
+export const getSaveState = async (req: RequestBody) => {
+	const saveState = get(getUserSlot(req.pid, req.saveSlot));
+	console.log(saveState);
+	return saveState;
 }
-export const setSaveState = async (state: number) => {
-	// let slot = (states as any)["SaveSlot" + state];
-	// let data = JSON.parse(slot);
+export const createGoobert = async (req: RequestBody) => {
+	const goobertId = req.data.id;
+	post(getUserSlot(req.pid, req.saveSlot), req.data);
 
-	// return data;
+	return getSaveState(req);
+}
+export const updateGoobert = async (req: RequestBody) => {
+	const goobertId = req.data.id;
+	const property = req.data.stat;
+	const value = req.data.value;
+	put(getUserSlot(req.pid, req.saveSlot), goobertId, property, value);
+
+	return getSaveState(req);
+}
+export const deleteGoobert = async (req: RequestBody) => {
+	const goobertId = req.data;
+	remove(getUserSlot(req.pid, req.saveSlot), goobertId);
+
+	return getSaveState(req);
+}
+
+const getUserSlot = (userId: string, saveSlot: number) => {
+	return userId + "_slot" + saveSlot;
 }

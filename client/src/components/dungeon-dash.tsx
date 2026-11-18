@@ -199,7 +199,6 @@ export default function DungeonDash() {
         (goobert) => goobert.id === selectedId && 
                     goobert.isMutant && goobert.room === rooms.dungeon
     );
-    console.log(eligible);
 
     const actualGoobert = gooberts.find(
         (goobert) => goobert.id === selectedId

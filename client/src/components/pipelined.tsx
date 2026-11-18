@@ -317,7 +317,6 @@ export default function Pipelined() {
         }
         
         if (blues === 36) {
-            console.log("All Done boss!");
             rewardGoobert(1000000000)
             setGameWon(true);
         } else {

@@ -5,11 +5,12 @@
 	"license": "ISC",
 	"scripts": {
 		"compile": "tsc",
-		"serve": "node ./dist/server.js",
-		"compile-serve": "tsc && node ./dist/server.js",
+		"serve": "node ./dist/data/initialize.js && node ./dist/server.js",
+		"compile-serve": "tsc && node ./dist/data/initialize.js && node ./dist/server.js",
 		"dev": "node ./node_modules/nodemon/bin/nodemon.js -e ts --exec \"npm run compile-serve\""
 	},
 	"devDependencies": {
+		"@types/better-sqlite3": "^9.6.0",
 		"@types/express": "^5.0.6",
 		"@types/node": "^26.6.6",
 		"@types/ws": "^8.18.2",
@@ -17,6 +18,7 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
+		"better-sqlite3": "^13.2.0",
 		"express": "^5.3.0",
 		"websocket": "^1.0.35",
 		"ws": "^8.23.0"

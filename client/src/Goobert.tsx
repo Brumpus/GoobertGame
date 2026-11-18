@@ -66,11 +66,11 @@ const GROUND_LIMIT = 350;
 const GOOBERT_VELOCITY = 4; // Pixels per frame
 const AI_FPS = 60;
 
-type GoobertProps = {
+export type GoobertProps = {
     room: string;
     name: any;
-    x: number;
-    y: number;
+    x?: number;
+    y?: number;
     id: string;
     isUi: boolean;
 
@@ -93,7 +93,7 @@ type GoobertProps = {
     // extraType: number;
     // extraStyle: number;
 
-    onGoobertSelected: Function;
+    onGoobertSelected?: Function;
     className?: string;
     ref?: Ref<HTMLElement>;
 };
@@ -144,8 +144,8 @@ export type Goobert = {
  */
 export default function Goobert(props: GoobertProps): React.JSX.Element {
     const [position, setPosition] = useState({
-        x: props.x,
-        y: props.y
+        x: props.x ?? 0,
+        y: props.y ?? 0
     });
 
 
@@ -156,8 +156,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     const dragStartRef = useRef({
         pointerX: 0,
         pointerY: 0,
-        x: props.x,
-        y: props.y
+        x: props.x ?? 0,
+        y: props.y ?? 0
     });
     let [mouthExpression, setMouthExpression] = useState(props.mouthExpression);
     let [eyeExpression, setEyeExpression] = useState(props.eyeExpression);
@@ -184,8 +184,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     */
     useEffect(() => {
         const nextPosition = {
-            x: props.x,
-            y: props.y
+            x: props.x ?? 0,
+            y: props.y ?? 0
         };
 
         positionRef.current = nextPosition;
@@ -565,8 +565,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             const mutant = positionRef.current;
 
             if(catchGoobert(mutant.x, mutant.y, target.x, target.y)) {
-                console.log("Mutant caught Goobert:", props.id, target.id);
-
                 kill(target.id)
                 // CAUGHT GOOBERT TO SHADOW REALM 
                 // captureGoobert(target.id);
@@ -646,7 +644,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         if (sleepTime > 0) {
             console.log("Why are you poking a sleeping goobert, you monster");
             goobertClickSound.play();
-            props.onGoobertSelected();
+            if(props.onGoobertSelected) props.onGoobertSelected();
             return;
         }
         if (props.isUi) return;
@@ -709,7 +707,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             console.log(`${props.id} says, "I've been poked! and I'm in the ${props.room}"`);
             // Play the Goobert click sound
             goobertClickSound.play();
-            props.onGoobertSelected();
+            if(props.onGoobertSelected) props.onGoobertSelected();
             return;
         }
 
@@ -778,7 +776,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
     } 
     const goToBed = () =>   {
-        console.log("bed time!", sleepTime);
         setSleepTime(AI_FPS * 30); // 30 seconds
         updateStat(props.id, "awakeness", 100);   
     }
@@ -811,8 +808,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             ) : (
                 <>
             <AccessoriesBack 
-                x={props.x}
-                y={props.y}
+                x={props.x ?? 0}
+                y={props.y ?? 0}
                 hatType={hatType}
                 hatStyle={hatStyle}
                 maskType={maskType}
@@ -859,8 +856,8 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             />
 
             <AccessoriesFront 
-                x={props.x}
-                y={props.y}
+                x={props.x ?? 0}
+                y={props.y ?? 0}
                 hatType={hatType}
                 hatStyle={hatStyle}
                 maskType={maskType}

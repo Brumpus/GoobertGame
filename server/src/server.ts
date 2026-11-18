@@ -1,13 +1,15 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import http from "http";
 import { WebSocket, WebSocketServer } from "ws";
-import { getSaveState, setSaveState } from "./data/dataProvider";
+import { createGoobert, deleteGoobert, getSaveState, updateGoobert } from "./data/dataProvider";
+import Database from "better-sqlite3";
 
 const PORT = process.env.PORT || 3000;
 
 const app: Express = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({server});
+const db = new Database("./dist/gooberts.db");
 
 app.use(express.json());
 
@@ -19,16 +21,34 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 })
 app.get("/gooberts", async (request: Request, response: Response) =>{
+    const pidString = request.query.pid;
+    const pid = pidString as string;
     const slotString = request.query.slot;
     let slot: number = slotString as unknown as number;
 
-    const data = await getSaveState(slot);
+    const data = await getSaveState({pid: pid, saveSlot: slot, data: {}});
 
-    console.log("Sending data from slot " + slot);
+    console.log("Sending data from slot " + slot + ":", data);
+    response.status(201).json(data);});
+app.post("/gooberts", async (request: Request, response: Response) =>{
+    console.log("\nCreating a goobert...");
+    // console.log(request.body);
+    const req = await JSON.parse(request.body.body);
+    const data = await createGoobert(req);
+
     response.status(201).json(data);
 });
-app.post("/gooberts", async (request: Request, response: Response) =>{
-    setSaveState(request.body);
+app.put("/gooberts", async (request: Request, response: Response) =>{
+    const req = await JSON.parse(request.body);
+    console.log(request, req);
+    const data = await updateGoobert(req);
+
+    response.status(201).json(data);
+});
+app.delete("/gooberts", async (request: Request, response: Response) =>{
+    const data = await deleteGoobert(await JSON.parse(request.body));
+
+    response.status(201).json(data);
 });
 
 
@@ -62,3 +82,24 @@ const parseMessage = (messageType: string, data: any) => {
 server.listen(PORT, () => {
     console.log(`HTTP & WS server running on http://localhost:${PORT}`);
 });
+
+function gracefulShutdown(signal: string) {
+  console.log(`Received ${signal}. Shutting down gracefully...`);
+
+  // 1. Stop accepting new HTTP connections
+  server.close(() => {
+    console.log('HTTP server closed.');
+
+    // 2. Close the database once active requests finish
+    try {
+      db.close();
+      console.log('Database connection closed.');
+      process.exit(0);
+    } catch (err) {
+      console.error('Error closing database:', err);
+      process.exit(1);
+    }
+  });
+}
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
