@@ -474,7 +474,9 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
 
         if (!props.isMutant) {
             handleEmotion(props.id);
-
+        }
+        
+        if (props.isMutant) {
             if(sleepTime > 0) { // Don't wander while sleeping
                 setEyeExpression(eyeEmotions.bored);
                 setSleepTime(sleepTime - 1);
@@ -590,7 +592,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         neutral, partOpen, fullOpen, sad, angry, happy
     }
     const handleEmotion = (id: string) => {
-        const goobert = getGoobertById(id);
+        const goobert = goobertsRef.current.find(other => other.id === id);
         if(!goobert) return;
 
         setEyeExpression(0); 
@@ -629,6 +631,29 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
         if(goobert.room == rooms.graveyard) {
             setMouthExpression(mouthEmotions.sad);
             setEyeExpression(eyeEmotions.sad);
+        }
+
+        // Goobert gets excited when another friendly Goobert is in the same room
+        if (goobertsRef.current.some(other =>
+            !other.isMutant &&
+            other.id !== goobert.id &&
+            other.room === goobert.room
+        )) {
+            setEyeExpression(eyeEmotions.excited);
+            setMouthExpression(mouthEmotions.happy);
+        }
+
+        // Goobert becomes angry when very hungry
+        if (goobert.fullness < 20) {
+            setEyeExpression(eyeEmotions.angry);
+            setMouthExpression(mouthEmotions.angry);
+        }
+
+        // Goobert becomes alarmed when a mutant is in the same room
+        if (!goobert.isMutant && goobertsRef.current.some(other =>
+            other.isMutant && other.room === goobert.room
+        )) {
+            setEyeExpression(eyeEmotions.alarmed);
         }
 
     }
