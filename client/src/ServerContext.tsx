@@ -21,6 +21,7 @@ export function ServerProvider({ children }: any) {
         setWs(new WebSocket('http://localhost:3000'));
         setInitialized(true);
     }
+    
 
     useEffect(() => {
 

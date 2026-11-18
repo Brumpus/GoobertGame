@@ -13,7 +13,7 @@ import { indexMusic, hubMusic, dungeonDashMusic, graveyardWind } from "./compone
 import PageController from "./PageController";
 import useGooberts, { GoobertProvider } from "./GoobertContext";
 import { assetPath } from "./assetPath";
-import { ServerProvider } from "./ServerContext";
+import useServer, { ServerProvider } from "./ServerContext";
 
 export type Room = {
 	room: React.JSX.Element
@@ -51,6 +51,8 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 	const room = location.pathname;
 	const [uiGoobert, setUiGoobert] = useState(props.uiGoobert);
 
+	const { pid } = useServer();
+
 	const handleUiCloseButton = () => {
 		setUiGoobert(undefined);
 	}
@@ -59,7 +61,7 @@ const TopElement = (props: TopElementProps): React.JSX.Element => {
 	useEffect(() => {
 		let slot = localStorage.getItem("currentSlot");
 		if(slot) loadSlot(parseInt(slot));
-	}, []);
+	}, [pid]);
 
 	// Keep background music synchronized with the current room.
 	useEffect(() => {

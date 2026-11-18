@@ -465,6 +465,13 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
     useEffect(() => {
         if (props.isUi) return;
 
+        if (!props.isMutant) { // Only gooberts sleep. Mutants do not sleep
+            if(sleepTime > 0) { // Don't wander while sleeping
+                setEyeExpression(eyeEmotions.bored);
+                updateStat(props.id, "awakeness", 100);
+                return;
+            }
+        }
         // Bored mutants don't wander!
         if (props.isMutant && props.mutantType === MutantType.BORED) {
             return;
@@ -476,14 +483,6 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
             handleEmotion(props.id);
         }
         
-        if (props.isMutant) {
-            if(sleepTime > 0) { // Don't wander while sleeping
-                setEyeExpression(eyeEmotions.bored);
-                setSleepTime(sleepTime - 1);
-                updateStat(props.id, "awakeness", 100);
-                return;
-            }
-        }
 
         // Skip wandering behavior if the Goobert is being dragged or waiting.
         if (draggingRef.current) {
