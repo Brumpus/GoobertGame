@@ -56,7 +56,17 @@ export async function getState(pid: string, saveSlot: number): Promise<GoobertPr
         mouthType: parseInt(appearanceArray[6]!),
         mouthExpression: parseInt(appearanceArray[7]!)
       };
+      const accessoriesArray = goobert.appearance.split("_");
+      const accessoriesProps = {
+        hatType: parseInt(accessoriesArray[0]!),
+        hatStyle: parseInt(accessoriesArray[1]!),
+        maskType: parseInt(accessoriesArray[2]!),
+        maskStyle: parseInt(accessoriesArray[3]!),
+        extraType: parseInt(accessoriesArray[4]!),
+        extraStyle: parseInt(accessoriesArray[5]!)
+      };
       delete (goobert as any).appearance;
+      delete (goobert as any).accessories;
 
       return {
         ...goobert,
@@ -65,12 +75,7 @@ export async function getState(pid: string, saveSlot: number): Promise<GoobertPr
 
         ...appearanceProps,
 
-        hatType: 0,
-        hatStyle: 0,
-        maskType: 0,
-        maskStyle: 0,
-        extraType: 0,
-        extraStyle: 0
+        ...accessoriesProps
       };
     })
 
@@ -159,6 +164,16 @@ export async function updateGoobert(pid: string, saveSlot: number, goobertId: st
     return data;
   }
 }
+export const updateAccessories = async (pid: string, saveSlot: number, goobert: Goobert) => {
+  await updateGoobert(
+    pid, 
+    saveSlot, 
+    goobert.id, 
+    "accessories", 
+    stringifyAccessories(goobert)
+  );
+}
+
 export async function deleteGoobert(pid: string, saveSlot: number, goobertId: number) {
     const data = goobertId;
     const request: RequestBody = {
@@ -190,16 +205,17 @@ export async function deleteGoobert(pid: string, saveSlot: number, goobertId: nu
 
 
 const getGoobertData = (goobert: Goobert) => {
-const appearance = `
-    ${goobert.bodyType}_
-    ${goobert.bodyColor}_
-    ${goobert.legType}_
-    ${goobert.legColor}_
-    ${goobert.eyeType}_
-    ${goobert.eyeExpression}_
-    ${goobert.mouthType}_
-    ${goobert.mouthExpression}
-  `.replace(/\s+/g, '');
+  const appearance = `
+      ${goobert.bodyType}_
+      ${goobert.bodyColor}_
+      ${goobert.legType}_
+      ${goobert.legColor}_
+      ${goobert.eyeType}_
+      ${goobert.eyeExpression}_
+      ${goobert.mouthType}_
+      ${goobert.mouthExpression}
+    `.replace(/\s+/g, '');
+  
   return {
       name: goobert.name,
       room: goobert.room,
@@ -215,4 +231,15 @@ const appearance = `
 
       appearance: appearance
     };
+}
+
+const stringifyAccessories = (goobert: Goobert) => {
+  return `
+    ${goobert.hatType}_
+    ${goobert.hatStyle}_
+    ${goobert.maskType}_
+    ${goobert.maskStyle}_
+    ${goobert.extraType}_
+    ${goobert.extraStyle}
+  `.replace(/\s+/g, '');
 }

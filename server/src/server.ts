@@ -36,6 +36,7 @@ app.post("/gooberts", async (request: Request, response: Response) =>{
     response.status(201).json(data);
 });
 app.put("/gooberts", async (request: Request, response: Response) =>{
+    console.log("Updating a goobert...");
     const req = await JSON.parse(request.body.body);
     const data = await updateGoobert(req);
 

@@ -43,7 +43,8 @@ const createGoobertTable = `CREATE TABLE IF NOT EXISTS gooberts (
     awakeness INTEGER,
     cleanliness INTEGER,
 
-    appearance TEXT
+    appearance TEXT,
+    accessories TEXT
 )`;
 db.exec(createGoobertTable);
 

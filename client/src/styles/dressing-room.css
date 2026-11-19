@@ -17,12 +17,12 @@
     top: 55%;
     left: 30%;
     transform: translate(-50%, -50%);
+    transform: scale(4);
 }
 
 /* ENLARGE THE GOOBERT */
 .dressing-goobert .goobert-container {
     position: relative;
-    transform: scale(4);
     image-rendering: pixelated;
 }
 
