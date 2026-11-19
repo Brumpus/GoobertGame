@@ -97,7 +97,6 @@ export type GoobertProps = {
     className?: string;
     ref?: Ref<HTMLElement>;
 };
-
 export type Goobert = {
     name: string;
     x: number;
@@ -778,18 +777,18 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
          */
         const isMobile = window.innerWidth <= 768;
 
-        const width = destination === rooms.hub && hub
+        const width = rooms.hub.includes(destination)  && hub
             ? hub.clientWidth
             : window.innerWidth;
 
-        const height = destination === rooms.hub && hub
+        const height = rooms.hub.includes(destination) && hub
             ? hub.clientHeight
             : window.innerHeight;
 
         const spawnX = Math.random() *
             Math.max(0, width - SPRITE_SIZE);
 
-        const minY = destination === rooms.hub && !isMobile
+        const minY = rooms.hub.includes(destination) && !isMobile
             ? Math.min(550, Math.max(0, height - SPRITE_SIZE))
             : 0;
 

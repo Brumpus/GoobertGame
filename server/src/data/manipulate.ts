@@ -50,13 +50,13 @@ export const get = (user_slot: string) => {
 }
 
 // PUT
-export const put = (user_slot: string, id: string, property: string, value: number) => {
+export const put = (user_slot: string, id: string, property: string, value: number | string) => {
     const updateOne = db.prepare(`
         UPDATE gooberts
         SET ${property} = ?
         WHERE user_slot = ? AND id = ?
     `);
-
+    
     return updateOne.run(value, user_slot, id);
 };
 

@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { MutantType } from "./Mutant";
-import { getState, saveGoobertToDatabase } from "./saveLoadGoobert";
+import { getState, saveGoobertToDatabase, saveState, updateGoobert } from "./saveLoadGoobert";
 import Graveyard from "./components/graveyard";
 import { goobertDeathRattle } from "./components/audio";
 import useServer from "./ServerContext";
@@ -75,7 +75,7 @@ interface GoobertContextType {
 
     updateRoom: (
         id: string,
-        x: string
+        room: string
     ) => void;
 
     kill: (
@@ -183,6 +183,13 @@ export function GoobertProvider({ children }: any) {
                     cleanliness: Math.max(0, goobert.cleanliness - 1),
                     entertainment: Math.max(0, goobert.entertainment - 1)
                 };
+                const saveSlot = localStorage.getItem("currentSlot");
+                if(saveSlot) {
+                    updateGoobert(pid, parseInt(saveSlot), goobert.id, "fullness", goobert.fullness);
+                    updateGoobert(pid, parseInt(saveSlot), goobert.id, "awakeness", goobert.awakeness);
+                    updateGoobert(pid, parseInt(saveSlot), goobert.id, "entertainment", goobert.entertainment);
+                    updateGoobert(pid, parseInt(saveSlot), goobert.id, "cleanliness", goobert.cleanliness);
+                }
 
                 const depleted = (
                     updated.fullness <= 0 ||
@@ -192,6 +199,9 @@ export function GoobertProvider({ children }: any) {
                 );
 
                 if (depleted && !goobert.isMutant) {
+                    const saveSlot = localStorage.getItem("currentSlot");
+                    if(saveSlot)
+                        updateGoobert(pid, parseInt(saveSlot), goobert.id, "isMutant", 1);
                     return {
                         ...updated,
                         isMutant: true,
@@ -368,7 +378,7 @@ export function GoobertProvider({ children }: any) {
         setGooberts([]);
         killGooberts([]);
 
-        localStorage.removeItem("saveSlot")
+        localStorage.removeItem("currentSlot");
     }
 
     //KILL GOOBERTS DEAD!!!!!
@@ -379,7 +389,7 @@ export function GoobertProvider({ children }: any) {
         for(let i = 0; i < newArray.length; i++) {
             let deadGoobert = (newArray[i] as Goobert);
             if(deadGoobert!.id == id) {
-                updateRoom(deadGoobert.id, "/graveyard")
+                // updateRoom(deadGoobert.id, "/graveyard")
                 killGooberts([...deadGooberts, deadGoobert])
                 newArray.splice(i, 1);
                 goobertDeathRattle.play();
@@ -410,6 +420,12 @@ export function GoobertProvider({ children }: any) {
         for(let goobert of newArray) {
             if(goobert.id == id) {
                 goobert.room = room;
+
+                const saveSlot = localStorage.getItem("currentSlot");
+                if(saveSlot) {
+                    console.log("Updating room...");
+                    updateGoobert(pid, parseInt(saveSlot), id, "room", room);
+                }
             }
         }
         // Update gooberts array with new position
@@ -451,7 +467,7 @@ export function GoobertProvider({ children }: any) {
 
 export function renderGoobert(
 	name: string,
-	location = rooms.hub,
+	location: string = rooms.hub,
 	x = (Math.random() * (window.innerWidth - 64) /* world width */),
 	y = ((Math.random() * (window.innerHeight - 550 - 64) /* world height */)) + 550,
     isUi = false,
@@ -509,7 +525,6 @@ export function renderGoobert(
 
     return goobert;
 }
-
 export default function useGooberts() {
   const context = useContext(GoobertContext);
   if (!context) {

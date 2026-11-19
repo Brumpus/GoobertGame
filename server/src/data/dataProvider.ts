@@ -7,17 +7,16 @@ type RequestBody = {
 }
 export const getSaveState = async (req: RequestBody) => {
 	const saveState = get(getUserSlot(req.pid, req.saveSlot));
-	console.log(saveState);
 	return saveState;
 }
 export const createGoobert = async (req: RequestBody) => {
-	const goobertId = req.data.id;
+	const goobertId = req.data.goobertId;
 	post(getUserSlot(req.pid, req.saveSlot), req.data);
 
 	return getSaveState(req);
 }
 export const updateGoobert = async (req: RequestBody) => {
-	const goobertId = req.data.id;
+	const goobertId = req.data.goobertId;
 	const property = req.data.stat;
 	const value = req.data.value;
 	put(getUserSlot(req.pid, req.saveSlot), goobertId, property, value);

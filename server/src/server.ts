@@ -32,21 +32,20 @@ app.get("/gooberts", async (request: Request, response: Response) =>{
     response.status(201).json(data);});
 app.post("/gooberts", async (request: Request, response: Response) =>{
     console.log("\nCreating a goobert...");
-    // console.log(request.body);
     const req = await JSON.parse(request.body.body);
     const data = await createGoobert(req);
 
     response.status(201).json(data);
 });
 app.put("/gooberts", async (request: Request, response: Response) =>{
-    const req = await JSON.parse(request.body);
-    console.log(request, req);
+    const req = await JSON.parse(request.body.body);
     const data = await updateGoobert(req);
 
     response.status(201).json(data);
 });
 app.delete("/gooberts", async (request: Request, response: Response) =>{
-    const data = await deleteGoobert(await JSON.parse(request.body));
+    const req = await JSON.parse(request.body.body);
+    const data = await deleteGoobert(req);
 
     response.status(201).json(data);
 });

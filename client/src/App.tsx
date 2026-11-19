@@ -37,7 +37,7 @@ export const rooms = {
 	feastFest: "/games/feast-fest",
 	dungeonDash: "/games/dungeon-dash",
 
-}
+} as const;
 
 
 type TopElementProps = {
