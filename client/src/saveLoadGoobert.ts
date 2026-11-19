@@ -21,6 +21,7 @@ export type GoobertData = {
     cleanliness: number;
 
     appearance: string;
+    accessories: string;
 };
 
 let pid = localStorage.getItem("pid");
@@ -56,7 +57,8 @@ export async function getState(pid: string, saveSlot: number): Promise<GoobertPr
         mouthType: parseInt(appearanceArray[6]!),
         mouthExpression: parseInt(appearanceArray[7]!)
       };
-      const accessoriesArray = goobert.appearance.split("_");
+      console.log(goobert.accessories);
+      const accessoriesArray = goobert.accessories.split("_");
       const accessoriesProps = {
         hatType: parseInt(accessoriesArray[0]!),
         hatStyle: parseInt(accessoriesArray[1]!),
@@ -133,6 +135,7 @@ export async function saveGoobertToDatabase(pid: string, saveSlot: number, goobe
   }
 }
 export async function updateGoobert(pid: string, saveSlot: number, goobertId: string, stat: string, value: number | string) {
+    
     const data = {
       goobertId: goobertId,
       stat: stat,
@@ -164,7 +167,7 @@ export async function updateGoobert(pid: string, saveSlot: number, goobertId: st
     return data;
   }
 }
-export const updateAccessories = async (pid: string, saveSlot: number, goobert: Goobert) => {
+export const saveAccessories = async (pid: string, saveSlot: number, goobert: Goobert) => {
   await updateGoobert(
     pid, 
     saveSlot, 
@@ -215,6 +218,8 @@ const getGoobertData = (goobert: Goobert) => {
       ${goobert.mouthType}_
       ${goobert.mouthExpression}
     `.replace(/\s+/g, '');
+
+    const accessories = stringifyAccessories(goobert);
   
   return {
       name: goobert.name,
@@ -229,7 +234,8 @@ const getGoobertData = (goobert: Goobert) => {
       awakeness: goobert.awakeness, 
       cleanliness: goobert.cleanliness,
 
-      appearance: appearance
+      appearance: appearance,
+      accessories: accessories
     };
 }
 

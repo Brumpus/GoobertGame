@@ -11,14 +11,14 @@ const goobertInsert = db.prepare(`
         is_mutant, mutant_type, 
         fullness, entertainment, awakeness, cleanliness,
 
-        appearance
+        appearance, accessories
     ) VALUES (
         ?, ?, ?, ?, 
         
         ?, ?, 
         ?, ?, ?, ?, 
 
-        ?
+        ?, ?
     )
 `);
 export const post = (user_slot: string, goobert: GoobertData) => {
@@ -29,7 +29,7 @@ export const post = (user_slot: string, goobert: GoobertData) => {
         goobert.isMutant ? 1 : 0, goobert.mutantType,
         goobert.fullness, goobert.entertainment, goobert.awakeness, goobert.cleanliness,
 
-        goobert.appearance
+        goobert.appearance, goobert.accessories
     );
 }
 // GET
@@ -40,7 +40,7 @@ const selectAll = db.prepare(`
         is_mutant, mutant_type, 
         fullness, entertainment, awakeness, cleanliness,
 
-        appearance
+        appearance, accessories
     FROM gooberts
     WHERE user_slot = ?
 `);

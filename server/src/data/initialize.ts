@@ -17,6 +17,7 @@ export type GoobertData = {
     cleanliness: number;
 
     appearance: string;
+    accessories: string;
 };
 
 

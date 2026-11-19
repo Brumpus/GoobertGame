@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import type { Goobert } from "./Goobert";
 import { rooms } from "./App";
 import { MutantType } from "./Mutant";
-import { getState, saveGoobertToDatabase, saveState, updateGoobert } from "./saveLoadGoobert";
+import { getState, saveAccessories, saveGoobertToDatabase, saveState, updateGoobert } from "./saveLoadGoobert";
 import Graveyard from "./components/graveyard";
 import { goobertDeathRattle } from "./components/audio";
 import useServer from "./ServerContext";
@@ -445,11 +445,18 @@ export function GoobertProvider({ children }: any) {
     // Update only the selected Goobert's accessories.
     const updateAccessories = (id: string, accessories: GoobertAccessories) => {
         setGooberts(previous =>
-            previous.map(goobert =>
-                goobert.id === id
-                    ? { ...goobert, ...accessories }
-                    : goobert
-            )
+            previous.map(goobert => {
+                if(goobert.id === id) {
+                    // Update appearance on serverside
+                    const saveSlot = localStorage.getItem("currentSlot");
+                    if(saveSlot && goobert)
+                        saveAccessories(pid, parseInt(saveSlot), { ...goobert, ...accessories });
+
+                    return { ...goobert, ...accessories };
+                } else {
+                    return goobert
+                } 
+            })
         );
     };
 

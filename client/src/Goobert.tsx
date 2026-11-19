@@ -66,6 +66,7 @@ export type GoobertProps = {
     y?: number;
     id: string;
     isUi: boolean;
+    styleGoobert?: boolean;
 
     isMutant: boolean;
     mutantType?: MutantType;
@@ -823,7 +824,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 />
             ) : (
                 <>
-            <AccessoriesBack
+            {(!props.isUi || props.styleGoobert) && <AccessoriesBack
                 x={props.x ?? 0}
                 y={props.y ?? 0}
                 hatType={props.hatType ?? 0}
@@ -832,7 +833,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 maskStyle={props.maskStyle ?? 0}
                 extraType={props.extraType ?? 0}
                 extraStyle={props.extraStyle ?? 0}
-            />
+            />}
             <img/>
             
             <img
@@ -871,7 +872,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 }}
             />
 
-            <AccessoriesFront
+            {(!props.isUi || props.styleGoobert) && <AccessoriesFront
                 x={props.x ?? 0}
                 y={props.y ?? 0}
                 hatType={props.hatType ?? 0}
@@ -880,7 +881,7 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 maskStyle={props.maskStyle ?? 0}
                 extraType={props.extraType ?? 0}
                 extraStyle={props.extraStyle ?? 0}
-            />
+            />}
             
                 </>
                  /*  <> // React Fragment - allows to group existing Goobert

@@ -15,7 +15,7 @@ const ACCESSORY_LIMITS = {
 };
 
 export default function DressingRoom() {
-
+useSearchParams
     const { gooberts, updateAccessories } = useGooberts();
     const [searchParams] = useSearchParams();
 
@@ -103,6 +103,7 @@ export default function DressingRoom() {
                         {...selectedGoobert}
                         {...previewAccessories}
                         isUi={true}
+                        styleGoobert={true}
                         x={0}
                         y={0}
                     />
