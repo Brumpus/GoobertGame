@@ -27,11 +27,9 @@ app.get("/gooberts", async (request: Request, response: Response) =>{
     let slot: number = slotString as unknown as number;
 
     const data = await getSaveState({pid: pid, saveSlot: slot, data: {}});
-
-    console.log("Sending data from slot " + slot + ":", data);
     response.status(201).json(data);});
 app.post("/gooberts", async (request: Request, response: Response) =>{
-    console.log("\nCreating a goobert...");
+    console.log("Creating a goobert...");
     const req = await JSON.parse(request.body.body);
     const data = await createGoobert(req);
 

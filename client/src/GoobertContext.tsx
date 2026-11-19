@@ -353,7 +353,11 @@ export function GoobertProvider({ children }: any) {
     */
     const loadSlot = async (saveSlot: number) => {
         let data = await getState(pid, saveSlot);
-        if(!data) return;
+        if(!data) {
+            setGooberts([]);
+            killGooberts([]);
+            return;
+        }
 
         let newGooberts = data.map(goobert => {
             let newGoobert: Goobert = renderGoobert(goobert.name, goobert.room);
@@ -423,7 +427,6 @@ export function GoobertProvider({ children }: any) {
 
                 const saveSlot = localStorage.getItem("currentSlot");
                 if(saveSlot) {
-                    console.log("Updating room...");
                     updateGoobert(pid, parseInt(saveSlot), id, "room", room);
                 }
             }

@@ -34,7 +34,6 @@ export function ServerProvider({ children }: any) {
 
         ws.onmessage = (message) => {
             const data = JSON.parse(message.data);
-            console.log(data);
             switch (data.type) {
                 case "connect":
                     if(localStorage.getItem("pid") == undefined) {
@@ -43,7 +42,6 @@ export function ServerProvider({ children }: any) {
                     } else {
                         setPid(localStorage.getItem("pid") as string);
                     }
-                    console.log(pid);
                 break;
                 default:
                     break;
