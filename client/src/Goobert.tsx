@@ -43,19 +43,12 @@ const MOUTH_SPRITE_SHEET = assetPath("images/goobert-parts/208-tamagotchi-mouths
     Every Goobert will match right now
    ______________________________________ */
 
-const MAX_HAT_TYPES = 10; //includes blank at 0
-const MAX_HAT_STYLES = 7;
-const MAX_MASK_TYPES = 15; //includes blank at 0
-const MAX_MASK_STYLES = 4;
-const MAX_EXTRA_TYPES = 14; //includes blank at 0
-const MAX_EXTRA_STYLES = 4;
-
-let hatType = 0;
-let hatStyle = 0;
-let maskType = 0;
-let maskStyle = 0;
-let extraType = 0;
-let extraStyle = 0;
+const MAX_HAT_TYPES = 11; // 11 rows, including blank
+const MAX_HAT_STYLES = 8; // 8 columns
+const MAX_MASK_TYPES = 15; // 15 rows, including blank
+const MAX_MASK_STYLES = 5; // 5 columns
+const MAX_EXTRA_TYPES = 15; // 15 rows, including blank
+const MAX_EXTRA_STYLES = 5; // 5 columns
 
 /* ______________________________________ */
 
@@ -86,12 +79,12 @@ export type GoobertProps = {
     mouthExpression: number;
     eyeExpression: number;
 
-    // hatType: number;
-    // hatStyle: number;
-    // maskType: number;
-    // maskStyle: number;
-    // extraType: number;
-    // extraStyle: number;
+    hatType: number;
+    hatStyle: number;
+    maskType: number;
+    maskStyle: number;
+    extraType: number;
+    extraStyle: number;
 
     onGoobertSelected?: Function;
     className?: string;
@@ -121,12 +114,12 @@ export type Goobert = {
     eyeExpression: number;
     mouthExpression: number;
 
-    // hatType: number;
-    // hatStyle: number;
-    // maskType: number;
-    // maskStyle: number;
-    // extraType: number;
-    // extraStyle: number;
+    hatType: number;
+    hatStyle: number;
+    maskType: number;
+    maskStyle: number;
+    extraType: number;
+    extraStyle: number;
 
     eat: Function;
     sleep: Function;
@@ -830,15 +823,15 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 />
             ) : (
                 <>
-            <AccessoriesBack 
+            <AccessoriesBack
                 x={props.x ?? 0}
                 y={props.y ?? 0}
-                hatType={hatType}
-                hatStyle={hatStyle}
-                maskType={maskType}
-                maskStyle={maskStyle}
-                extraType={extraType}
-                extraStyle={extraStyle}
+                hatType={props.hatType ?? 0}
+                hatStyle={props.hatStyle ?? 0}
+                maskType={props.maskType ?? 0}
+                maskStyle={props.maskStyle ?? 0}
+                extraType={props.extraType ?? 0}
+                extraStyle={props.extraStyle ?? 0}
             />
             <img/>
             
@@ -878,16 +871,16 @@ export default function Goobert(props: GoobertProps): React.JSX.Element {
                 }}
             />
 
-            <AccessoriesFront 
+            <AccessoriesFront
                 x={props.x ?? 0}
                 y={props.y ?? 0}
-                hatType={hatType}
-                hatStyle={hatStyle}
-                maskType={maskType}
-                maskStyle={maskStyle}  
-                extraType={extraType}
-                extraStyle={extraStyle}              
-            /> 
+                hatType={props.hatType ?? 0}
+                hatStyle={props.hatStyle ?? 0}
+                maskType={props.maskType ?? 0}
+                maskStyle={props.maskStyle ?? 0}
+                extraType={props.extraType ?? 0}
+                extraStyle={props.extraStyle ?? 0}
+            />
             
                 </>
                  /*  <> // React Fragment - allows to group existing Goobert

@@ -4,6 +4,11 @@
     width: 100%;
     min-height: 100vh;
     box-sizing: border-box;
+
+    background-image: url("../images/shop/accessory-room.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* DISPLAY GOOBERT */
@@ -80,7 +85,11 @@
     right: 5%;
 
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
+
+    max-width: 45%;
 }
 
 /* ACCESSORY CATEGORY BUTTON DESIGN */
