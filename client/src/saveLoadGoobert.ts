@@ -63,8 +63,15 @@ export async function getState(pid: string, saveSlot: number): Promise<GoobertPr
         isUi: false,
         fromServer: true,
 
-        ...appearanceProps
-      }
+        ...appearanceProps,
+
+        hatType: 0,
+        hatStyle: 0,
+        maskType: 0,
+        maskStyle: 0,
+        extraType: 0,
+        extraStyle: 0
+      };
     })
 
     // Return gooberts
