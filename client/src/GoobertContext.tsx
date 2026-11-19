@@ -21,14 +21,15 @@ export type GoobertStats = {
     awakeness: number;
     cleanliness: number;
 };
-// export type GoobertAccessories = {
-//     hatType: number;
-//     hatStyle: number;
-//     maskType: number;
-//     maskStyle: number;
-//     extraType: number;
-//     extraStyle: number;
-// };
+
+export type GoobertAccessories = {
+    hatType: number;
+    hatStyle: number;
+    maskType: number;
+    maskStyle: number;
+    extraType: number;
+    extraStyle: number;
+};
 
 // How many of each type of asset exist
 const MAX_EYE_TYPES = 10;
@@ -76,6 +77,11 @@ interface GoobertContextType {
     updateRoom: (
         id: string,
         room: string
+    ) => void;
+
+    updateAccessories: (
+        id: string,
+        accessories: GoobertAccessories
     ) => void;
 
     kill: (
@@ -433,8 +439,20 @@ export function GoobertProvider({ children }: any) {
     }
 
 
-    // Keep track of door references globally
-    const doorRefs = {
+    // Update only the selected Goobert's accessories.
+    const updateAccessories = (id: string, accessories: GoobertAccessories) => {
+        setGooberts(previous =>
+            previous.map(goobert =>
+                goobert.id === id
+                    ? { ...goobert, ...accessories }
+                    : goobert
+            )
+        );
+    };
+
+
+        // Keep track of door references globally
+        const doorRefs = {
         gameRoom: useRef<HTMLImageElement>(null),
         bedroom: useRef<HTMLImageElement>(null),
         shop: useRef<HTMLImageElement>(null),
@@ -455,7 +473,7 @@ export function GoobertProvider({ children }: any) {
         <GoobertContext.Provider value={{
             gooberts, deadGooberts,
             
-            createGoobert, updatePosition, updateRoom, updateStat,
+            createGoobert, updatePosition, updateRoom, updateAccessories, updateStat,
             getGoobertById, cureGoobert, summonGoobertsToHub,
             loadSlot, newGame, kill,
             
@@ -499,6 +517,13 @@ export function renderGoobert(
         mouthType: Math.floor(Math.random() * MAX_MOUTH_TYPES),
         eyeExpression: 0,
         mouthExpression: 0,
+
+        hatType: 0,
+        hatStyle: 0,
+        maskType: 0,
+        maskStyle: 0,
+        extraType: 0,
+        extraStyle: 0,
 
         // Restore Goobert needs without exceeding 100.
         eat(amt = 10) {
